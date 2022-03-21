@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/models/user_config.dart';
 import 'package:miliv2/src/screens/otp_verification.dart';
 import 'package:miliv2/src/services/biometry.dart';
@@ -284,7 +285,6 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
   }
 
   void onForgotPIN() {
-
     void step2(BuildContext context) {
       replaceScreen(
         context,
@@ -369,7 +369,8 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
               ListTile(
                 title: const Text('Aktifkan PIN'),
                 trailing: Switch(
-                  onChanged: onPinEnableChange,
+                  onChanged:
+                      userBalanceState.isGuest() ? null : onPinEnableChange,
                   value: pinActive,
                   activeColor: Colors.lightBlueAccent,
                 ),

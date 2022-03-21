@@ -163,7 +163,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     // Button
                     Container(
                       margin: const EdgeInsets.only(bottom: 10, top: 20),
-                      child: AppButton('Simpan', submit),
+                      child: AppButton(
+                          'Simpan', userBalanceState.isGuest() ? null : submit),
                     ),
                   ],
                 ),

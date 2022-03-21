@@ -24,6 +24,7 @@ class UserBalanceState extends ChangeNotifier {
   String? address;
   String? outletType;
   double markup = 0;
+  String groupName = 'GUEST';
 
   UserBalanceState(this.balance, this.balanceCredit, this.isLoading);
 
@@ -45,6 +46,7 @@ class UserBalanceState extends ChangeNotifier {
     address = profile.address;
     outletType = profile.outletType;
     markup = profile.markup ?? 0;
+    groupName = profile.groupName;
 
     debugPrint('Fetch UserBalanceState success ${bodyMap}');
     notifyListeners();
@@ -52,6 +54,14 @@ class UserBalanceState extends ChangeNotifier {
 
   String? getPhotoUrl() {
     return photo == null ? null : AppConfig.baseUrl + '/' + photo!;
+  }
+
+  bool isGuest() {
+    return groupName.isEmpty || groupName == 'GUEST';
+  }
+
+  bool isAllowedPurchase() {
+    return !isGuest() && phoneVerified;
   }
 
   FutureOr<void> _handleError(Object e) {

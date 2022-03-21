@@ -6,6 +6,7 @@ class PurchaseHistory {
   int id;
   @Property(uid: 3142129608704666837)
   int serverId;
+  String userId;
   String productCode;
   String productName;
   String groupName;
@@ -20,6 +21,7 @@ class PurchaseHistory {
 
   PurchaseHistory({
     this.id = 0,
+    required this.userId,
     required this.serverId,
     required this.productCode,
     required this.productName,
@@ -35,6 +37,7 @@ class PurchaseHistory {
 
   factory PurchaseHistory.fromResponse(PurchaseHistoryResponse response) =>
       PurchaseHistory(
+        userId: response.userId,
         serverId: response.serverId,
         productCode: response.productCode,
         productName: response.productName,

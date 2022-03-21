@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:miliv2/src/api/api.dart';
+import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -274,7 +275,8 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                     // Button
                     Container(
                       margin: const EdgeInsets.only(bottom: 10, top: 20),
-                      child: AppButton('Kirim', submit),
+                      child: AppButton(
+                          'Kirim', userBalanceState.isGuest() ? null : submit),
                     ),
                   ],
                 ),

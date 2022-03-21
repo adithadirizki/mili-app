@@ -6,6 +6,7 @@ import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/data/transaction.dart';
 import 'package:miliv2/src/data/user_balance.dart';
+import 'package:miliv2/src/routing.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
@@ -49,8 +50,27 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   void initState() {
-    trxId = DateTime.now().millisecondsSinceEpoch.toString();
     super.initState();
+    trxId = DateTime.now().millisecondsSinceEpoch.toString();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      if (userBalanceState.isGuest()) {
+        confirmSignin();
+      }
+    });
+  }
+
+  void confirmSignin() {
+    confirmDialog(
+      context,
+      title: 'Konfirmasi',
+      msg:
+          'Anda perlu melakukan Pendaftaran atau Login untuk melanjutkan transaksi',
+      confirmAction: () {
+        RouteStateScope.of(context).go('/signin');
+      },
+      confirmText: 'Ya, lanjutkan',
+      cancelText: 'Batal',
+    );
   }
 
   void confirmPayment() {
@@ -101,6 +121,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
       return widget.total <= userBalanceState.balanceCredit;
     }
     return false;
+  }
+
+  double getBalance() {
+    if (selectedPayment == PaymentMethod.mainBalance) {
+      return userBalanceState.balance;
+    } else if (selectedPayment == PaymentMethod.creditBalance) {
+      return userBalanceState.balanceCredit;
+    }
+    return 0;
   }
 
   @override
@@ -182,6 +211,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       right: 20,
                     ),
                     child: Column(children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Saldo'),
+                          Text(formatNumber(getBalance())),
+                        ],
+                      ),
                       for (var e in widget.items)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -203,10 +239,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Total'),
-                          Text(formatNumber(widget.total)),
+                          const Text('Sisa Saldo'),
+                          Text(formatNumber(getBalance() - widget.total)),
                         ],
-                      )
+                      ),
                     ]),
                   ),
                 ],

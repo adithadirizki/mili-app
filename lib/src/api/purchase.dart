@@ -90,6 +90,9 @@ class PurchaseHistoryResponse {
   @JsonKey(name: 'id')
   late final int serverId;
 
+  @JsonKey(name: 'agenid')
+  late String userId;
+
   @JsonKey(name: 'vtype')
   late final String productCode;
 

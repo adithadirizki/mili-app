@@ -317,7 +317,7 @@
     },
     {
       "id": "7:4339777652162826620",
-      "lastPropertyId": "11:3361338120874661077",
+      "lastPropertyId": "12:7883105733013770147",
       "name": "PurchaseHistory",
       "properties": [
         {
@@ -374,6 +374,11 @@
         {
           "id": "11:3361338120874661077",
           "name": "purchaseStruct",
+          "type": 9
+        },
+        {
+          "id": "12:7883105733013770147",
+          "name": "userId",
           "type": 9
         }
       ],

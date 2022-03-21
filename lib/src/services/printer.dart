@@ -2,6 +2,7 @@ import 'package:bluetooth_print/bluetooth_print.dart';
 import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:miliv2/objectbox.g.dart';
+import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/user_config.dart';
 import 'package:miliv2/src/services/storage.dart';
@@ -41,7 +42,9 @@ class AppPrinter {
 
   static Future<UserConfig?> getPrinterConfig() async {
     UserConfig? config = AppDB.userConfigDB
-        .query(UserConfig_.name.equals('PRINTER_SETTING'))
+        .query(UserConfig_.name
+            .equals('PRINTER_SETTING')
+            .and(UserConfig_.userId.equals(userBalanceState.userId)))
         .build()
         .findFirst();
     return config;

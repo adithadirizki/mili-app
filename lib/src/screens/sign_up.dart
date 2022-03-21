@@ -9,6 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/location.dart';
 import 'package:miliv2/src/api/login.dart';
+import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/device.dart';
@@ -220,6 +221,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         'address': address,
         'postCode': postCode,
         'imei': deviceId,
+        'guestId': userBalanceState.userId
       };
       debugPrint("Register Request >> ${json.encode(body)}");
       Api.register(body).then((response) {

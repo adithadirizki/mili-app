@@ -6,7 +6,6 @@ import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/purchase.dart';
 import 'package:miliv2/src/database/database.dart';
@@ -51,10 +50,7 @@ class _PrinterScreenState extends State<PrinterScreen> {
   }
 
   Future<void> initDB() async {
-    UserConfig? prev = AppDB.userConfigDB
-        .query(UserConfig_.name.equals('PRINTER_SETTING'))
-        .build()
-        .findFirst();
+    UserConfig? prev = await AppPrinter.getPrinterConfig();
     if (prev == null) {
       printConfig = UserConfig(
         serverId: 0,

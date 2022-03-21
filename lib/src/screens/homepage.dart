@@ -7,6 +7,7 @@ import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/active_banner.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
+import 'package:miliv2/src/routing.dart';
 import 'package:miliv2/src/screens/home_screen.dart';
 import 'package:miliv2/src/screens/otp_verification.dart';
 import 'package:miliv2/src/services/analytics.dart';
@@ -79,11 +80,15 @@ class _HomepageState extends State<Homepage>
     var authState = AppAuthScope.of(context);
     if (!authState.signedIn) {
       var deviceId = await getDeviceId();
-      await authState.guestSignIn(deviceId);
+      var success = await authState.guestSignIn(deviceId);
+      if (!success) {
+        RouteStateScope.of(context).go('/signin');
+        return;
+      }
     }
     AppAnalytic.setUserId(userBalanceState.userId);
     AppMessaging.requestPermission(context);
-    userBalanceState.fetchData().catchError((Object e) {
+    userBalanceState.fetchData().catchError((dynamic e) {
       if (e is UnauthorisedException) {
         debugPrint('Homepage init provider ${e.toString()}');
         AppAuthScope.of(context).signOut();
