@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:miliv2/src/data/user_balance.dart';
+import 'package:miliv2/src/routing.dart';
 import 'package:miliv2/src/screens/about.dart';
 import 'package:miliv2/src/screens/change_password.dart';
 import 'package:miliv2/src/screens/customer_service.dart';
@@ -100,6 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     confirmDialog(context, title: 'Konfirmasi', msg: 'Keluar dari aplikasi ?',
         confirmAction: () {
       AppAuthScope.of(context).signOut();
+      RouteStateScope.of(context).go('/signin');
     }, confirmText: 'Keluar', cancelText: 'Batal');
   }
 

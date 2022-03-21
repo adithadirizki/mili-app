@@ -132,6 +132,7 @@ class _AppState extends State<App> {
       '/reset',
       '/signup',
       '/otp',
+      '/'
     ];
 
     // Go to /signin if the user is not signed in
@@ -151,7 +152,7 @@ class _AppState extends State<App> {
     debugPrint(
         'Handle auth change ${_auth.signedIn} verified ${_auth.verified}');
     if (!_auth.signedIn) {
-      _routeState.go('/signin');
+      // _routeState.go('/signin');
     } else if (_auth.verified) {
       _routeState.go('/');
     } else {

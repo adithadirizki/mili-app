@@ -15,6 +15,7 @@ import 'package:miliv2/src/services/biometry.dart';
 import 'package:miliv2/src/services/messaging.dart';
 import 'package:miliv2/src/services/storage.dart';
 import 'package:miliv2/src/theme/images.dart';
+import 'package:miliv2/src/utils/device.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/home_bottom_bar.dart';
 import 'package:miliv2/src/widgets/pin_verification.dart';
@@ -74,7 +75,12 @@ class _HomepageState extends State<Homepage>
     });
   }
 
-  void initProvider() {
+  void initProvider() async {
+    var authState = AppAuthScope.of(context);
+    if (!authState.signedIn) {
+      var deviceId = await getDeviceId();
+      await authState.guestSignIn(deviceId);
+    }
     AppAnalytic.setUserId(userBalanceState.userId);
     AppMessaging.requestPermission(context);
     userBalanceState.fetchData().catchError((Object e) {
@@ -97,7 +103,7 @@ class _HomepageState extends State<Homepage>
   void initPin() {
     pinEnabled = AppStorage.getPINEnable();
     biometricEnabled = AppStorage.getBiometricEnable();
-    if (pinEnabled) {
+    if (AppStorage.getAuthenticated() && pinEnabled) {
       locked = true;
     }
   }
