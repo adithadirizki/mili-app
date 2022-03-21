@@ -1,0 +1,6 @@
+; https://docs.flutter.dev/deployment/android#signing-the-app
+
+storeFile=upload.keystore
+storePassword=storepassword
+keyAlias=keyalias
+keyPassword=keypassword
