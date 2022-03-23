@@ -1,13 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/active_banner.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
-import 'package:miliv2/src/routing.dart';
 import 'package:miliv2/src/screens/home_screen.dart';
 import 'package:miliv2/src/screens/otp_verification.dart';
 import 'package:miliv2/src/services/analytics.dart';
@@ -16,7 +14,6 @@ import 'package:miliv2/src/services/biometry.dart';
 import 'package:miliv2/src/services/messaging.dart';
 import 'package:miliv2/src/services/storage.dart';
 import 'package:miliv2/src/theme/images.dart';
-import 'package:miliv2/src/utils/device.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/home_bottom_bar.dart';
 import 'package:miliv2/src/widgets/pin_verification.dart';
@@ -76,16 +73,7 @@ class _HomepageState extends State<Homepage>
     });
   }
 
-  void initProvider() async {
-    var authState = AppAuthScope.of(context);
-    if (!authState.signedIn) {
-      var deviceId = await getDeviceId();
-      var success = await authState.guestSignIn(deviceId);
-      if (!success) {
-        RouteStateScope.of(context).go('/signin');
-        return;
-      }
-    }
+  void initProvider() {
     AppAnalytic.setUserId(userBalanceState.userId);
     AppMessaging.requestPermission(context);
     userBalanceState.fetchData().catchError((dynamic e) {
@@ -108,7 +96,7 @@ class _HomepageState extends State<Homepage>
   void initPin() {
     pinEnabled = AppStorage.getPINEnable();
     biometricEnabled = AppStorage.getBiometricEnable();
-    if (AppStorage.getAuthenticated() && pinEnabled) {
+    if (!userBalanceState.isGuest() && pinEnabled) {
       locked = true;
     }
   }

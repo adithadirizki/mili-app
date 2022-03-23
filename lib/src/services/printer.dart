@@ -37,6 +37,16 @@ class AppPrinter {
       }
     });
 
+    // Reconnect
+    if (_printerAddress != null) {
+      Map<String, dynamic> deviceData = <String, dynamic>{};
+      deviceData['name'] = 'Default Printer';
+      deviceData['address'] = _printerAddress;
+      deviceData['connected'] = true;
+      BluetoothDevice device = BluetoothDevice.fromJson(deviceData);
+      _printer.connect(device);
+    }
+
     _initialized = true;
   }
 
@@ -84,7 +94,7 @@ class AppPrinter {
 
   static Future<void> disconnect() async {
     await _printer.disconnect();
-    AppStorage.removePrinterAddress();
+    AppStorage.setPrinterAddress(null);
   }
 
   static Future<void> print(List<LineText> rows,

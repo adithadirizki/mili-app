@@ -34,14 +34,10 @@ class AppAuth extends ChangeNotifier {
     var deviceId = AppStorage.getDeviceId();
     var token = AppStorage.getToken();
 
-    debugPrint('Init Auth $signedIn $deviceId $username $token');
+    debugPrint(
+        'Init Auth $signedIn device $deviceId username $username token $token');
 
-    if (signedIn != null &&
-        // signedIn &&
-        token != null &&
-        deviceId != null &&
-        username != null &&
-        verified != null) {
+    if (signedIn && deviceId.isNotEmpty) {
       _signedIn = signedIn;
       _verified = verified;
       _username = username;
@@ -153,10 +149,10 @@ class AppAuth extends ChangeNotifier {
     return _signedIn;
   }
 
-  Future<bool> guestSignIn(String deviceId) async {
+  Future<bool> guestSignIn(String deviceId, String ip) async {
     debugPrint('Guest Signin ${deviceId}');
 
-    var response = await Api.guest(deviceId);
+    var response = await Api.guest(deviceId, ip);
 
     if (response.statusCode != 200) {
       Map<String, dynamic>? bodyMap =
@@ -172,14 +168,18 @@ class AppAuth extends ChangeNotifier {
 
     debugPrint('Guest Signin ${loginResp.user}');
 
-    _username = deviceId;
+    _signedIn = true;
+    _verified = true;
+    _username = loginResp.user.phoneNumber;
     _deviceId = deviceId;
 
+    AppStorage.setAuthenticated(_signedIn);
     AppStorage.setUsername(_username);
     AppStorage.setDeviceId(_deviceId);
     AppStorage.setToken(loginResp.token);
 
     Api.setToken(loginResp.token);
+    Api.setUsername(username);
     Api.setDeviceId(deviceId);
 
     return true;

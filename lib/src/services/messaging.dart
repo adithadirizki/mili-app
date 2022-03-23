@@ -90,7 +90,7 @@ class AppMessaging {
     String? token = await _messaging.getToken();
     debugPrint('Messaging token ${token}');
     var deviceInfo = await getDeviceInfo();
-    var version = await getAppVersion();
+    var version = await getFullAppVersion();
     var osInfo = await getOSInfo();
     Api.subscribeMessaging(
       token: token ?? '',

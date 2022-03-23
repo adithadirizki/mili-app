@@ -20,7 +20,6 @@ import 'package:miliv2/src/models/timestamp.dart';
 import 'package:miliv2/src/models/topup.dart';
 import 'package:miliv2/src/models/user_config.dart';
 import 'package:miliv2/src/models/vendor.dart';
-import 'package:objectbox/objectbox.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 

@@ -234,6 +234,16 @@ class _PrinterScreenState extends State<PrinterScreen> {
     return initBluetooth();
   }
 
+  VoidCallback selectPrinter(BluetoothDevice d) {
+    return () async {
+      await AppPrinter.connect(d);
+      setState(() {
+        deviceAddress = d.address;
+        connected = true;
+      });
+    };
+  }
+
   Widget buildTop(BuildContext context) {
     return Column(
       children: <Widget>[
@@ -288,13 +298,7 @@ class _PrinterScreenState extends State<PrinterScreen> {
                             .map((d) => ListTile(
                                   title: Text(d.name ?? ''),
                                   subtitle: Text(d.address!),
-                                  onTap: () async {
-                                    await AppPrinter.connect(d);
-                                    setState(() {
-                                      deviceAddress = d.address;
-                                      connected = true;
-                                    });
-                                  },
+                                  onTap: selectPrinter(d),
                                   trailing: deviceAddress != null &&
                                           (deviceAddress == d.address)
                                       ? const Icon(

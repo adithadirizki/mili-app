@@ -86,10 +86,10 @@ class Api {
     };
   }
 
-  static Map<String, String>? getSignatureHeaders({required String body}) {
-    var ip = '172.17.0.1'; // FIXME Get user IP
+  static Map<String, String>? getSignatureHeaders(
+      {required String body, required String ipAddress}) {
     var now = DateTime.now().toIso8601String();
-    var req = ip + body + now;
+    var req = ipAddress + body + now;
     var signature = sha256.convert(utf8.encode(req)).toString().toUpperCase();
     signature = sha1.convert(utf8.encode(signature)).toString();
     return {
@@ -205,15 +205,24 @@ class Api {
         .then(_parseResponse);
   }
 
-  static Future<http.Response> guest(String imei) {
+  static Future<http.Response> guest(String imei, String ipAddress) {
     Map<String, Object> body = <String, Object>{
       'imei': imei,
     };
     return http
         .post(
           Uri.parse(AppConfig.baseUrl + '/guest'),
-          headers: getSignatureHeaders(body: json.encode(body)),
+          headers: getSignatureHeaders(
+              body: json.encode(body), ipAddress: ipAddress),
           body: json.encode(body),
+        )
+        .then(_parseResponse);
+  }
+
+  static Future<http.Response> clientInfo() {
+    return http
+        .get(
+          Uri.parse(AppConfig.baseUrl + '/client'),
         )
         .then(_parseResponse);
   }

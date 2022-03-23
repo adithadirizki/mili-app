@@ -65,7 +65,8 @@ android {
        }
        release {
            signingConfig signingConfigs.release
-           applicationIdSuffix ".beta"
+//           applicationIdSuffix ".beta"
+           applicationIdSuffix ".stagingv2"
            ndk {
                abiFilters 'armeabi-v7a','arm64-v8a','x86_64'
            }

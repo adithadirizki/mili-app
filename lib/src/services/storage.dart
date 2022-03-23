@@ -6,7 +6,6 @@ class AppStorage {
   static const String _signedInKey = "_signedIn";
   static const String _verifiedKey = "_vefified";
   static const String _usernameKey = "_username";
-  static const String printerAddressKey = "_printerAddress";
 
   // Private
   static const String _pinEnable = "_pinEnable";
@@ -118,15 +117,15 @@ class AppStorage {
     return value ?? false;
   }
 
-  static void setPrinterAddress(String value) {
-    _engine.setString(_printerAddress, value);
+  static void setPrinterAddress(String? value) {
+    if (null != value) {
+      _engine.setString(_printerAddress, value);
+    } else {
+      _engine.remove(_printerAddress);
+    }
   }
 
   static String? getPrinterAddress() {
     _engine.getString(_printerAddress);
-  }
-
-  static void removePrinterAddress() {
-    _engine.remove(_printerAddress);
   }
 }

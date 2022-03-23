@@ -13,11 +13,13 @@ import 'package:miliv2/src/screens/price_setting.dart';
 import 'package:miliv2/src/screens/printer.dart';
 import 'package:miliv2/src/screens/privacy.dart';
 import 'package:miliv2/src/screens/profile_update.dart';
+import 'package:miliv2/src/screens/system_info.dart';
 import 'package:miliv2/src/screens/upgrade.dart';
 import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
+import 'package:miliv2/src/utils/device.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/profile_picture.dart';
 
@@ -38,6 +40,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   List<AppMenu> menuList1 = [];
   List<AppMenu> menuList2 = [];
+  late String version;
 
   @override
   void initState() {
@@ -93,8 +96,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  void initialize() {
+  void initialize() async {
     userBalanceState.fetchData();
+    version = await getAppVersion();
   }
 
   void logout() {
@@ -145,6 +149,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       );
     }
+  }
+
+  void system() {
+    pushScreen(
+      context,
+      (_) => const SystemInfoScreen(title: 'Informasi Sistem'),
+    );
   }
 
   Widget itemBuilder1(AppMenu menu) {
@@ -493,6 +504,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextButton(
+                        onPressed: system,
+                        child: Text(
+                          'Versi $version',
+                          style: Theme.of(context).textTheme.subtitle2,
                         ),
                       ),
                       const SizedBox(height: 10),
