@@ -47,7 +47,7 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
     buildNumber = await getBuildNumber();
     var ratio = MediaQuery.of(context).devicePixelRatio;
     screen =
-        '${MediaQuery.of(context).size.width.round() * ratio} x ${MediaQuery.of(context).size.height.round() * ratio}';
+        '${(MediaQuery.of(context).size.width.round() * ratio).round()} x ${(MediaQuery.of(context).size.height.round() * ratio).round()}';
     try {
       var resp = await Api.clientInfo();
 
