@@ -507,16 +507,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      TextButton(
-                        onPressed: system,
-                        child: Text(
-                          'Versi $version',
-                          style: Theme.of(context).textTheme.subtitle2,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
                     ],
                   ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: system,
+                child: Text(
+                  'Versi $version',
+                  style: Theme.of(context).textTheme.subtitle2,
                 ),
               ),
               const SizedBox(height: 10),

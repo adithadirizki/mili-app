@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/api/banner.dart';
 import 'package:miliv2/src/data/active_banner.dart';
+import 'package:miliv2/src/theme/colors.dart';
 
 class HomePromo extends StatefulWidget {
   const HomePromo({Key? key}) : super(key: key);
@@ -89,12 +90,32 @@ class _HomePromoState extends State<HomePromo> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Promo",
-            style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 14,
-                fontWeight: FontWeight.bold),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Promo',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              // Row(
+              //   children: [
+              //     Text(
+              //       'Please wait...',
+              //       style: Theme.of(context).textTheme.titleSmall,
+              //     ),
+              //     const SizedBox(width: 20),
+              //     const SizedBox(
+              //       width: 15,
+              //       height: 15,
+              //       child: Center(
+              //         child: CircularProgressIndicator(
+              //           color: AppColors.blue1,
+              //         ),
+              //       ),
+              //     )
+              //   ],
+              // ),
+            ],
           ),
           const Divider(),
           SizedBox(

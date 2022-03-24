@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Mili V2 Staging</string>
+<!--    <string name="app_name">Mili V2</string>-->
     <string name="facebook_app_id">2932026223749906</string>
     <string name="fb_login_protocol_scheme">fb1234</string>
     <string name="facebook_client_token">228acb81d1990a19b4a96f7075614cf4</string>

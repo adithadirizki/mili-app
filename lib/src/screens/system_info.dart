@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/api/api.dart';
+import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/utils/device.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
@@ -27,6 +28,7 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
   late String isp = '-';
   late String timezone = '-';
   late String region = '-';
+  late String databaseInfo = '-';
 
   @override
   void initState() {
@@ -43,8 +45,9 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
     osName = await getOSName();
     appVersion = await getAppVersion();
     buildNumber = await getBuildNumber();
+    var ratio = MediaQuery.of(context).devicePixelRatio;
     screen =
-        '${MediaQuery.of(context).size.width.round()} x ${MediaQuery.of(context).size.height.round()}';
+        '${MediaQuery.of(context).size.width.round() * ratio} x ${MediaQuery.of(context).size.height.round() * ratio}';
     try {
       var resp = await Api.clientInfo();
 
@@ -60,6 +63,21 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
             bodyMap['timezone'] == null ? '-' : bodyMap['timezone'] as String;
         region = bodyMap['region'] == null ? '-' : bodyMap['region'] as String;
       }
+    } catch (e) {
+      debugPrint('Error Client info ${e}');
+    }
+    try {
+      var vendorCount = AppDB.vendorDB.count();
+      var productCount = AppDB.productDB.count();
+      // var mutasiCount = AppDB.balanceMutationDB.count();
+      // var creditCount = AppDB.creditMutationDB.count();
+      // var notificationCount = AppDB.notificationDB.count();
+      // var csCount = AppDB.customerServiceDB.count();
+      // var historyCount = AppDB.purchaseHistoryDB.count();
+      // var topupCount = AppDB.topupHistoryDB.count();
+
+      databaseInfo = 'Data 1 (${productCount}) | Data 2 ($vendorCount) ';
+      // '| Mutasi Utama ($mutasiCount) | Mutasi Kredit ($creditCount) | Notifikasi ($notificationCount) | Customer Service ($csCount) | Transaksi ($historyCount) | Topup ($topupCount)';
     } catch (e) {
       debugPrint('Error Client info ${e}');
     }
@@ -122,6 +140,11 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
           style: titleStyle,
         ),
         Text(ip),
+        Text(
+          'Data',
+          style: titleStyle,
+        ),
+        Text(databaseInfo),
       ],
     );
   }
