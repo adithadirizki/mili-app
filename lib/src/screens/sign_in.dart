@@ -86,7 +86,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     controller: _usernameController,
                     style: const TextStyle(color: Colors.white),
                     cursorColor: Colors.white,
-                    // keyboardType: TextInputType.phone,
+                    keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.next,
                     maxLength: 100,
                     decoration: generateInputDecoration(

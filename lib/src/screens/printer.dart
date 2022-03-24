@@ -68,6 +68,8 @@ class _PrinterScreenState extends State<PrinterScreen> {
     bluetoothActive = await AppPrinter.bluetoothActive;
     deviceAddress = AppPrinter.printerAddress;
     connected = deviceAddress != null;
+    debugPrint(
+        'initBluetooth address $deviceAddress active $bluetoothActive connected $connected');
     if (bluetoothActive) {
       AppPrinter.scanDevices();
     }

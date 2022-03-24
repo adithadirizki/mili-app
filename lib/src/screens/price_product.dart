@@ -65,8 +65,8 @@ class _PriceProductScreenState extends State<PriceProductScreen>
   }
 
   Future<void> initDB() async {
-    await AppDB.syncProduct();
-    await AppDB.syncVendor();
+    // await AppDB.syncProduct();
+    // await AppDB.syncVendor();
     await AppDB.syncPriceSetting();
 
     final productDB = AppDB.productDB;
@@ -284,6 +284,13 @@ class _PriceProductScreenState extends State<PriceProductScreen>
   }
 
   Widget buildListPulsa() {
+    if (isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+        ),
+      );
+    }
     var filteredProduct = filterByQuery(productPulsa);
     if (filteredProduct.isEmpty) {
       return const Center(

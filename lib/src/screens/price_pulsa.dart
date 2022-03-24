@@ -60,7 +60,7 @@ class _PricePulsaScreenState extends State<PricePulsaScreen>
 
   Future<void> initDB() async {
     await AppDB.syncPriceSetting();
-    await AppDB.syncProduct();
+    // await AppDB.syncProduct();
 
     final productDB = AppDB.productDB;
 

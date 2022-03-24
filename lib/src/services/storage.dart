@@ -126,6 +126,6 @@ class AppStorage {
   }
 
   static String? getPrinterAddress() {
-    _engine.getString(_printerAddress);
+    return _engine.getString(_printerAddress);
   }
 }
