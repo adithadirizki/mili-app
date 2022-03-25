@@ -14,6 +14,7 @@ import 'package:miliv2/src/models/purchase.dart';
 import 'package:miliv2/src/screens/customer_service.dart';
 import 'package:miliv2/src/services/printer.dart';
 import 'package:miliv2/src/theme.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
@@ -98,9 +99,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
       builder: (ctx) {
         return AlertDialog(
           // title: const Text('Nama'),
-          content: Container(
-            alignment: Alignment.topLeft,
-            height: 90,
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 20.0),
             child: Form(
               key: formKey,
               child: Column(
@@ -112,7 +112,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     decoration: generateInputDecoration(
                       label: 'Nama',
                       hint: '',
-                      color: Colors.blueAccent,
                       // errorMsg: !_valid ? AppLabel.errorRequired : null,
                     ),
                     validator: (value) {
@@ -132,7 +131,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 favoriteNameController.clear();
                 Navigator.of(context).pop();
               },
-              child: const Text('Batal'),
+              child: Text(
+                'Batal',
+                style: Theme.of(context).textTheme.button,
+              ),
             ),
             TextButton(
               onPressed: () async {
@@ -141,7 +143,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   await Navigator.of(context).maybePop();
                 }
               },
-              child: const Text('Simpan'),
+              child: Text(
+                'Simpan',
+                style: Theme.of(context).textTheme.button,
+              ),
             )
           ],
         );
@@ -241,7 +246,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
         menu.addAll([
           ListTile(
             // contentPadding: EdgeInsets.all(0),
-            title: const Text('Detail'),
+            title: Text(
+              'Detail',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             leading: const Icon(Icons.info_outline_rounded),
             onTap: execAction(historyAction.showDetail, history),
           ),
@@ -250,13 +258,19 @@ class _HistoryScreenState extends State<HistoryScreen> {
         menu.addAll([
           ListTile(
             // contentPadding: EdgeInsets.all(0),
-            title: const Text('Struk'),
+            title: Text(
+              'Struk',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             leading: const Icon(Icons.info_outline_rounded),
             onTap: execAction(historyAction.showInvoice, history),
           ),
           ListTile(
             // contentPadding: EdgeInsets.all(0),
-            title: const Text('Print'),
+            title: Text(
+              'Print',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             leading: const Icon(Icons.print_outlined),
             onTap: execAction(historyAction.print, history),
           ),
@@ -265,13 +279,19 @@ class _HistoryScreenState extends State<HistoryScreen> {
       menu.addAll([
         ListTile(
           // contentPadding: EdgeInsets.all(0),
-          title: const Text('Hubungi CS'),
+          title: Text(
+            'Hubungi CS',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
           leading: const Icon(Icons.messenger_outline_rounded),
           onTap: execAction(historyAction.contactCS, history),
         ),
         ListTile(
           // contentPadding: EdgeInsets.all(0),
-          title: const Text('Simpan Nomor'),
+          title: Text(
+            'Simpan Nomor',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
           leading: const Icon(Icons.favorite_border_rounded),
           onTap: execAction(historyAction.addFavorite, history),
         ),
@@ -280,13 +300,19 @@ class _HistoryScreenState extends State<HistoryScreen> {
       menu.addAll([
         ListTile(
           // contentPadding: EdgeInsets.all(0),
-          title: const Text('Hubungi CS'),
+          title: Text(
+            'Hubungi CS',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
           leading: const Icon(Icons.messenger_outline_rounded),
           onTap: execAction(historyAction.contactCS, history),
         ),
         ListTile(
           // contentPadding: EdgeInsets.all(0),
-          title: const Text('Simpan Nomor'),
+          title: Text(
+            'Simpan Nomor',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
           leading: const Icon(Icons.favorite_border_rounded),
           onTap: execAction(historyAction.addFavorite, history),
         ),
@@ -356,8 +382,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
         actions: <Widget>[
           TextButton(
             child: Text(
-                '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
-                style: Theme.of(context).textTheme.button),
+              '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
+              // style: Theme.of(context).textTheme.button,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: AppColors.black1),
+            ),
             onPressed: openFilterDate,
           ),
           IconButton(

@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/api/banner.dart';
 import 'package:miliv2/src/data/active_banner.dart';
-import 'package:miliv2/src/theme/colors.dart';
 
 class HomePromo extends StatefulWidget {
   const HomePromo({Key? key}) : super(key: key);
@@ -95,7 +94,7 @@ class _HomePromoState extends State<HomePromo> {
             children: [
               Text(
                 'Promo',
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
               // Row(
               //   children: [

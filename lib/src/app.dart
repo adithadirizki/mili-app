@@ -168,7 +168,7 @@ class _AppState extends State<App> {
 
       var ip = bodyMap['ip'] == null ? '-' : bodyMap['ip'] as String;
       return _auth.guestSignIn(deviceId, ip).catchError((dynamic e) {
-        debugPrint('Guest error $e');
+        debugPrint('Guest signin error $e');
         return false;
       });
     }

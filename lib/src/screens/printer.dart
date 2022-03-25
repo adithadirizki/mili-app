@@ -125,7 +125,7 @@ class _PrinterScreenState extends State<PrinterScreen> {
                       children: [
                         Text(
                           'Header & Footer',
-                          style: Theme.of(context).textTheme.headline6,
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         TextFormField(
                           decoration: generateInputDecoration(
@@ -191,14 +191,20 @@ class _PrinterScreenState extends State<PrinterScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       TextButton(
-                        child: const Text('Tutup'),
+                        child: Text(
+                          'Tutup',
+                          style: Theme.of(context).textTheme.button,
+                        ),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
                       ),
                       const SizedBox(width: 8),
                       TextButton(
-                        child: const Text('Simpan'),
+                        child: Text(
+                          'Simpan',
+                          style: Theme.of(context).textTheme.button,
+                        ),
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
                             formKey.currentState!.save();
@@ -250,7 +256,10 @@ class _PrinterScreenState extends State<PrinterScreen> {
     return Column(
       children: <Widget>[
         ListTile(
-          title: const Text('Bluetooth'),
+          title: Text(
+            'Bluetooth',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
           trailing: Switch(
             onChanged: (_) {
               AppSettings.openBluetoothSettings();
@@ -269,6 +278,7 @@ class _PrinterScreenState extends State<PrinterScreen> {
                   tips,
                   overflow: TextOverflow.visible,
                   maxLines: 10,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
             ),
@@ -298,8 +308,16 @@ class _PrinterScreenState extends State<PrinterScreen> {
                     ? ListView(
                         children: snapshot.data!
                             .map((d) => ListTile(
-                                  title: Text(d.name ?? ''),
-                                  subtitle: Text(d.address!),
+                                  title: Text(
+                                    d.name ?? '',
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                  subtitle: Text(
+                                    d.address!,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                  ),
                                   onTap: selectPrinter(d),
                                   trailing: deviceAddress != null &&
                                           (deviceAddress == d.address)
@@ -311,8 +329,11 @@ class _PrinterScreenState extends State<PrinterScreen> {
                                 ))
                             .toList(),
                       )
-                    : const Center(
-                        child: Text('Tidak ada printer'),
+                    : Center(
+                        child: Text(
+                          'Tidak ada printer',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
                       );
               },
             )

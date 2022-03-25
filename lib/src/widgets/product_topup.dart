@@ -166,15 +166,24 @@ class _ProductTopupState extends State<ProductTopup>
                 backgroundColor: Colors.transparent,
               )
             : null,
-        title: Text(product.productName),
-        subtitle:
-            product.description.isNotEmpty ? Text(product.description) : null,
+        title: Text(
+          product.productName,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        subtitle: product.description.isNotEmpty
+            ? Text(
+                product.description,
+                style: Theme.of(context).textTheme.bodySmall,
+              )
+            : null,
         enabled: product.status == statusOpen,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(formatNumber(
-                product.getUserPrice(userLevel, markup: userMarkup))),
+            Text(
+              formatNumber(product.getUserPrice(userLevel, markup: userMarkup)),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             Radio<Product>(
               onChanged: _onSelectProduct,
               groupValue: selectedProduct,

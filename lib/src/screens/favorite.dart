@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/favorite.dart';
 import 'package:miliv2/src/theme.dart';
@@ -89,9 +86,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       builder: (ctx) {
         return AlertDialog(
           // title: const Text('Nama'),
-          content: Container(
-            alignment: Alignment.topLeft,
-            height: 70,
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 20.0),
             child: Form(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -102,7 +98,6 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     decoration: generateInputDecoration(
                       label: 'Nama',
                       hint: '',
-                      color: Colors.blueAccent,
                       // errorMsg: !_valid ? AppLabel.errorRequired : null,
                     ),
                   ),
@@ -116,14 +111,20 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 _favoriteNameController.clear();
                 Navigator.of(context).pop();
               },
-              child: const Text('Batal'),
+              child: Text(
+                'Batal',
+                style: Theme.of(context).textTheme.button,
+              ),
             ),
             TextButton(
               onPressed: () async {
                 saveFavorite(fav);
                 await Navigator.of(context).maybePop();
               },
-              child: const Text('Simpan'),
+              child: Text(
+                'Simpan',
+                style: Theme.of(context).textTheme.button,
+              ),
             )
           ],
         );
@@ -131,12 +132,25 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     );
   }
 
-  void removeFavorite(FavoriteResponse fav) {
-    Api.removeFavorite(fav.serverId).then((response) {
-      if (response.statusCode == 200) {
-        initDB();
-      }
-    }).catchError(_handleError);
+  void removeFavorite(FavoriteResponse fav) async {
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    confirmDialog(
+      context,
+      title: 'Konfirmasi',
+      msg: 'Hapus nomor ?',
+      confirmAction: () {
+        Api.removeFavorite(fav.serverId).then((response) {
+          if (response.statusCode == 200) {
+            initDB();
+          }
+        }).catchError(_handleError);
+      },
+      cancelAction: () {
+        // popScreen(context);
+      },
+      confirmText: 'Ya',
+      cancelText: 'Tidak',
+    );
   }
 
   void purchase(FavoriteResponse fav) {
@@ -161,7 +175,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   children: [
                     Text(
                       item.name ?? '-Set Nama-',
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(),
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],
                 ),
@@ -219,7 +233,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                           item.productName ?? '',
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1!
+                              .bodySmall!
                               .copyWith(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(width: 10),
@@ -227,7 +241,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     ),
                     Text(
                       item.destination,
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),

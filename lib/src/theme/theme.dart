@@ -149,11 +149,15 @@ final ThemeData lightTheme = ThemeData(
   // ),
   cardColor: Colors.white,
   canvasColor: Colors.grey[50],
-  brightness: Brightness.light,
+  // brightness: Brightness.light,
   buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary),
+  scaffoldBackgroundColor: Colors.grey[50],
   // buttonTheme: Theme.of(context).buttonTheme.copyWith(
   //     colorScheme:
   //         isDarkTheme ? ColorScheme.dark() : ColorScheme.light()),
+  // textTheme: TextTheme(
+  //   bodySmall:
+  // ),
   pageTransitionsTheme: const PageTransitionsTheme(
     builders: <TargetPlatform, PageTransitionsBuilder>{
       TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),

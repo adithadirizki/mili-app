@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:miliv2/src/routing.dart';
 import 'package:miliv2/src/screens/forgot_password.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/images.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/widgets/button.dart';
@@ -127,17 +128,23 @@ class _SignInScreenState extends State<SignInScreen> {
                           },
                         ));
                       },
-                      child: const Text(AppLabel.forgotPassword,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Color.fromRGBO(255, 255, 255, 1),
-                            fontFamily: 'Montserrat',
-                            // fontSize: 9,
-                            letterSpacing:
-                                0 /*percentages not used in flutter. defaulting to zero*/,
-                            // fontWeight: FontWeight.normal,
-                            // height: 1
-                          )),
+                      child: Text(
+                        AppLabel.forgotPassword,
+                        textAlign: TextAlign.left,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: AppColors.white1,
+                              letterSpacing: 0,
+                            ),
+                        // style: TextStyle(
+                        //   color: Color.fromRGBO(255, 255, 255, 1),
+                        //   fontFamily: 'Montserrat',
+                        //   // fontSize: 9,
+                        //   letterSpacing:
+                        //       0 /*percentages not used in flutter. defaulting to zero*/,
+                        //   // fontWeight: FontWeight.normal,
+                        //   // height: 1
+                        // ),
+                      ),
                     ),
                   ),
                   Container(

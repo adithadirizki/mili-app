@@ -108,15 +108,24 @@ class _ProductPulsaState extends State<ProductPulsa>
           backgroundImage: getProductLogo(product),
           backgroundColor: Colors.transparent,
         ),
-        title: Text(product.productName),
-        subtitle:
-            product.description.isNotEmpty ? Text(product.description) : null,
+        title: Text(
+          product.productName,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        subtitle: product.description.isNotEmpty
+            ? Text(
+                product.description,
+                style: Theme.of(context).textTheme.bodySmall,
+              )
+            : null,
         enabled: product.status == statusOpen,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(formatNumber(
-                product.getUserPrice(userLevel, markup: userMarkup))),
+            Text(
+              formatNumber(product.getUserPrice(userLevel, markup: userMarkup)),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             Radio<Product>(
               onChanged: _onSelectProduct,
               groupValue: selectedProduct,
@@ -158,16 +167,20 @@ class _ProductPulsaState extends State<ProductPulsa>
   }
 
   Widget buildDataProduct() {
-    if (productData.isEmpty) {
+    var filteredProduct = filterByPrefix(productData);
+
+    if (filteredProduct.isEmpty) {
       return const Center(
         child: Text('-- produk kosong --'),
       );
     }
-    return ListView(
+    return ListView.builder(
       key: const PageStorageKey<String>('listData'),
-      children: [
-        for (var product in filterByPrefix(productData)) itemBuilder(product),
-      ],
+      physics: const ClampingScrollPhysics(),
+      itemCount: filteredProduct.length,
+      itemBuilder: (context, index) {
+        return itemBuilder(filteredProduct.elementAt(index));
+      },
     );
   }
 
@@ -190,7 +203,10 @@ class _ProductPulsaState extends State<ProductPulsa>
     if (!isValidDestination()) {
       return Container(
         alignment: Alignment.topCenter,
-        child: const Text('Masukkan nomor ponsel untuk memilih produk'),
+        child: Text(
+          'Masukkan nomor ponsel untuk memilih produk',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
       );
     }
 

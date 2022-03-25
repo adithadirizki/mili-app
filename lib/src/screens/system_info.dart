@@ -89,62 +89,93 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
   Widget buildContent(BuildContext context) {
     var titleStyle = Theme.of(context)
         .textTheme
-        .titleSmall
-        ?.copyWith(fontWeight: FontWeight.bold, letterSpacing: 1, height: 3);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
+        .bodySmall
+        ?.copyWith(fontWeight: FontWeight.bold, letterSpacing: 1, height: 2);
+    var contentStyle = Theme.of(context).textTheme.bodySmall?.copyWith();
+    return ListView(
+      // mainAxisAlignment: MainAxisAlignment.start,
+      // crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Model',
           style: titleStyle,
         ),
-        Text(model),
+        Text(
+          model,
+          style: contentStyle,
+        ),
         Text(
           'Sistem Operasi',
           style: titleStyle,
         ),
-        Text('$osName $deviceId'),
+        Text(
+          osName,
+          style: contentStyle,
+        ),
         Text(
           'Ukuran Layar',
           style: titleStyle,
         ),
-        Text(screen),
+        Text(
+          screen,
+          style: contentStyle,
+        ),
         Text(
           'Versi Aplikasi',
           style: titleStyle,
         ),
-        Text('$appVersion ($buildNumber)'),
+        Text(
+          '$appVersion \n$deviceId',
+          style: contentStyle,
+        ),
         Text(
           'Waktu',
           style: titleStyle,
         ),
-        Text(formatDate(now, format: 'dd/MM/yyyy HH:mm:ss')),
+        Text(
+          formatDate(now, format: 'dd/MM/yyyy HH:mm:ss'),
+          style: contentStyle,
+        ),
         Text(
           'Timezone',
           style: titleStyle,
         ),
-        Text(timezone),
+        Text(
+          timezone,
+          style: contentStyle,
+        ),
         Text(
           'Wilayah',
           style: titleStyle,
         ),
-        Text(region),
+        Text(
+          region,
+          style: contentStyle,
+        ),
         Text(
           'ISP',
           style: titleStyle,
         ),
-        Text(isp),
+        Text(
+          isp,
+          style: contentStyle,
+        ),
         Text(
           'IP',
           style: titleStyle,
         ),
-        Text(ip),
+        Text(
+          ip,
+          style: contentStyle,
+        ),
         Text(
           'Data',
           style: titleStyle,
         ),
-        Text(databaseInfo),
+        Text(
+          databaseInfo,
+          style: contentStyle,
+        ),
       ],
     );
   }

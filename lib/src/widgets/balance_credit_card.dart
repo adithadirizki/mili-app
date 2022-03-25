@@ -10,7 +10,7 @@ class BalanceCreditCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 120,
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.elliptical(20, 20)),
         // color: Color(0xFF00C2FF)
@@ -28,19 +28,18 @@ class BalanceCreditCard extends StatelessWidget {
               'Saldo Kredit',
               style: Theme.of(context)
                   .textTheme
-                  .button!
+                  .titleLarge!
                   .copyWith(color: Colors.white),
             ),
           ),
           Container(
             alignment: const Alignment(-1, 0),
-            margin: const EdgeInsets.only(left: 20),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Image(
                   image: AppImages.wallet,
-                  width: 48,
+                  width: 52,
                 ),
                 // const Icon(
                 //   Icons.account_balance_wallet_outlined,
@@ -53,21 +52,22 @@ class BalanceCreditCard extends StatelessWidget {
                   'Rp',
                   style: Theme.of(context)
                       .textTheme
-                      .button!
+                      .bodyMedium!
                       .copyWith(color: Colors.white),
                 ),
                 const SizedBox(
                   width: 5,
                 ),
                 Flexible(
-                  child: Text(
-                    formatNumber(userBalanceState.balanceCredit),
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.button!.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 40,
-                        ),
+                  child: FittedBox(
+                    child: Text(
+                      formatNumber(userBalanceState.balanceCredit),
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.headline4!.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
                   ),
                 ),
               ],

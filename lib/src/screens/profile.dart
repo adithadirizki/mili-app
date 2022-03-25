@@ -18,7 +18,6 @@ import 'package:miliv2/src/screens/upgrade.dart';
 import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
-import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/device.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/profile_picture.dart';
@@ -40,7 +39,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   List<AppMenu> menuList1 = [];
   List<AppMenu> menuList2 = [];
-  late String version;
+  late String version = '';
 
   @override
   void initState() {
@@ -97,8 +96,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void initialize() async {
-    userBalanceState.fetchData();
     version = await getAppVersion();
+    userBalanceState.fetchData();
   }
 
   void logout() {
@@ -182,7 +181,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 15),
           Text(
             menu.label,
-            style: defaultLabelStyle.copyWith(),
+            // style: defaultLabelStyle.copyWith(),
+            style: Theme.of(context).textTheme.bodyMedium,
           )
         ],
       ),
@@ -191,7 +191,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget itemBuilder2(AppMenu menu) {
     return ListTile(
-      title: Text(menu.label),
+      title: Text(
+        menu.label,
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
       leading: Image(
         image: menu.icon,
         color: const Color(0xFF8C8C8C),
@@ -246,19 +249,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
             left: 30,
             child: withHomeScreenProvider(context, const ProfilePicture()),
           ),
-          const Positioned(
+          Positioned(
             top: 100,
             left: 26,
             child: Text(
               'Hello,',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Color.fromRGBO(255, 255, 255, 1),
-                  fontFamily: 'Montserrat',
-                  fontSize: 28,
-                  letterSpacing: -0.30000001192092896,
-                  fontWeight: FontWeight.normal,
-                  height: 1),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(color: AppColors.white1),
+              // style: TextStyle(
+              //     color: Color.fromRGBO(255, 255, 255, 1),
+              //     fontFamily: 'Montserrat',
+              //     fontSize: 28,
+              //     letterSpacing: -0.30000001192092896,
+              //     fontWeight: FontWeight.normal,
+              //     height: 1),
             ),
           ),
           Positioned(
@@ -294,13 +301,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Text(
               UserBalanceScope.of(context).name,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: Color.fromRGBO(255, 199, 0, 1),
-                  fontFamily: 'Montserrat',
-                  fontSize: 22,
-                  letterSpacing: -0.30000001192092896,
-                  fontWeight: FontWeight.normal,
-                  height: 1),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(color: AppColors.yellow1),
+              // style: const TextStyle(
+              //     color: Color.fromRGBO(255, 199, 0, 1),
+              //     fontFamily: 'Montserrat',
+              //     fontSize: 22,
+              //     letterSpacing: -0.30000001192092896,
+              //     fontWeight: FontWeight.normal,
+              //     height: 1),
             ),
           ),
           Positioned(
@@ -315,13 +326,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         SelectableText(
                           UserBalanceScope.of(context).referralCode ?? '',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              color: Color.fromRGBO(255, 255, 255, 1),
-                              fontFamily: 'Roboto',
-                              fontSize: 20,
-                              letterSpacing: -0.30000001192092896,
-                              fontWeight: FontWeight.normal,
-                              height: 1),
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall
+                              ?.copyWith(color: AppColors.white1),
+                          // style: const TextStyle(
+                          //     color: Color.fromRGBO(255, 255, 255, 1),
+                          //     fontFamily: 'Roboto',
+                          //     fontSize: 20,
+                          //     letterSpacing: -0.30000001192092896,
+                          //     fontWeight: FontWeight.normal,
+                          //     height: 1),
                         ),
                         const SizedBox(width: 5),
                         const Image(
@@ -346,13 +361,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Text(
                     userBalanceState.isGuest() ? 'Daftar' : 'Log Out',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        color: Color.fromRGBO(255, 255, 255, 1),
-                        fontFamily: 'Montserrat',
-                        // fontSize: 9,
-                        letterSpacing: -0.30000001192092896,
-                        fontWeight: FontWeight.normal,
-                        height: 1),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall
+                        ?.copyWith(color: AppColors.white1),
+                    // style: const TextStyle(
+                    //     color: Color.fromRGBO(255, 255, 255, 1),
+                    //     fontFamily: 'Montserrat',
+                    //     // fontSize: 9,
+                    //     letterSpacing: -0.30000001192092896,
+                    //     fontWeight: FontWeight.normal,
+                    //     height: 1),
                   ),
                 ],
               ),
@@ -425,7 +444,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           'Bantuan',
                           style: Theme.of(context)
                               .textTheme
-                              .subtitle1!
+                              .bodyMedium!
                               .copyWith(color: const Color(0xFFCBC9C9)),
                         ),
                       ),
@@ -443,7 +462,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               userBalanceState.premium
                                   ? 'Akun Premium'
                                   : 'Upgrade Premium',
-                              style: const TextStyle(color: Colors.white),
+                              // style: const TextStyle(color: Colors.white),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: AppColors.white1),
                             ),
                           ],
                         ),
@@ -459,16 +482,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 10),
                       OutlinedButton(
                         child: Row(
-                          children: const [
-                            Image(
+                          children: [
+                            const Image(
                               image: AppImages.info,
                               color: Color(0xFFFFFFFF),
                               width: 24,
                             ),
-                            SizedBox(width: 20),
+                            const SizedBox(width: 20),
                             Text(
                               'Tentang Aplikasi',
-                              style: TextStyle(color: Colors.white),
+                              // style: TextStyle(color: Colors.white),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: AppColors.white1),
                             ),
                           ],
                         ),
@@ -484,16 +511,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 10),
                       OutlinedButton(
                         child: Row(
-                          children: const [
-                            Image(
+                          children: [
+                            const Image(
                               image: AppImages.checkSquare,
                               color: Color(0xFFFFFFFF),
                               width: 24,
                             ),
-                            SizedBox(width: 20),
+                            const SizedBox(width: 20),
                             Text(
                               'Syarat dan Ketentuan Aplikasi',
-                              style: TextStyle(color: Colors.white),
+                              // style: TextStyle(color: Colors.white),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: AppColors.white1),
                             ),
                           ],
                         ),
@@ -516,7 +547,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onPressed: system,
                 child: Text(
                   'Versi $version',
-                  style: Theme.of(context).textTheme.subtitle2,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
               const SizedBox(height: 10),

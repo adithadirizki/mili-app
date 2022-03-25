@@ -20,17 +20,27 @@ class AppPrinter {
     if (_initialized) return;
 
     _printer = BluetoothPrint.instance;
-    _connected = await _printer.isConnected ?? false;
+    // _connected = await _printer.isConnected ?? false;
     _printerAddress = AppStorage.getPrinterAddress();
 
     _printer.state.listen((state) {
-      debugPrint('Printer state change $state');
       switch (state) {
         case BluetoothPrint.CONNECTED:
-          _connected = true;
+          debugPrint('Printer state Connected');
+          if (_printerAddress != null && !_connected) {
+            _printer.scanResults.listen((deviceList) {
+              var devices =
+                  deviceList.where((d) => d.address == _printerAddress);
+              if (devices.isNotEmpty) {
+                connect(devices.first);
+              }
+            });
+          }
+          // _connected = true;
           break;
         case BluetoothPrint.DISCONNECTED:
-          _connected = false;
+          debugPrint('Printer state Disconnected');
+          // _connected = false;
           break;
         default:
           break;
@@ -86,6 +96,7 @@ class AppPrinter {
   }
 
   static Future<void> connect(BluetoothDevice device) async {
+    debugPrint('Printer connecting ${device.address}');
     await _printer.connect(device);
     _printerAddress = device.address;
     _connected = true;

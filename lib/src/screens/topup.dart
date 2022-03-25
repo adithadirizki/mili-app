@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -10,6 +9,7 @@ import 'package:miliv2/src/api/topup.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/routing.dart';
 import 'package:miliv2/src/screens/topup_history.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
@@ -95,10 +95,19 @@ class _TopupScreenState extends State<TopupScreen> {
     return Card(
       child: ListTile(
         // leading: Icon(Icons.album),
-        title: Text(bank.accountNumber),
-        subtitle: Text(bank.bankName + ' a/n ' + bank.accountName),
+        title: Text(
+          bank.accountNumber,
+          // style: Theme.of(context).textTheme.bodySmall!.copyWith(),
+        ),
+        subtitle: Text(
+          bank.bankName + ' a/n ' + bank.accountName,
+          // style: Theme.of(context).textTheme.bodySmall!.copyWith(),
+        ),
         trailing: TextButton(
-          child: Text('Salin'),
+          child: Text(
+            'Salin',
+            // style: Theme.of(context).textTheme.bodySmall!.copyWith(),
+          ),
           onPressed: () {
             Clipboard.setData(ClipboardData(text: bank.accountNumber));
             snackBarDialog(context, 'Nomor rekening disalin');
@@ -141,8 +150,8 @@ class _TopupScreenState extends State<TopupScreen> {
         title: 'Topup',
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.list_alt),
-            color: Colors.black26,
+            icon: const Icon(Icons.list_alt, size: 32),
+            color: AppColors.blue5,
             onPressed: openHistory,
           ),
         ],
@@ -208,7 +217,10 @@ class _TopupScreenState extends State<TopupScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Text(topupInfo.notes),
+                  Text(
+                    topupInfo.notes,
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(),
+                  ),
                   const SizedBox(
                     height: 10,
                   ),

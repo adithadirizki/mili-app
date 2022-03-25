@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:miliv2/src/api/api.dart';
@@ -144,11 +143,11 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
           children: [
             Text(
               history.productName,
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             Text(
               formatDate(history.transactionDate),
-              style: Theme.of(context).textTheme.caption!.copyWith(),
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
         ),
@@ -217,15 +216,15 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
               children: [
                 Text(
                   widget.downline.name,
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 Text(
                   widget.downline.phoneNumber,
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 Text(
                   'Markup : ${formatNumber(widget.downline.markup)}',
-                  style: Theme.of(context).textTheme.caption!.copyWith(),
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
             ),
@@ -259,13 +258,16 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
           children: [
             Text(
               'Statistik',
-              style: Theme.of(context).textTheme.headline6!.copyWith(),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Column(children: [
-                  const Text('Transaksi'),
+                  Text(
+                    'Transaksi',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                   Text(formatNumber(totalTrx)),
                 ]),
                 // Column(children: [
@@ -273,7 +275,10 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
                 //   Text(formatNumber(totalAmount)),
                 // ]),
                 Column(children: [
-                  const Text('Komisi'),
+                  Text(
+                    'Komisi',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                   Text(formatNumber(totalBonus)),
                 ]),
               ],
@@ -288,12 +293,13 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SimpleAppBar2(
-        title: widget.downline.name,
+        title: 'Downline',
         actions: <Widget>[
           TextButton(
             child: Text(
-                '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
-                style: Theme.of(context).textTheme.button),
+              '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             onPressed: openFilterDate,
           ),
           IconButton(
@@ -316,7 +322,7 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
               'Transaksi terakhir',
               style: Theme.of(context)
                   .textTheme
-                  .subtitle1!
+                  .bodyMedium!
                   .copyWith(color: const Color(0xFFCBC9C9)),
             ),
             FlexBoxGray(

@@ -15,7 +15,12 @@ void confirmDialog(BuildContext context,
     context: context,
     builder: (ctx) {
       return SimpleDialog(
-        title: title != null ? Text(title) : null,
+        title: title != null
+            ? Text(
+                title,
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(),
+              )
+            : null,
         children: <Widget>[
           Container(
             alignment: Alignment.topLeft,
@@ -23,6 +28,7 @@ void confirmDialog(BuildContext context,
             child: SelectableText(
               msg,
               textAlign: TextAlign.left,
+              // style: Theme.of(context).textTheme.bodySmall!.copyWith(),
             ),
           ),
           Padding(
@@ -40,8 +46,14 @@ void confirmDialog(BuildContext context,
                           Navigator.of(context).pop();
                         },
                   child: cancelText != null
-                      ? Text(cancelText)
-                      : const Text('Tidak'),
+                      ? Text(
+                          cancelText,
+                          style: Theme.of(context).textTheme.button!.copyWith(),
+                        )
+                      : Text(
+                          'Tidak',
+                          style: Theme.of(context).textTheme.button!.copyWith(),
+                        ),
                 ),
                 TextButton(
                   onPressed: () async {
@@ -49,8 +61,14 @@ void confirmDialog(BuildContext context,
                     confirmAction();
                   },
                   child: confirmText != null
-                      ? Text(confirmText)
-                      : const Text('Ya'),
+                      ? Text(
+                          confirmText,
+                          style: Theme.of(context).textTheme.button!.copyWith(),
+                        )
+                      : Text(
+                          'Ya',
+                          style: Theme.of(context).textTheme.button!.copyWith(),
+                        ),
                 )
               ],
             ),
@@ -66,7 +84,12 @@ void infoDialog(BuildContext context, {required String msg, String? title}) {
     context: context,
     builder: (ctx) {
       return SimpleDialog(
-        title: title != null ? Text(title) : null,
+        title: title != null
+            ? Text(
+                title,
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(),
+              )
+            : null,
         children: <Widget>[
           Container(
             alignment: Alignment.topLeft,
@@ -74,6 +97,7 @@ void infoDialog(BuildContext context, {required String msg, String? title}) {
             child: SelectableText(
               msg,
               textAlign: TextAlign.left,
+              // style: Theme.of(context).textTheme.bodySmall!.copyWith(),
             ),
           ),
           Padding(
@@ -85,7 +109,10 @@ void infoDialog(BuildContext context, {required String msg, String? title}) {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text('Tutup'),
+                  child: Text(
+                    'Tutup',
+                    style: Theme.of(context).textTheme.button!.copyWith(),
+                  ),
                 ),
               ],
             ),
@@ -201,9 +228,8 @@ void snackBarDialog(BuildContext context, String text,
                       ? Text(
                           title,
                           style:
-                              Theme.of(context).textTheme.bodyText1!.copyWith(
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
                                     color: Colors.white,
-                                    fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                         )
@@ -214,9 +240,8 @@ void snackBarDialog(BuildContext context, String text,
                       scrollDirection: Axis.vertical,
                       child: Text(
                         text,
-                        style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               color: Colors.white,
-                              fontSize: 16,
                             ),
                       ),
                     ),

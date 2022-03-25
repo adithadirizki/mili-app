@@ -12,7 +12,7 @@ class AppButton extends ElevatedButton {
           style: ElevatedButton.styleFrom(
             textStyle: const TextStyle(
               fontFamily: 'Montserrat',
-              fontSize: 15,
+              fontSize: 13,
               fontWeight: FontWeight.w900,
             ),
             primary: const Color.fromRGBO(255, 204, 64, 1),

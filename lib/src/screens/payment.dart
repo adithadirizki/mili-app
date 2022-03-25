@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/consts/consts.dart';
@@ -145,7 +144,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           children: [
             Text(
               'Metode Pembayaran',
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             DropdownButton<PaymentMethod>(
               value: selectedPayment,
@@ -169,14 +168,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   child: paymentMethodLabel[value] != null
                       ? Text(
                           paymentMethodLabel[value]!,
-                          style: Theme.of(context)
-                              .textTheme
-                              .button!
-                              .copyWith(fontSize: 18),
+                          style: Theme.of(context).textTheme.bodyMedium,
                         )
                       : Text(
                           'Tidak diketahui',
-                          style: Theme.of(context).textTheme.button!.copyWith(),
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                 );
               }).toList(),
@@ -198,7 +194,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           const Text('Detail'),
-                          Text(widget.description),
+                          Text(
+                            widget.description,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
                         ],
                       ),
                     ),
@@ -214,8 +213,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Saldo'),
-                          Text(formatNumber(getBalance())),
+                          Text(
+                            'Saldo',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          Text(
+                            formatNumber(getBalance()),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
                         ],
                       ),
                       for (var e in widget.items)
@@ -228,9 +233,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 e.itemDescription,
                                 maxLines: 2,
                                 overflow: TextOverflow.fade,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ),
-                            Text(formatNumber(e.price)),
+                            Text(
+                              formatNumber(e.price),
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
                           ],
                         ),
                       const Divider(
@@ -239,8 +248,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Sisa Saldo'),
-                          Text(formatNumber(getBalance() - widget.total)),
+                          Text(
+                            'Sisa Saldo',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          Text(
+                            formatNumber(getBalance() - widget.total),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
                         ],
                       ),
                     ]),

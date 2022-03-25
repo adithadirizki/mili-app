@@ -17,7 +17,6 @@ import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:miliv2/src/widgets/product_payment.dart';
 import 'package:miliv2/src/widgets/screen.dart';
 import 'package:objectbox/internal.dart';
-import 'package:objectbox/objectbox.dart';
 
 class PurchasePaymentProductScreen extends StatefulWidget {
   final Vendor vendor;

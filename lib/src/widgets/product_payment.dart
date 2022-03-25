@@ -95,13 +95,19 @@ class ProductPaymentState extends State<ProductPayment> {
     if (inquiryResult != null) {
       return Container(
         alignment: Alignment.topLeft,
-        child: Text(inquiryResult!.inquiryDetail),
+        child: Text(
+          inquiryResult!.inquiryDetail,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
       );
     }
 
     return Container(
       alignment: Alignment.topCenter,
-      child: const Text('Masukkan nomor pelanggan dan cek tagihan'),
+      child: Text(
+        'Masukkan nomor pelanggan dan cek tagihan',
+        style: Theme.of(context).textTheme.bodySmall,
+      ),
     );
   }
 

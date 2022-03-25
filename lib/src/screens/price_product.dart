@@ -152,9 +152,8 @@ class _PriceProductScreenState extends State<PriceProductScreen>
       builder: (ctx) {
         return AlertDialog(
           // title: const Text('Nama'),
-          content: Container(
-            alignment: Alignment.topLeft,
-            height: 90,
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 20.0),
             child: Form(
               key: formKey,
               child: Column(
@@ -208,7 +207,10 @@ class _PriceProductScreenState extends State<PriceProductScreen>
                 priceController.clear();
                 Navigator.of(context).pop();
               },
-              child: const Text('Batal'),
+              child: Text(
+                'Batal',
+                style: Theme.of(context).textTheme.button,
+              ),
             ),
             TextButton(
               onPressed: () async {
@@ -218,7 +220,10 @@ class _PriceProductScreenState extends State<PriceProductScreen>
                   await Navigator.of(context).maybePop();
                 }
               },
-              child: const Text('Simpan'),
+              child: Text(
+                'Simpan',
+                style: Theme.of(context).textTheme.button,
+              ),
             )
           ],
         );
@@ -250,9 +255,16 @@ class _PriceProductScreenState extends State<PriceProductScreen>
         //   backgroundImage: getProductLogo(product),
         //   backgroundColor: Colors.transparent,
         // ),
-        title: Text(product.productName),
-        subtitle:
-            product.description.isNotEmpty ? Text(product.description) : null,
+        title: Text(
+          product.productName,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        subtitle: product.description.isNotEmpty
+            ? Text(
+                product.description,
+                style: Theme.of(context).textTheme.bodySmall,
+              )
+            : null,
         enabled: product.status == statusOpen,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -260,12 +272,18 @@ class _PriceProductScreenState extends State<PriceProductScreen>
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(formatNumber(
-                    product.getUserPrice(userLevel, markup: userMarkup))),
+                Text(
+                  formatNumber(
+                      product.getUserPrice(userLevel, markup: userMarkup)),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
                 const SizedBox(height: 5),
-                Text(product.priceSetting == null
-                    ? '-'
-                    : formatNumber(product.priceSetting ?? 0)),
+                Text(
+                  product.priceSetting == null
+                      ? '-'
+                      : formatNumber(product.priceSetting ?? 0),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
               ],
             ),
             Radio<Product>(

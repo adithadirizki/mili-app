@@ -27,8 +27,13 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
           const SizedBox(height: 5),
           GestureDetector(
             // icon: const Icon(Icons.backspace_outlined),
-            child: const Text('Kembali',
-                style: TextStyle(color: AppColors.blue1, fontSize: 16)),
+            child: Text(
+              'Kembali',
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: AppColors.blue1),
+            ),
             onTap: () {
               Navigator.maybePop(context);
             },
@@ -37,7 +42,7 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
           // Text((title != null ? title! : ''), style: const TextStyle(color: Color(0xff505050), fontSize: 22))
           Text(
             (title != null ? title! : ''),
-            style: Theme.of(context).textTheme.subtitle1,
+            style: Theme.of(context).textTheme.titleMedium,
           )
         ],
       ),
@@ -73,7 +78,7 @@ class SimpleAppBar2 extends StatelessWidget implements PreferredSizeWidget {
       title: Text(
         title ?? '',
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.headline6,
+        style: Theme.of(context).textTheme.titleMedium,
       ),
       actions: actions,
       centerTitle: true,

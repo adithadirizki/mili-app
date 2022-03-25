@@ -150,7 +150,7 @@ class AppAuth extends ChangeNotifier {
   }
 
   Future<bool> guestSignIn(String deviceId, String ip) async {
-    debugPrint('Guest Signin ${deviceId}');
+    debugPrint('Guest Signin $ip - $deviceId');
 
     var response = await Api.guest(deviceId, ip);
 
@@ -174,6 +174,7 @@ class AppAuth extends ChangeNotifier {
     _deviceId = deviceId;
 
     AppStorage.setAuthenticated(_signedIn);
+    AppStorage.setVerified(_verified);
     AppStorage.setUsername(_username);
     AppStorage.setDeviceId(_deviceId);
     AppStorage.setToken(loginResp.token);

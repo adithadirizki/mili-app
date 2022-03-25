@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:miliv2/src/api/api.dart';
@@ -191,15 +190,15 @@ class _DownlineScreenState extends State<DownlineScreen> {
                   children: [
                     Text(
                       downline.name,
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(),
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     Text(
                       downline.phoneNumber,
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                     Text(
                       'Aktifitas : ${formatDate(downline.lastActivityDate)}',
-                      style: Theme.of(context).textTheme.caption!.copyWith(),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
@@ -233,7 +232,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
                           'Saldo Utama',
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1!
+                              .bodySmall!
                               .copyWith(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(width: 10),
@@ -241,7 +240,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
                     ),
                     Text(
                       formatNumber(downline.balance),
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
@@ -256,7 +255,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
                           'Saldo Kredit',
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1!
+                              .bodySmall!
                               .copyWith(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(width: 10),
@@ -264,7 +263,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
                     ),
                     Text(
                       formatNumber(downline.balanceCredit),
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
@@ -323,7 +322,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
               children: [
                 Text(
                   '     Statistik',
-                  style: Theme.of(context).textTheme.headline6!.copyWith(),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const Icon(
                   Icons.bar_chart_rounded,
@@ -337,22 +336,40 @@ class _DownlineScreenState extends State<DownlineScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text('Downline'),
-                    Text(formatNumber(totalDownline)),
+                    Text(
+                      'Downline',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    Text(
+                      formatNumber(totalDownline),
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text('Transaksi'),
-                    Text(formatNumber(totalTrx)),
+                    Text(
+                      'Transaksi',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    Text(
+                      formatNumber(totalTrx),
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text('Komisi'),
-                    Text(formatNumber(totalBonus)),
+                    Text(
+                      'Komisi',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    Text(
+                      formatNumber(totalBonus),
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ],
                 ),
               ],
@@ -371,8 +388,9 @@ class _DownlineScreenState extends State<DownlineScreen> {
         actions: <Widget>[
           TextButton(
             child: Text(
-                '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
-                style: Theme.of(context).textTheme.button),
+              '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             onPressed: openFilterDate,
           ),
           IconButton(

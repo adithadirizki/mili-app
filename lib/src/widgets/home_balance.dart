@@ -7,7 +7,7 @@ import 'package:miliv2/src/screens/history.dart';
 import 'package:miliv2/src/screens/topup.dart';
 import 'package:miliv2/src/screens/transfer.dart';
 import 'package:miliv2/src/theme.dart';
-import 'package:miliv2/src/theme/style.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 
@@ -72,20 +72,30 @@ class _HomeBalanceState extends State<HomeBalance> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    children: const [
-                      Image(
+                    children: [
+                      const Image(
                         image: AppImages.iconBalance,
                         width: 20,
                       ),
-                      SizedBox(width: 5),
-                      Text('Saldo'),
+                      const SizedBox(width: 5),
+                      Flexible(
+                        child: FittedBox(
+                          child: Text(
+                            'Saldo',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const Text('Rp'),
+                      Text(
+                        'Rp',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
                       const SizedBox(width: 3),
                       // Consumer<UserBalanceState>(builder: (_, ref, __) {
                       Flexible(
@@ -94,25 +104,39 @@ class _HomeBalanceState extends State<HomeBalance> {
                             formatNumber(UserBalanceScope.of(context).balance),
                             softWrap: false,
                             maxLines: 1,
-                            style: const TextStyle(
-                              color: Color(0xFF505050),
-                              fontFamily: 'Montserrat Alternates',
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                    color: AppColors.black1,
+                                    fontWeight: FontWeight.bold),
+                            // style: const TextStyle(
+                            //   color: Color(0xFF505050),
+                            //   fontFamily: 'Montserrat Alternates',
+                            //   fontSize: 16,
+                            //   fontWeight: FontWeight.bold,
+                            // ),
                           ),
                         ),
                       ),
                       // })
                     ],
                   ),
-                  const Text(
-                    'Saldo Kredit',
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      color: Color(0xFF00C2FF),
-                      fontFamily: 'Montserrat',
-                      fontSize: 12,
+                  Flexible(
+                    child: FittedBox(
+                      child: Text(
+                        'Saldo Kredit',
+                        textAlign: TextAlign.start,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(color: AppColors.blue6),
+                        // style: TextStyle(
+                        //   color: Color(0xFF00C2FF),
+                        //   fontFamily: 'Montserrat',
+                        //   fontSize: 12,
+                        // ),
+                      ),
                     ),
                   ),
                   // Consumer<UserBalanceState>(builder: (_, ref, __) {
@@ -121,12 +145,15 @@ class _HomeBalanceState extends State<HomeBalance> {
                       child: Text(
                         formatNumber(
                             UserBalanceScope.of(context).balanceCredit),
-                        style: const TextStyle(
-                          color: Color(0xFF00C2FF),
-                          fontFamily: 'Montserrat',
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: AppColors.blue6,
+                            fontWeight: FontWeight.bold),
+                        // style: const TextStyle(
+                        //   color: Color(0xFF00C2FF),
+                        //   fontFamily: 'Montserrat',
+                        //   fontSize: 16,
+                        //   fontWeight: FontWeight.bold,
+                        // ),
                       ),
                     ),
                   ),
@@ -152,13 +179,16 @@ class _HomeBalanceState extends State<HomeBalance> {
                       onTap: topupScreen,
                       child: const Image(
                         image: AppImages.topup,
-                        width: 35,
+                        height: 32,
                       ),
                     ),
                     const SizedBox(height: 10),
                     Text(
                       AppLabel.topup,
-                      style: defaultLabelStyle.copyWith(color: Colors.white),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: Colors.white),
                     ),
                   ],
                 ),
@@ -169,13 +199,16 @@ class _HomeBalanceState extends State<HomeBalance> {
                       onTap: transferScreen,
                       child: const Image(
                         image: AppImages.transfer,
-                        width: 32,
+                        height: 32,
                       ),
                     ),
                     const SizedBox(height: 10),
                     Text(
                       AppLabel.transfer,
-                      style: defaultLabelStyle.copyWith(color: Colors.white),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: Colors.white),
                     ),
                   ],
                 ),
@@ -186,13 +219,16 @@ class _HomeBalanceState extends State<HomeBalance> {
                       onTap: historyScreen,
                       child: const Image(
                         image: AppImages.history,
-                        width: 32,
+                        height: 32,
                       ),
                     ),
                     const SizedBox(height: 10),
                     Text(
                       AppLabel.history,
-                      style: defaultLabelStyle.copyWith(color: Colors.white),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: Colors.white),
                     ),
                   ],
                 ),

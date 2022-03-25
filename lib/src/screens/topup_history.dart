@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:miliv2/objectbox.g.dart';
@@ -147,7 +146,7 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
                   children: [
                     Text(
                       formatNumber(history.amount),
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(),
+                      // style: Theme.of(context).textTheme.bodySmall!.copyWith(),
                     ),
                     Text(
                       formatDate(history.transactionDate),
@@ -221,19 +220,23 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
                                 : history.isPending
                                     ? 'Menunggu Pembayaran'
                                     : history.status.toString(),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                        ),
+                        // style: const TextStyle(
+                        //   fontSize: 12,
+                        //   color: Colors.white,
+                        // ),
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              fontSize: 12,
+                              color: Colors.white,
+                            ),
                       ),
                     ),
                     history.isPending
                         ? Text(
                             'Waktu bayar ${printDuration(timeLeft)}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText1!
-                                .copyWith(),
+                            // style: Theme.of(context)
+                            //     .textTheme
+                            //     .bodySmall!
+                            //     .copyWith(),
                           )
                         : const SizedBox(),
 
@@ -320,8 +323,9 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
         actions: <Widget>[
           TextButton(
             child: Text(
-                '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
-                style: Theme.of(context).textTheme.button),
+              '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             onPressed: openFilterDate,
           ),
           IconButton(

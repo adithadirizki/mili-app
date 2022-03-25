@@ -40,11 +40,11 @@ class PurchaseHistoryItem extends StatelessWidget {
                   children: [
                     Text(
                       history.groupName,
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(),
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(),
                     ),
                     Text(
                       formatDate(history.transactionDate),
-                      style: Theme.of(context).textTheme.caption!.copyWith(),
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(),
                     ),
                   ],
                 ),
@@ -102,7 +102,7 @@ class PurchaseHistoryItem extends StatelessWidget {
                           history.productName,
                           style: Theme.of(context)
                               .textTheme
-                              .bodyText1!
+                              .bodySmall!
                               .copyWith(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(width: 10),
@@ -139,7 +139,7 @@ class PurchaseHistoryItem extends StatelessWidget {
                     ),
                     SelectableText(
                       history.destination,
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(),
                     ),
                     const SizedBox(height: 10),
                     history.isSuccess
@@ -150,14 +150,14 @@ class PurchaseHistoryItem extends StatelessWidget {
                                 'Total',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .caption!
+                                    .bodySmall!
                                     .copyWith(),
                               ),
                               Text(
                                 'Rp. ${formatNumber(history.price)}',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1!
+                                    .bodySmall!
                                     .copyWith(fontWeight: FontWeight.bold),
                               ),
                             ],

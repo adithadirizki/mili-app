@@ -1,12 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/vendor.dart';
 import 'package:miliv2/src/utils/product.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
-import 'package:objectbox/objectbox.dart';
 
 class VendorScreen extends StatefulWidget {
   final String title;
@@ -91,9 +89,16 @@ class _VendorScreenState extends State<VendorScreen> {
             ),
           ),
         ),
-        title: Text(vendor.name),
-        subtitle:
-            vendor.description.isNotEmpty ? Text(vendor.description) : null,
+        title: Text(
+          vendor.name,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        subtitle: vendor.description.isNotEmpty
+            ? Text(
+                vendor.description,
+                style: Theme.of(context).textTheme.bodySmall,
+              )
+            : null,
         // enabled: vendor.status == statusOpen,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,

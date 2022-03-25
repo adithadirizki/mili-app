@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/models/user_config.dart';
@@ -367,7 +366,10 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: const Text('Aktifkan PIN'),
+                title: Text(
+                  'Aktifkan PIN',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
                 trailing: Switch(
                   onChanged:
                       userBalanceState.isGuest() ? null : onPinEnableChange,
@@ -376,7 +378,10 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
                 ),
               ),
               ListTile(
-                title: const Text('Biometrik'),
+                title: Text(
+                  'Biometrik',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
                 trailing: Switch(
                   onChanged: pinActive ? onBiometricChange : null,
                   value: biometricActive,
@@ -384,21 +389,27 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
                 ),
               ),
               ListTile(
-                title: const Text('Ganti PIN'),
+                title: Text(
+                  'Ganti PIN',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
                 onTap: pinActive ? onPINChange : null,
-                trailing: const Icon(
+                trailing: Icon(
                   Icons.chevron_right_rounded,
                   size: 32,
-                  color: Colors.lightBlueAccent,
+                  color: pinActive ? Colors.lightBlueAccent : Colors.grey,
                 ),
               ),
               ListTile(
-                title: const Text('Lupa PIN'),
+                title: Text(
+                  'Lupa PIN',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
                 onTap: pinActive ? onForgotPIN : null,
-                trailing: const Icon(
+                trailing: Icon(
                   Icons.chevron_right_rounded,
                   size: 32,
-                  color: Colors.lightBlueAccent,
+                  color: pinActive ? Colors.lightBlueAccent : Colors.grey,
                 ),
               ),
             ],

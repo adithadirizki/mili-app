@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
@@ -167,27 +165,23 @@ class _MutationScreenState extends State<MutationScreen> {
             children: [
               Text(
                 formatDate(data.mutationDate),
-                style: Theme.of(context).textTheme.caption!.copyWith(),
+                style: Theme.of(context).textTheme.bodySmall,
               ),
               const Spacer(),
               Text(
                 '${formatNumber(data.startBalance)} ${isDebit ? '-' : '+'} ',
-                style: Theme.of(context)
-                    .textTheme
-                    .caption!
-                    .copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.bodySmall,
               ),
               Text(
-                '${isDebit ? formatNumber(data.debitAmount) : formatNumber(data.creditAmount)}',
+                isDebit
+                    ? formatNumber(data.debitAmount)
+                    : formatNumber(data.creditAmount),
                 style: Theme.of(context).textTheme.caption!.copyWith(
                     color: isDebit ? Colors.redAccent : Colors.blueAccent),
               ),
               Text(
                 ' = ${formatNumber(data.endBalance)}',
-                style: Theme.of(context)
-                    .textTheme
-                    .caption!
-                    .copyWith(fontWeight: FontWeight.w600),
+                style: Theme.of(context).textTheme.bodySmall,
               ),
             ],
           ),
@@ -198,10 +192,7 @@ class _MutationScreenState extends State<MutationScreen> {
               Flexible(
                 child: Text(
                   description,
-                  // style: Theme.of(context)
-                  //     .textTheme
-                  //     .bodyText1!
-                  //     .copyWith(fontStyle: FontStyle.italic),
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
             ],
@@ -233,27 +224,23 @@ class _MutationScreenState extends State<MutationScreen> {
             children: [
               Text(
                 formatDate(data.mutationDate),
-                style: Theme.of(context).textTheme.caption!.copyWith(),
+                style: Theme.of(context).textTheme.bodySmall,
               ),
               const Spacer(),
               Text(
                 '${formatNumber(data.startBalance)} ${isDebit ? '-' : '+'} ',
-                style: Theme.of(context)
-                    .textTheme
-                    .caption!
-                    .copyWith(fontStyle: FontStyle.italic),
+                style: Theme.of(context).textTheme.bodySmall,
               ),
               Text(
-                '${isDebit ? formatNumber(data.debitAmount) : formatNumber(data.creditAmount)}',
-                style: Theme.of(context).textTheme.caption!.copyWith(
+                isDebit
+                    ? formatNumber(data.debitAmount)
+                    : formatNumber(data.creditAmount),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
                     color: isDebit ? Colors.redAccent : Colors.blueAccent),
               ),
               Text(
-                '= ${formatNumber(data.endBalance)}',
-                style: Theme.of(context)
-                    .textTheme
-                    .caption!
-                    .copyWith(fontWeight: FontWeight.bold),
+                ' = ${formatNumber(data.endBalance)}',
+                style: Theme.of(context).textTheme.bodySmall,
               ),
             ],
           ),
@@ -264,10 +251,7 @@ class _MutationScreenState extends State<MutationScreen> {
               Flexible(
                 child: Text(
                   description,
-                  // style: Theme.of(context)
-                  //     .textTheme
-                  //     .bodyText1!
-                  //     .copyWith(fontStyle: FontStyle.italic),
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
             ],
@@ -333,8 +317,9 @@ class _MutationScreenState extends State<MutationScreen> {
         actions: <Widget>[
           TextButton(
             child: Text(
-                '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
-                style: Theme.of(context).textTheme.button),
+              '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             onPressed: openFilterDate,
           ),
           IconButton(
@@ -361,10 +346,5 @@ class _MutationScreenState extends State<MutationScreen> {
         ],
       ),
     );
-    // return Container(
-    //   padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-    //   alignment: Alignment.topLeft,
-    //   child: buildItems(context),
-    // );
   }
 }

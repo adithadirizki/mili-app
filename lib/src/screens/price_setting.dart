@@ -87,7 +87,10 @@ class _PriceSettingScreenState extends State<PriceSettingScreen> {
             image: menu.icon,
           ),
         ),
-        title: Text(menu.label),
+        title: Text(
+          menu.label,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
         // subtitle:
         //     vendor.description.isNotEmpty ? Text(vendor.description) : null,
         // enabled: vendor.status == statusOpen,

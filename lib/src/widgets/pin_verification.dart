@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -89,7 +87,7 @@ class PINVerificationState extends State<PINVerification>
       widget.title,
       textAlign: TextAlign.center,
       style: TextStyle(
-        fontSize: 28.0,
+        fontSize: 20.0,
         color: widget.titleColor,
         fontWeight: FontWeight.bold,
       ),
@@ -102,7 +100,7 @@ class PINVerificationState extends State<PINVerification>
       widget.subTitle,
       textAlign: TextAlign.center,
       style: TextStyle(
-        fontSize: 18.0,
+        fontSize: 14.0,
         color: widget.titleColor,
         fontWeight: FontWeight.w600,
       ),
@@ -122,7 +120,7 @@ class PINVerificationState extends State<PINVerification>
       widget.invalidMessage,
       textAlign: TextAlign.center,
       style: const TextStyle(
-        fontSize: 18.0,
+        fontSize: 12.0,
         color: Colors.red,
         fontWeight: FontWeight.bold,
       ),

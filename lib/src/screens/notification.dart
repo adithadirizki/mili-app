@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/data/user_balance.dart';
@@ -106,11 +105,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   children: [
                     Text(
                       history.title,
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                     Text(
                       formatDate(history.notificationDate),
-                      style: Theme.of(context).textTheme.caption!.copyWith(),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
@@ -119,10 +118,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             const Divider(),
             Text(
               history.body,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText1!
-                  .copyWith(fontWeight: FontWeight.normal),
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
         ),
@@ -162,8 +158,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
         actions: <Widget>[
           TextButton(
             child: Text(
-                '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
-                style: Theme.of(context).textTheme.button),
+              '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
             onPressed: openFilterDate,
           ),
           IconButton(
@@ -179,9 +176,5 @@ class _NotificationScreenState extends State<NotificationScreen> {
         child: buildItems(context),
       ),
     );
-    // return Container(
-    //   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-    //   child: buildItems(context)
-    // );
   }
 }

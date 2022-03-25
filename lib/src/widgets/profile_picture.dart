@@ -85,7 +85,10 @@ class _ProfilePictureState extends State<ProfilePicture> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             OutlinedButton(
-              child: const Text('Ambil dari Kamera'),
+              child: Text(
+                'Ambil dari Kamera',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
               onPressed: () {
                 Navigator.pop(context, ImageSource.camera);
               },
@@ -93,7 +96,10 @@ class _ProfilePictureState extends State<ProfilePicture> {
             ),
             const SizedBox(height: 5),
             OutlinedButton(
-              child: const Text('Ambil dari Galeri'),
+              child: Text(
+                'Ambil dari Galeri',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
               onPressed: () {
                 Navigator.pop(context, ImageSource.gallery);
               },

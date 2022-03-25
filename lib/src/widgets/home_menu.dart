@@ -8,7 +8,6 @@ import 'package:miliv2/src/screens/purchase_pln.dart';
 import 'package:miliv2/src/screens/purchase_pulsa.dart';
 import 'package:miliv2/src/screens/vendor.dart';
 import 'package:miliv2/src/theme.dart';
-import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 
 class HomeMenu extends StatefulWidget {
@@ -148,36 +147,34 @@ class _HomeMenuState extends State<HomeMenu> {
     return Container(
       key: ObjectKey(menu),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: menu.action,
-            child: FittedBox(
-              child: Container(
-                // FIXME Buat jadi responsive
-                width: 69,
-                height: 69,
-                decoration: BoxDecoration(
-                  border:
-                      Border.all(color: const Color(0xffCECECE), width: 0.5),
-                  //borderRadius: BorderRadius.all(Radius.circular(20.0))
-                  color: const Color(0xffFBFBFB),
-                  borderRadius:
-                      const BorderRadius.all(Radius.elliptical(69, 69)),
-                ),
-                padding: const EdgeInsets.all(12.0),
-                child: Image(
-                  image: menu.icon,
-                ),
+            child: Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                border: Border.all(color: const Color(0xffCECECE), width: 0.5),
+                //borderRadius: BorderRadius.all(Radius.circular(20.0))
+                color: const Color(0xffFBFBFB),
+                borderRadius: const BorderRadius.all(Radius.elliptical(69, 69)),
+              ),
+              padding: const EdgeInsets.all(12.0),
+              child: Image(
+                image: menu.icon,
               ),
             ),
           ),
           const SizedBox(height: 6.0),
-          FittedBox(
+          Flexible(
             child: Text(
               menu.label,
-              style: defaultLabelStyle.copyWith(),
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ),
           const SizedBox(height: 6.0),
@@ -192,7 +189,7 @@ class _HomeMenuState extends State<HomeMenu> {
       child: ConstrainedBox(
         constraints: const BoxConstraints(
           minHeight: 200,
-          maxHeight: 400,
+          maxHeight: 500,
         ),
         child: GridView.builder(
           physics: const ClampingScrollPhysics(),

@@ -2,7 +2,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:image_picker/image_picker.dart';
@@ -88,7 +87,10 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             OutlinedButton(
-              child: const Text('Ambil dari Kamera'),
+              child: Text(
+                'Ambil dari Kamera',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
               onPressed: () {
                 Navigator.pop(context, ImageSource.camera);
               },
@@ -96,7 +98,10 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
             ),
             const SizedBox(height: 5),
             OutlinedButton(
-              child: const Text('Ambil dari Galeri'),
+              child: Text(
+                'Ambil dari Galeri',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
               onPressed: () {
                 Navigator.pop(context, ImageSource.gallery);
               },

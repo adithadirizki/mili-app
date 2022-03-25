@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -9,11 +8,11 @@ import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/purchase.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/routing.dart';
-import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
+import 'package:miliv2/src/widgets/balance_card.dart';
 import 'package:miliv2/src/widgets/button.dart';
 import 'package:miliv2/src/widgets/screen.dart';
 
@@ -140,74 +139,7 @@ class _TransferScreenState extends State<TransferScreen> {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Column(
           children: [
-            Container(
-              height: 120,
-              padding: const EdgeInsets.all(10),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.elliptical(20, 20)),
-                // color: Color(0xFF00C2FF)
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [Color(0xff0196DD), Color(0xff01C9D0)],
-                ),
-              ),
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Text(
-                      'Saldo Utama',
-                      style: Theme.of(context)
-                          .textTheme
-                          .button!
-                          .copyWith(color: Colors.white),
-                    ),
-                  ),
-                  Container(
-                    alignment: const Alignment(-1, 0),
-                    margin: const EdgeInsets.only(left: 20),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Image(
-                          image: AppImages.wallet,
-                          width: 48,
-                        ),
-                        // const Icon(
-                        //   Icons.account_balance_wallet_outlined,
-                        //   size: 64,
-                        // ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          'Rp',
-                          style: Theme.of(context)
-                              .textTheme
-                              .button!
-                              .copyWith(color: Colors.white),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Flexible(
-                          child: Text(
-                            formatNumber(userBalanceState.balance),
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.button!.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 40,
-                                ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
+            const BalanceCard(),
             FlexBoxGray(
               margin: const EdgeInsets.only(top: 10),
               child: Column(
@@ -297,7 +229,13 @@ class _TransferScreenState extends State<TransferScreen> {
                     child: Container(
                       alignment: Alignment.topLeft,
                       child: inquiryResponse != null
-                          ? Text(inquiryResponse!.inquiryDetail)
+                          ? Text(
+                              inquiryResponse!.inquiryDetail,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(),
+                            )
                           : isLoading
                               ? const Center(
                                   child: CircularProgressIndicator(
@@ -313,7 +251,13 @@ class _TransferScreenState extends State<TransferScreen> {
                   Row(
                     children: [
                       inquiryResponse == null
-                          ? Text(transferInfo.notes)
+                          ? Text(
+                              transferInfo.notes,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(),
+                            )
                           : const Text(''),
                     ],
                   ),
