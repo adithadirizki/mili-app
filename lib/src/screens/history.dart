@@ -8,6 +8,7 @@ import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/purchase.dart';
 import 'package:miliv2/src/data/transaction.dart';
+import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/purchase.dart';
 import 'package:miliv2/src/screens/customer_service.dart';
@@ -67,8 +68,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
             .add(const Duration(hours: 24))
             .millisecondsSinceEpoch));
 
+    Condition<PurchaseHistory> filterUser =
+        PurchaseHistory_.userId.equals(userBalanceState.userId);
+
     final purchaseHistoryDB = AppDB.purchaseHistoryDB;
-    QueryBuilder<PurchaseHistory> query = purchaseHistoryDB.query(filterDate)
+    QueryBuilder<PurchaseHistory> query = purchaseHistoryDB
+        .query(filterDate.and(filterUser))
       ..order(PurchaseHistory_.transactionDate, flags: 1);
     items = query.build().find();
 

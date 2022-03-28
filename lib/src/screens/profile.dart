@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:miliv2/src/data/user_balance.dart';
+import 'package:miliv2/src/routing.dart';
 import 'package:miliv2/src/screens/about.dart';
 import 'package:miliv2/src/screens/change_password.dart';
 import 'package:miliv2/src/screens/customer_service.dart';
@@ -12,11 +13,13 @@ import 'package:miliv2/src/screens/price_setting.dart';
 import 'package:miliv2/src/screens/printer.dart';
 import 'package:miliv2/src/screens/privacy.dart';
 import 'package:miliv2/src/screens/profile_update.dart';
+import 'package:miliv2/src/screens/system_info.dart';
 import 'package:miliv2/src/screens/upgrade.dart';
 import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
+import 'package:miliv2/src/utils/device.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/profile_picture.dart';
 
@@ -37,6 +40,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   List<AppMenu> menuList1 = [];
   List<AppMenu> menuList2 = [];
+  late String version;
 
   @override
   void initState() {
@@ -92,15 +96,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  void initialize() {
+  void initialize() async {
     userBalanceState.fetchData();
+    version = await getAppVersion();
   }
 
   void logout() {
-    confirmDialog(context, title: 'Konfirmasi', msg: 'Keluar dari aplikasi ?',
-        confirmAction: () {
-      AppAuthScope.of(context).signOut();
-    }, confirmText: 'Keluar', cancelText: 'Batal');
+    if (userBalanceState.isGuest()) {
+      RouteStateScope.of(context).go('/signin');
+    } else {
+      confirmDialog(context, title: 'Konfirmasi', msg: 'Keluar dari aplikasi ?',
+          confirmAction: () {
+        AppAuthScope.of(context).signOut();
+        RouteStateScope.of(context).go('/signin');
+      }, confirmText: 'Keluar', cancelText: 'Batal');
+    }
   }
 
   void copyReffNumber() {
@@ -139,6 +149,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       );
     }
+  }
+
+  void system() {
+    pushScreen(
+      context,
+      (_) => const SystemInfoScreen(title: 'Informasi Sistem'),
+    );
   }
 
   Widget itemBuilder1(AppMenu menu) {
@@ -247,27 +264,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Positioned(
             top: 100,
             left: 120,
-            child: GestureDetector(
-              child: ClipOval(
-                child: Container(
-                  width: 22,
-                  height: 22,
-                  padding: const EdgeInsets.all(4),
-                  color: AppColors.yellow1,
-                  child: const Image(
-                    image: AppImages.edit,
-                    width: 10,
-                    height: 10,
+            child: userBalanceState.isGuest()
+                ? const SizedBox()
+                : GestureDetector(
+                    child: ClipOval(
+                      child: Container(
+                        width: 22,
+                        height: 22,
+                        padding: const EdgeInsets.all(4),
+                        color: AppColors.yellow1,
+                        child: const Image(
+                          image: AppImages.edit,
+                          width: 10,
+                          height: 10,
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      pushScreen(
+                        context,
+                        (_) => const ProfileUpdateScreen(),
+                      );
+                    },
                   ),
-                ),
-              ),
-              onTap: () {
-                pushScreen(
-                  context,
-                  (_) => const ProfileUpdateScreen(),
-                );
-              },
-            ),
           ),
           Positioned(
             top: 130,
@@ -321,13 +340,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               onTap: logout,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
-                  Image(image: AppImages.power, width: 20),
-                  SizedBox(width: 5),
+                children: [
+                  const Image(image: AppImages.power, width: 20),
+                  const SizedBox(width: 5),
                   Text(
-                    'Log Out',
+                    userBalanceState.isGuest() ? 'Daftar' : 'Log Out',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Color.fromRGBO(255, 255, 255, 1),
                         fontFamily: 'Montserrat',
                         // fontSize: 9,
@@ -490,6 +509,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 10),
                     ],
                   ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: system,
+                child: Text(
+                  'Versi $version',
+                  style: Theme.of(context).textTheme.subtitle2,
                 ),
               ),
               const SizedBox(height: 10),

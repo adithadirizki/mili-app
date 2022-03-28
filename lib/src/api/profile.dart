@@ -57,6 +57,9 @@ class ProfileResponse {
   @JsonKey(name: 'markup')
   late final double? markup;
 
+  @JsonKey(name: 'group')
+  late final String groupName;
+
   ProfileResponse();
 
   factory ProfileResponse.fromString(String body) =>

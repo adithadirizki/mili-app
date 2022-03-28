@@ -28,21 +28,16 @@ class AppAuth extends ChangeNotifier {
   }
 
   Future<void> init() async {
-    var engine = await AppStorage.engine;
     var signedIn = AppStorage.getAuthenticated();
     var verified = AppStorage.getVerified();
     var username = AppStorage.getUsername();
     var deviceId = AppStorage.getDeviceId();
     var token = AppStorage.getToken();
 
-    debugPrint('Init Auth $signedIn $deviceId $username $token');
+    debugPrint(
+        'Init Auth $signedIn device $deviceId username $username token $token');
 
-    if (signedIn != null &&
-        signedIn &&
-        token != null &&
-        deviceId != null &&
-        username != null &&
-        verified != null) {
+    if (signedIn && deviceId.isNotEmpty) {
       _signedIn = signedIn;
       _verified = verified;
       _username = username;
@@ -152,6 +147,42 @@ class AppAuth extends ChangeNotifier {
     notifyListeners();
 
     return _signedIn;
+  }
+
+  Future<bool> guestSignIn(String deviceId, String ip) async {
+    debugPrint('Guest Signin ${deviceId}');
+
+    var response = await Api.guest(deviceId, ip);
+
+    if (response.statusCode != 200) {
+      Map<String, dynamic>? bodyMap =
+          json.decode(response.body) as Map<String, dynamic>?;
+      var err = ErrorResponse.fromJson(bodyMap!);
+      debugPrint('SignIn error ${err.errorMessage}');
+      return false;
+    }
+
+    Map<String, dynamic> bodyMap =
+        json.decode(response.body) as Map<String, dynamic>;
+    var loginResp = AuthResponse.fromJson(bodyMap);
+
+    debugPrint('Guest Signin ${loginResp.user}');
+
+    _signedIn = true;
+    _verified = true;
+    _username = loginResp.user.phoneNumber;
+    _deviceId = deviceId;
+
+    AppStorage.setAuthenticated(_signedIn);
+    AppStorage.setUsername(_username);
+    AppStorage.setDeviceId(_deviceId);
+    AppStorage.setToken(loginResp.token);
+
+    Api.setToken(loginResp.token);
+    Api.setUsername(username);
+    Api.setDeviceId(deviceId);
+
+    return true;
   }
 
   @override

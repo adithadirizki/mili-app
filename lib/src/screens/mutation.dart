@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:miliv2/objectbox.g.dart';
+import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/mutation.dart';
 import 'package:miliv2/src/theme.dart';
@@ -64,8 +65,11 @@ class _MutationScreenState extends State<MutationScreen> {
               .add(const Duration(hours: 24))
               .millisecondsSinceEpoch));
 
+      Condition<BalanceMutation> filterUser =
+          BalanceMutation_.userId.equals(userBalanceState.userId);
+
       final db = AppDB.balanceMutationDB;
-      QueryBuilder<BalanceMutation> query = db.query(filterDate)
+      QueryBuilder<BalanceMutation> query = db.query(filterDate.and(filterUser))
         ..order(BalanceMutation_.mutationDate, flags: 1);
       items = query.build().find();
     }
@@ -77,8 +81,11 @@ class _MutationScreenState extends State<MutationScreen> {
               .add(const Duration(hours: 24))
               .millisecondsSinceEpoch));
 
+      Condition<CreditMutation> filterUser =
+          CreditMutation_.userId.equals(userBalanceState.userId);
+
       final db = AppDB.creditMutationDB;
-      QueryBuilder<CreditMutation> query = db.query(filterDate)
+      QueryBuilder<CreditMutation> query = db.query(filterDate.and(filterUser))
         ..order(CreditMutation_.mutationDate, flags: 1);
       items2 = query.build().find();
     }

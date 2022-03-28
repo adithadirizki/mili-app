@@ -39,8 +39,11 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
   Future<void> initDB() async {
     await AppDB.syncCustomerService();
 
+    Condition<CustomerService> filterUser =
+        CustomerService_.userId.equals(userBalanceState.userId);
+
     final db = AppDB.customerServiceDB;
-    QueryBuilder<CustomerService> query = db.query()
+    QueryBuilder<CustomerService> query = db.query(filterUser)
       ..order(CustomerService_.messageDate, flags: 1);
     final items = query.build().find();
 

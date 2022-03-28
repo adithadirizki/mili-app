@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:miliv2/src/api/api.dart';
@@ -77,7 +76,7 @@ class _HomepageState extends State<Homepage>
   void initProvider() {
     AppAnalytic.setUserId(userBalanceState.userId);
     AppMessaging.requestPermission(context);
-    userBalanceState.fetchData().catchError((Object e) {
+    userBalanceState.fetchData().catchError((dynamic e) {
       if (e is UnauthorisedException) {
         debugPrint('Homepage init provider ${e.toString()}');
         AppAuthScope.of(context).signOut();
@@ -97,7 +96,7 @@ class _HomepageState extends State<Homepage>
   void initPin() {
     pinEnabled = AppStorage.getPINEnable();
     biometricEnabled = AppStorage.getBiometricEnable();
-    if (pinEnabled) {
+    if (!userBalanceState.isGuest() && pinEnabled) {
       locked = true;
     }
   }

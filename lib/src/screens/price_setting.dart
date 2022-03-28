@@ -23,45 +23,49 @@ class _PriceSettingScreenState extends State<PriceSettingScreen> {
       pushScreen(context, (_) => const PricePulsaScreen());
     }));
     menuList.add(_AppMenu(AppImages.menuListrik, 'Listrik', () {
-      openPriceSetting(null, ['PLN PASCA', 'PLN1600']);
+      openPriceSetting('Harga Listrik', null, ['PLN PASCA', 'PLN1600']);
     }));
     menuList.add(_AppMenu(AppImages.menuTagihan, 'Tagihan', () {
-      openPriceSetting(menuGroupTagihan, null);
+      openPriceSetting('Harga Tagihan', menuGroupTagihan, null);
     }));
-    menuList.add(_AppMenu(AppImages.menuBPJS, 'BPJS', () {
-      openPriceSetting(null, ['BPJS']);
+    menuList.add(_AppMenu(AppImages.menuBPJS, 'BPJS Kesehatan', () {
+      openPriceSetting('Harga BPJS Kesehatan', null, ['BPJS']);
     }));
     menuList.add(_AppMenu(AppImages.menuEmoney, 'E-Wallet', () {
-      openPriceSetting(menuGroupEmoney, null);
+      openPriceSetting('Harga E-Wallet', menuGroupEmoney, null);
     }));
-    menuList.add(_AppMenu(AppImages.menuCicilan, 'Finance', () {
-      openPriceSetting(menuGroupFinance, null);
-    }));
+    // menuList.add(_AppMenu(AppImages.menuCicilan, 'Finance', () {
+    //   openPriceSetting(menuGroupFinance, null);
+    // }));
     menuList.add(_AppMenu(AppImages.menuTelkom, 'Telkom', () {
-      openPriceSetting(menuGroupTelkom, null);
+      openPriceSetting('Harga Telkom', menuGroupTelkom, null);
     }));
     menuList.add(_AppMenu(AppImages.menuGame, 'Game', () {
-      openPriceSetting(menuGroupGame, null);
+      openPriceSetting('Harga Game', menuGroupGame, null);
     }));
     menuList.add(_AppMenu(AppImages.menuEmoney, 'Transfer Bank', () {
-      openPriceSetting(menuGroupBank, null);
+      openPriceSetting('Harga Transfer Bank', menuGroupBank, null);
     }));
     menuList.add(_AppMenu(AppImages.menuEmoney, 'Aktivasi', () {
-      openPriceSetting(menuGroupAct, null);
+      openPriceSetting('Harga Aktivasi', menuGroupAct, null);
     }));
     menuList.add(_AppMenu(AppImages.menuTV, 'Streaming', () {
-      openPriceSetting(menuGroupStreaming, null);
+      openPriceSetting('Harga Streaming', menuGroupStreaming, null);
     }));
     // menuList.add(_AppMenu(AppImages.menuKAI, 'Kereta API', () {
     //   pushScreen(context, (_) => const PricePulsaScreen());
     // }));
   }
 
-  void openPriceSetting(String? vendorGroup, List<String>? productGroups) {
+  void openPriceSetting(
+      String title, String? vendorGroup, List<String>? productGroups) {
     pushScreen(
         context,
         (_) => PriceProductScreen(
-            vendorGroup: vendorGroup, productGroups: productGroups));
+              title: title,
+              vendorGroup: vendorGroup,
+              productGroups: productGroups,
+            ));
   }
 
   Widget itemBuilder(_AppMenu menu) {

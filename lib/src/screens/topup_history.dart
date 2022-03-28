@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/api/api.dart';
+import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/topup.dart';
 import 'package:miliv2/src/theme/images.dart';
@@ -86,8 +87,11 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
             .add(const Duration(hours: 24))
             .millisecondsSinceEpoch));
 
+    Condition<TopupHistory> filterUser =
+        TopupHistory_.userId.equals(userBalanceState.userId);
+
     final db = AppDB.topupHistoryDB;
-    QueryBuilder<TopupHistory> query = db.query(filterDate)
+    QueryBuilder<TopupHistory> query = db.query(filterDate.and(filterUser))
       ..order(TopupHistory_.transactionDate, flags: 1);
     items = query.build().find();
 
@@ -114,8 +118,9 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
   }
 
   void cancelTicket(TopupHistory history) {
-    confirmDialog(context, title: 'Konfirmasi', msg: 'Apakah Anda akan membatalkan Tiket ?',
-        confirmAction: () {
+    confirmDialog(context,
+        title: 'Konfirmasi',
+        msg: 'Apakah Anda akan membatalkan Tiket ?', confirmAction: () {
       Api.cancelTopupTicket(history.serverId).then((response) {
         debugPrint('Cancel ticket ${response.body}');
         if (response.statusCode == 200) {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
@@ -82,7 +83,19 @@ class Api {
       "Content-Type": 'application/json', // 'multipart/form-data'
       'Authorization': 'Bearer ' + _token,
       'Device': _deviceId,
-      'Signature': _signature,
+    };
+  }
+
+  static Map<String, String>? getSignatureHeaders(
+      {required String body, required String ipAddress}) {
+    var now = DateTime.now().toIso8601String();
+    var req = ipAddress + body + now;
+    var signature = sha256.convert(utf8.encode(req)).toString().toUpperCase();
+    signature = sha1.convert(utf8.encode(signature)).toString();
+    return {
+      "Content-Type": 'application/json',
+      'Datetime': now,
+      'Signature': signature,
     };
   }
 
@@ -188,6 +201,28 @@ class Api {
           Uri.parse(AppConfig.baseUrl + '/change-password'),
           headers: getRequestHeaders(),
           body: json.encode(body),
+        )
+        .then(_parseResponse);
+  }
+
+  static Future<http.Response> guest(String imei, String ipAddress) {
+    Map<String, Object> body = <String, Object>{
+      'imei': imei,
+    };
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/guest'),
+          headers: getSignatureHeaders(
+              body: json.encode(body), ipAddress: ipAddress),
+          body: json.encode(body),
+        )
+        .then(_parseResponse);
+  }
+
+  static Future<http.Response> clientInfo() {
+    return http
+        .get(
+          Uri.parse(AppConfig.baseUrl + '/client'),
         )
         .then(_parseResponse);
   }

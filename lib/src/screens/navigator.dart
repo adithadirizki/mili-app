@@ -55,24 +55,6 @@ class _AppNavigatorState extends State<AppNavigator> {
       simpleSnackBarDialog(context, e.toString());
       return true;
     });
-
-    // if (signedIn) {
-    //   if (authState.verified) {
-    //     routeState.go('/');
-    //   } else {
-    //     Navigator.of(context).push<void>(
-    //       MaterialPageRoute<void>(
-    //         builder: (context) => const OTPVerificationScreen(),
-    //       ),
-    //     );
-    //     // routeState.go('/');
-    //     // Navigator.pushReplacement(context, MaterialPageRoute<void>(
-    //     //     builder: (context) {
-    //     //       return const OTPVerificationScreen();
-    //     //     },
-    //     //   ));
-    //   }
-    // }
   }
 
   Future<void> onVerified(OTPVerified credentials) async {

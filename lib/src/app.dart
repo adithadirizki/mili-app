@@ -2,8 +2,12 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/theme/theme.dart';
+import 'package:miliv2/src/utils/device.dart';
 
 import 'routing.dart';
 import 'screens/navigator.dart';
@@ -138,7 +142,14 @@ class _AppState extends State<App> {
     if (!signedIn &&
         from != signInRoute &&
         !publicRoute.contains(from.pathTemplate)) {
-      return signInRoute;
+      bool success = await _guestSignIn();
+      if (success) {
+        debugPrint('App guard guest to main');
+        return mainRoute;
+      } else {
+        debugPrint('App guard return to signin');
+        return signInRoute;
+      }
     }
     // Go to / if the user is signed in and tries to go to /signin.
     else if (signedIn && verified && from == signInRoute) {
@@ -147,7 +158,25 @@ class _AppState extends State<App> {
     return from;
   }
 
-  void _handleAuthStateChanged() {
+  Future<bool> _guestSignIn() async {
+    var deviceId = await getDeviceId();
+    var resp = await Api.clientInfo();
+
+    if (resp.statusCode == 200) {
+      Map<String, dynamic> bodyMap =
+          json.decode(resp.body) as Map<String, dynamic>;
+
+      var ip = bodyMap['ip'] == null ? '-' : bodyMap['ip'] as String;
+      return _auth.guestSignIn(deviceId, ip).catchError((dynamic e) {
+        debugPrint('Guest error $e');
+        return false;
+      });
+    }
+
+    return false;
+  }
+
+  void _handleAuthStateChanged() async {
     debugPrint(
         'Handle auth change ${_auth.signedIn} verified ${_auth.verified}');
     if (!_auth.signedIn) {

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miliv2/objectbox.g.dart';
+import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/notification.dart' as models;
 import 'package:miliv2/src/theme.dart';
@@ -58,9 +59,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
             .add(const Duration(hours: 24))
             .millisecondsSinceEpoch));
 
+    Condition<models.Notification> filterUser =
+        Notification_.userId.equals(userBalanceState.userId);
+
     final db = AppDB.notificationDB;
     QueryBuilder<models.Notification> query =
-        (db.query(filterDate)..order(Notification_.notificationDate, flags: 1));
+        (db.query(filterDate.and(filterUser))
+          ..order(Notification_.notificationDate, flags: 1));
     items = query.build().find();
 
     debugPrint('InitDB Notification ${items.length}');

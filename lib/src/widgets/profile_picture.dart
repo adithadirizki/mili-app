@@ -115,7 +115,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPhotoTap(context),
+      onTap: userBalanceState.isGuest() ? null : onPhotoTap(context),
       child: Container(
         decoration: BoxDecoration(
           // color: AppColors.blue5,

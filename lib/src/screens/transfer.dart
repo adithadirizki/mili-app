@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/purchase.dart';
 import 'package:miliv2/src/data/user_balance.dart';
+import 'package:miliv2/src/routing.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -65,8 +66,24 @@ class _TransferScreenState extends State<TransferScreen> {
     snackBarDialog(context, e.toString());
   }
 
+  void confirmSignin() {
+    confirmDialog(
+      context,
+      title: 'Konfirmasi',
+      msg:
+          'Anda perlu melakukan Pendaftaran atau Login untuk melanjutkan transaksi',
+      confirmAction: () {
+        RouteStateScope.of(context).go('/signin');
+      },
+      confirmText: 'Ya, lanjutkan',
+      cancelText: 'Batal',
+    );
+  }
+
   void inquiry() {
-    if (formKey.currentState!.validate()) {
+    if (userBalanceState.isGuest()) {
+      confirmSignin();
+    } else if (formKey.currentState!.validate()) {
       setState(() {
         isLoading = true;
       });

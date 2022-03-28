@@ -33,7 +33,7 @@ Future<String> getPackageName() async {
   return packageName;
 }
 
-Future<String> getAppVersion() async {
+Future<String> getFullAppVersion() async {
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
   String appName = packageInfo.appName;
@@ -53,6 +53,49 @@ Future<String> getOSInfo() async {
       'Version ${info.version.release}',
       'SDK ${info.version.sdkInt}',
     ].join(' | ');
+  } else if (Platform.isIOS) {
+    IosDeviceInfo info = await _deviceInfo.iosInfo;
+    return info.model ?? '';
+  }
+  return '';
+}
+
+Future<String> getDeviceModel() async {
+  if (Platform.isAndroid) {
+    AndroidDeviceInfo info = await _deviceInfo.androidInfo;
+    return '${info.brand?.toUpperCase()} ${info.model}';
+  } else if (Platform.isIOS) {
+    IosDeviceInfo info = await _deviceInfo.iosInfo;
+    return '${info.utsname.machine} ${info.model}';
+  }
+  return '';
+}
+
+Future<String> getScreenRes() async {
+  if (Platform.isAndroid) {
+    AndroidDeviceInfo info = await _deviceInfo.androidInfo;
+    return '${info.display}';
+  } else if (Platform.isIOS) {
+    IosDeviceInfo info = await _deviceInfo.iosInfo;
+    return '';
+  }
+  return '';
+}
+
+Future<String> getAppVersion() async {
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  return packageInfo.version;
+}
+
+Future<String> getBuildNumber() async {
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  return packageInfo.buildNumber;
+}
+
+Future<String> getOSName() async {
+  if (Platform.isAndroid) {
+    AndroidDeviceInfo info = await _deviceInfo.androidInfo;
+    return '${info.version.codename} ${info.version.release ?? '-'} (${info.version.sdkInt})';
   } else if (Platform.isIOS) {
     IosDeviceInfo info = await _deviceInfo.iosInfo;
     return info.model ?? '';

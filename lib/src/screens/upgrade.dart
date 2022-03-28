@@ -573,14 +573,16 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                         title: const Text(
                             'Setuju dengan syarat & ketentuan yang berlaku'),
                         value: termAccepted,
-                        onChanged: (value) {
-                          if (value == null) {
-                            termAccepted = false;
-                          } else {
-                            termAccepted = value;
-                          }
-                          setState(() {});
-                        },
+                        onChanged: userBalanceState.isGuest()
+                            ? null
+                            : (value) {
+                                if (value == null) {
+                                  termAccepted = false;
+                                } else {
+                                  termAccepted = value;
+                                }
+                                setState(() {});
+                              },
                         controlAffinity: ListTileControlAffinity.leading,
                       ),
                       AppButton(

@@ -1,7 +1,7 @@
 name: miliv2
 description: MILI V2
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 2.0.0+200001
+version: 2.0.0+2000002
 environment:
   sdk: ">=2.12.0 <3.0.0"
 dependencies:
@@ -53,6 +53,7 @@ dependencies:
 # UI Widget
   dropdown_search: ^2.0.1
   webview_flutter: ^3.0.0
+  crypto: ^3.0.1
 dev_dependencies:
   flutter_lints: ^1.0.0
   flutter_test:

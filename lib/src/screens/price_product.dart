@@ -16,10 +16,12 @@ import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:objectbox/objectbox.dart';
 
 class PriceProductScreen extends StatefulWidget {
+  final String title;
   final String? vendorGroup;
   final List<String>? productGroups;
 
-  const PriceProductScreen({Key? key, this.vendorGroup, this.productGroups})
+  const PriceProductScreen(
+      {Key? key, this.vendorGroup, this.productGroups, required this.title})
       : super(key: key);
 
   @override
@@ -63,8 +65,8 @@ class _PriceProductScreenState extends State<PriceProductScreen>
   }
 
   Future<void> initDB() async {
-    await AppDB.syncProduct();
-    await AppDB.syncVendor();
+    // await AppDB.syncProduct();
+    // await AppDB.syncVendor();
     await AppDB.syncPriceSetting();
 
     final productDB = AppDB.productDB;
@@ -77,14 +79,14 @@ class _PriceProductScreenState extends State<PriceProductScreen>
       QueryBuilder<Vendor> queryVendor =
           AppDB.vendorDB.query(Vendor_.group.equals(widget.vendorGroup!));
       var vendorList = queryVendor.build().find();
-      vendorList.forEach((vendor) {
+      for (var vendor in vendorList) {
         if (vendor.productGroupNameList != null) {
           productGroups.addAll(vendor.productGroupNameList!);
         } else {
           debugPrint(
               'Vendor ${vendor.name} doesn\'t have productGroupNameList');
         }
-      });
+      }
     }
 
     debugPrint('Product Group $productGroups');
@@ -282,6 +284,13 @@ class _PriceProductScreenState extends State<PriceProductScreen>
   }
 
   Widget buildListPulsa() {
+    if (isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+        ),
+      );
+    }
     var filteredProduct = filterByQuery(productPulsa);
     if (filteredProduct.isEmpty) {
       return const Center(
@@ -301,8 +310,8 @@ class _PriceProductScreenState extends State<PriceProductScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const SimpleAppBar2(
-        title: 'Harga Pulsa',
+      appBar: SimpleAppBar2(
+        title: widget.title,
       ),
       body: Column(
         children: [

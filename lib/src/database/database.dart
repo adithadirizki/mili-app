@@ -20,7 +20,6 @@ import 'package:miliv2/src/models/timestamp.dart';
 import 'package:miliv2/src/models/topup.dart';
 import 'package:miliv2/src/models/user_config.dart';
 import 'package:miliv2/src/models/vendor.dart';
-import 'package:objectbox/objectbox.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -106,7 +105,7 @@ class AppDB {
     return rec;
   }
 
-  static Future<void> syncProduct() async {
+  static Future<void> syncProduct({int offset = 0}) async {
     const apiCode = 'product-all';
 
     if (_lockedSyncronize(apiCode)) {
@@ -119,9 +118,10 @@ class AppDB {
     String timestamp = lastUpdate == null ? '' : lastUpdate.toIso8601String();
 
     Map<String, String> params = {
+      'offset': offset.toString(),
       'limit': limit.toString(),
       'sort': json.encode({'updated_at': 'asc'}),
-      'filter': json.encode({'updated_at': '>|$timestamp'})
+      'filter': json.encode({'updated_at': '>=|$timestamp'})
     };
 
     debugPrint('syncProduct with params $params');
@@ -189,7 +189,13 @@ class AppDB {
       _unlockSyncronize(apiCode);
       // Get next page
       if (pagingResponse.data.length >= limit) {
-        return await syncProduct();
+        DateTime? veryLastUpdate = getLastUpdate(apiCode);
+        if (lastUpdate == veryLastUpdate) {
+          offset += limit;
+        } else {
+          offset = 0;
+        }
+        return await syncProduct(offset: offset);
       }
     }).catchError((dynamic e) {
       _unlockSyncronize(apiCode);
@@ -197,7 +203,7 @@ class AppDB {
     });
   }
 
-  static Future<void> syncVendor() async {
+  static Future<void> syncVendor({int offset = 0}) async {
     const apiCode = 'vendor-list';
 
     if (_lockedSyncronize(apiCode)) {
@@ -210,9 +216,10 @@ class AppDB {
     String timestamp = lastUpdate == null ? '' : lastUpdate.toIso8601String();
 
     Map<String, String> params = {
+      'offset': offset.toString(),
       'limit': limit.toString(),
       'sort': json.encode({'updated_at': 'asc'}),
-      'filter': json.encode({'updated_at': '>|$timestamp'})
+      'filter': json.encode({'updated_at': '>=|$timestamp'})
     };
 
     debugPrint('syncVendor with params $params');
@@ -265,7 +272,13 @@ class AppDB {
       _unlockSyncronize(apiCode);
       // Get next page
       if (pagingResponse.data.length >= limit) {
-        return await syncVendor();
+        DateTime? veryLastUpdate = getLastUpdate(apiCode);
+        if (lastUpdate == veryLastUpdate) {
+          offset += limit;
+        } else {
+          offset = 0;
+        }
+        return await syncVendor(offset: offset);
       }
     }).catchError((dynamic e) {
       _unlockSyncronize(apiCode);
