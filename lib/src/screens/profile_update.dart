@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/theme/style.dart';
@@ -136,7 +133,6 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputName,
-                        color: Colors.blueAccent,
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -154,7 +150,6 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputPhone,
-                        color: Colors.blueAccent,
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -171,14 +166,12 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputEmail,
-                        color: Colors.blueAccent,
                       ),
                     ),
                     // Jenis Toko
                     DropdownButtonFormField<String>(
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputMerchantType,
-                        color: Colors.blueAccent,
                       ),
                       isExpanded: true,
                       value: outletType,
@@ -210,7 +203,6 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputAddress,
-                        color: Colors.blueAccent,
                       ),
                     ),
                     // Button

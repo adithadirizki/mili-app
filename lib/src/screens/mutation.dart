@@ -165,12 +165,12 @@ class _MutationScreenState extends State<MutationScreen> {
             children: [
               Text(
                 formatDate(data.mutationDate),
-                style: Theme.of(context).textTheme.bodySmall,
+                style: Theme.of(context).textTheme.caption,
               ),
               const Spacer(),
               Text(
                 '${formatNumber(data.startBalance)} ${isDebit ? '-' : '+'} ',
-                style: Theme.of(context).textTheme.bodySmall,
+                style: Theme.of(context).textTheme.caption,
               ),
               Text(
                 isDebit
@@ -192,7 +192,7 @@ class _MutationScreenState extends State<MutationScreen> {
               Flexible(
                 child: Text(
                   description,
-                  style: Theme.of(context).textTheme.bodySmall,
+                  // style: Theme.of(context).textTheme.caption,
                 ),
               ),
             ],
@@ -224,23 +224,23 @@ class _MutationScreenState extends State<MutationScreen> {
             children: [
               Text(
                 formatDate(data.mutationDate),
-                style: Theme.of(context).textTheme.bodySmall,
+                style: Theme.of(context).textTheme.caption,
               ),
               const Spacer(),
               Text(
                 '${formatNumber(data.startBalance)} ${isDebit ? '-' : '+'} ',
-                style: Theme.of(context).textTheme.bodySmall,
+                style: Theme.of(context).textTheme.caption,
               ),
               Text(
                 isDebit
                     ? formatNumber(data.debitAmount)
                     : formatNumber(data.creditAmount),
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                style: Theme.of(context).textTheme.caption!.copyWith(
                     color: isDebit ? Colors.redAccent : Colors.blueAccent),
               ),
               Text(
                 ' = ${formatNumber(data.endBalance)}',
-                style: Theme.of(context).textTheme.bodySmall,
+                style: Theme.of(context).textTheme.caption,
               ),
             ],
           ),
@@ -251,7 +251,7 @@ class _MutationScreenState extends State<MutationScreen> {
               Flexible(
                 child: Text(
                   description,
-                  style: Theme.of(context).textTheme.bodySmall,
+                  // style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
             ],

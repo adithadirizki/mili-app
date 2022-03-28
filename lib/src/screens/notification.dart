@@ -105,11 +105,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   children: [
                     Text(
                       history.title,
-                      style: Theme.of(context).textTheme.bodySmall,
+                      style: Theme.of(context).textTheme.titleSmall,
                     ),
                     Text(
                       formatDate(history.notificationDate),
-                      style: Theme.of(context).textTheme.bodySmall,
+                      style: Theme.of(context).textTheme.caption,
                     ),
                   ],
                 ),
@@ -118,7 +118,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             const Divider(),
             Text(
               history.body,
-              style: Theme.of(context).textTheme.bodySmall,
+              // style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
         ),

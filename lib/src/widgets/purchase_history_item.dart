@@ -40,11 +40,11 @@ class PurchaseHistoryItem extends StatelessWidget {
                   children: [
                     Text(
                       history.groupName,
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(),
+                      // style: Theme.of(context).textTheme.bodySmall,
                     ),
                     Text(
                       formatDate(history.transactionDate),
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
@@ -139,7 +139,7 @@ class PurchaseHistoryItem extends StatelessWidget {
                     ),
                     SelectableText(
                       history.destination,
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(),
+                      // style: Theme.of(context).textTheme.bodySmall,
                     ),
                     const SizedBox(height: 10),
                     history.isSuccess
@@ -148,17 +148,14 @@ class PurchaseHistoryItem extends StatelessWidget {
                             children: [
                               Text(
                                 'Total',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(),
+                                style: Theme.of(context).textTheme.bodySmall,
                               ),
                               Text(
                                 'Rp. ${formatNumber(history.price)}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(fontWeight: FontWeight.bold),
+                                // style: Theme.of(context)
+                                //     .textTheme
+                                //     .bodySmall!
+                                //     .copyWith(fontWeight: FontWeight.bold),
                               ),
                             ],
                           )

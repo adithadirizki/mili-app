@@ -97,16 +97,13 @@ class _TopupScreenState extends State<TopupScreen> {
         // leading: Icon(Icons.album),
         title: Text(
           bank.accountNumber,
-          // style: Theme.of(context).textTheme.bodySmall!.copyWith(),
         ),
         subtitle: Text(
           bank.bankName + ' a/n ' + bank.accountName,
-          // style: Theme.of(context).textTheme.bodySmall!.copyWith(),
         ),
         trailing: TextButton(
-          child: Text(
+          child: const Text(
             'Salin',
-            // style: Theme.of(context).textTheme.bodySmall!.copyWith(),
           ),
           onPressed: () {
             Clipboard.setData(ClipboardData(text: bank.accountNumber));
@@ -219,7 +216,7 @@ class _TopupScreenState extends State<TopupScreen> {
                   ),
                   Text(
                     topupInfo.notes,
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(),
+                    style: Theme.of(context).textTheme.caption,
                   ),
                   const SizedBox(
                     height: 10,

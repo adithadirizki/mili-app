@@ -366,9 +366,9 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: Text(
+                title: const Text(
                   'Aktifkan PIN',
-                  style: Theme.of(context).textTheme.bodySmall,
+                  // style: Theme.of(context).textTheme.bodySmall,
                 ),
                 trailing: Switch(
                   onChanged:
@@ -378,9 +378,9 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
                 ),
               ),
               ListTile(
-                title: Text(
+                title: const Text(
                   'Biometrik',
-                  style: Theme.of(context).textTheme.bodySmall,
+                  // style: Theme.of(context).textTheme.bodySmall,
                 ),
                 trailing: Switch(
                   onChanged: pinActive ? onBiometricChange : null,
@@ -389,9 +389,9 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
                 ),
               ),
               ListTile(
-                title: Text(
+                title: const Text(
                   'Ganti PIN',
-                  style: Theme.of(context).textTheme.bodySmall,
+                  // style: Theme.of(context).textTheme.bodySmall,
                 ),
                 onTap: pinActive ? onPINChange : null,
                 trailing: Icon(
@@ -401,9 +401,9 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
                 ),
               ),
               ListTile(
-                title: Text(
+                title: const Text(
                   'Lupa PIN',
-                  style: Theme.of(context).textTheme.bodySmall,
+                  // style: Theme.of(context).textTheme.bodySmall,
                 ),
                 onTap: pinActive ? onForgotPIN : null,
                 trailing: Icon(

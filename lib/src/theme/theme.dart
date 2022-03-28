@@ -121,6 +121,7 @@ abstract class AppTheme {
 }
 
 final ThemeData lightTheme = ThemeData(
+  brightness: Brightness.light,
   fontFamily: 'Montserrat',
   appBarTheme: const AppBarTheme(
     backgroundColor: Colors.white,
@@ -149,7 +150,6 @@ final ThemeData lightTheme = ThemeData(
   // ),
   cardColor: Colors.white,
   canvasColor: Colors.grey[50],
-  // brightness: Brightness.light,
   buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary),
   scaffoldBackgroundColor: Colors.grey[50],
   // buttonTheme: Theme.of(context).buttonTheme.copyWith(

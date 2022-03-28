@@ -131,9 +131,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 favoriteNameController.clear();
                 Navigator.of(context).pop();
               },
-              child: Text(
+              child: const Text(
                 'Batal',
-                style: Theme.of(context).textTheme.button,
+                // style: Theme.of(context).textTheme.button,
               ),
             ),
             TextButton(
@@ -143,9 +143,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   await Navigator.of(context).maybePop();
                 }
               },
-              child: Text(
+              child: const Text(
                 'Simpan',
-                style: Theme.of(context).textTheme.button,
+                // style: Theme.of(context).textTheme.button,
               ),
             )
           ],
@@ -246,9 +246,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
         menu.addAll([
           ListTile(
             // contentPadding: EdgeInsets.all(0),
-            title: Text(
+            title: const Text(
               'Detail',
-              style: Theme.of(context).textTheme.bodySmall,
+              // style: Theme.of(context).textTheme.bodySmall,
             ),
             leading: const Icon(Icons.info_outline_rounded),
             onTap: execAction(historyAction.showDetail, history),
@@ -258,18 +258,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
         menu.addAll([
           ListTile(
             // contentPadding: EdgeInsets.all(0),
-            title: Text(
+            title: const Text(
               'Struk',
-              style: Theme.of(context).textTheme.bodySmall,
+              // style: Theme.of(context).textTheme.bodySmall,
             ),
             leading: const Icon(Icons.info_outline_rounded),
             onTap: execAction(historyAction.showInvoice, history),
           ),
           ListTile(
             // contentPadding: EdgeInsets.all(0),
-            title: Text(
+            title: const Text(
               'Print',
-              style: Theme.of(context).textTheme.bodySmall,
+              // style: Theme.of(context).textTheme.bodySmall,
             ),
             leading: const Icon(Icons.print_outlined),
             onTap: execAction(historyAction.print, history),
@@ -279,18 +279,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
       menu.addAll([
         ListTile(
           // contentPadding: EdgeInsets.all(0),
-          title: Text(
+          title: const Text(
             'Hubungi CS',
-            style: Theme.of(context).textTheme.bodySmall,
+            // style: Theme.of(context).textTheme.bodySmall,
           ),
           leading: const Icon(Icons.messenger_outline_rounded),
           onTap: execAction(historyAction.contactCS, history),
         ),
         ListTile(
           // contentPadding: EdgeInsets.all(0),
-          title: Text(
+          title: const Text(
             'Simpan Nomor',
-            style: Theme.of(context).textTheme.bodySmall,
+            // style: Theme.of(context).textTheme.bodySmall,
           ),
           leading: const Icon(Icons.favorite_border_rounded),
           onTap: execAction(historyAction.addFavorite, history),
@@ -300,18 +300,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
       menu.addAll([
         ListTile(
           // contentPadding: EdgeInsets.all(0),
-          title: Text(
+          title: const Text(
             'Hubungi CS',
-            style: Theme.of(context).textTheme.bodySmall,
+            // style: Theme.of(context).textTheme.bodySmall,
           ),
           leading: const Icon(Icons.messenger_outline_rounded),
           onTap: execAction(historyAction.contactCS, history),
         ),
         ListTile(
           // contentPadding: EdgeInsets.all(0),
-          title: Text(
+          title: const Text(
             'Simpan Nomor',
-            style: Theme.of(context).textTheme.bodySmall,
+            // style: Theme.of(context).textTheme.bodySmall,
           ),
           leading: const Icon(Icons.favorite_border_rounded),
           onTap: execAction(historyAction.addFavorite, history),

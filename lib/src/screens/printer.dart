@@ -112,110 +112,111 @@ class _PrinterScreenState extends State<PrinterScreen> {
       builder: (ctx) {
         return Dialog(
           child: Container(
-            height: 350,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-            child: Form(
-              key: formKey,
-              child: Column(
-                children: <Widget>[
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Header & Footer',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        TextFormField(
-                          decoration: generateInputDecoration(
-                            label: 'Header 1',
-                            hint: 'contoh: Gisna Cell',
+            padding: const EdgeInsets.all(20),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 100, maxHeight: 400),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Header & Footer',
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.next,
-                          onSaved: (newValue) {
-                            prevConfig['header1'] = newValue;
-                          },
-                          initialValue: prevConfig['header1'] == null
-                              ? ''
-                              : (prevConfig['header1'] as String),
-                        ),
-                        TextFormField(
-                          decoration: generateInputDecoration(
-                            label: 'Header 2',
-                            hint: 'contoh: Alamat',
+                          TextFormField(
+                            decoration: generateInputDecoration(
+                              label: 'Header 1',
+                              hint: 'contoh: Gisna Cell',
+                            ),
+                            keyboardType: TextInputType.name,
+                            textInputAction: TextInputAction.next,
+                            onSaved: (newValue) {
+                              prevConfig['header1'] = newValue;
+                            },
+                            initialValue: prevConfig['header1'] == null
+                                ? ''
+                                : (prevConfig['header1'] as String),
                           ),
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.next,
-                          onSaved: (newValue) {
-                            prevConfig['header2'] = newValue;
-                          },
-                          initialValue: prevConfig['header2'] == null
-                              ? ''
-                              : (prevConfig['header2'] as String),
-                        ),
-                        TextFormField(
-                          decoration: generateInputDecoration(
-                            label: 'Footer 1',
-                            hint: '',
+                          TextFormField(
+                            decoration: generateInputDecoration(
+                              label: 'Header 2',
+                              hint: 'contoh: Alamat',
+                            ),
+                            keyboardType: TextInputType.name,
+                            textInputAction: TextInputAction.next,
+                            onSaved: (newValue) {
+                              prevConfig['header2'] = newValue;
+                            },
+                            initialValue: prevConfig['header2'] == null
+                                ? ''
+                                : (prevConfig['header2'] as String),
                           ),
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.next,
-                          onSaved: (newValue) {
-                            prevConfig['footer1'] = newValue;
-                          },
-                          initialValue: prevConfig['footer1'] == null
-                              ? ''
-                              : (prevConfig['footer1'] as String),
-                        ),
-                        TextFormField(
-                          decoration: generateInputDecoration(
-                            label: 'Footer 2',
-                            hint: '',
+                          TextFormField(
+                            decoration: generateInputDecoration(
+                              label: 'Footer 1',
+                              hint: '',
+                            ),
+                            keyboardType: TextInputType.name,
+                            textInputAction: TextInputAction.next,
+                            onSaved: (newValue) {
+                              prevConfig['footer1'] = newValue;
+                            },
+                            initialValue: prevConfig['footer1'] == null
+                                ? ''
+                                : (prevConfig['footer1'] as String),
                           ),
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.done,
-                          onSaved: (newValue) {
-                            prevConfig['footer2'] = newValue;
+                          TextFormField(
+                            decoration: generateInputDecoration(
+                              label: 'Footer 2',
+                              hint: '',
+                            ),
+                            keyboardType: TextInputType.name,
+                            textInputAction: TextInputAction.done,
+                            onSaved: (newValue) {
+                              prevConfig['footer2'] = newValue;
+                            },
+                            initialValue: prevConfig['footer2'] == null
+                                ? ''
+                                : (prevConfig['footer2'] as String),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        TextButton(
+                          child: const Text(
+                            'Tutup',
+                            // style: Theme.of(context).textTheme.button,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
                           },
-                          initialValue: prevConfig['footer2'] == null
-                              ? ''
-                              : (prevConfig['footer2'] as String),
                         ),
+                        const SizedBox(width: 8),
+                        TextButton(
+                          child: const Text(
+                            'Simpan',
+                            // style: Theme.of(context).textTheme.button,
+                          ),
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              formKey.currentState!.save();
+                              saveConfig(prevConfig);
+                            }
+                          },
+                        ),
+                        const SizedBox(width: 8),
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      TextButton(
-                        child: Text(
-                          'Tutup',
-                          style: Theme.of(context).textTheme.button,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      const SizedBox(width: 8),
-                      TextButton(
-                        child: Text(
-                          'Simpan',
-                          style: Theme.of(context).textTheme.button,
-                        ),
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            formKey.currentState!.save();
-                            saveConfig(prevConfig);
-                          }
-                        },
-                      ),
-                      const SizedBox(width: 8),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

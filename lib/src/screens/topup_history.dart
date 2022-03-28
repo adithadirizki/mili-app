@@ -233,10 +233,6 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
                     history.isPending
                         ? Text(
                             'Waktu bayar ${printDuration(timeLeft)}',
-                            // style: Theme.of(context)
-                            //     .textTheme
-                            //     .bodySmall!
-                            //     .copyWith(),
                           )
                         : const SizedBox(),
 

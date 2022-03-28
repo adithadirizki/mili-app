@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/downline.dart';
 import 'package:miliv2/src/services/auth.dart';
@@ -118,7 +115,6 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputName,
-                        color: Colors.blueAccent,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -137,7 +133,6 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputPhone,
-                        color: Colors.blueAccent,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -156,7 +151,6 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputEmail,
-                        color: Colors.blueAccent,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -174,7 +168,6 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputMarkup,
-                        color: Colors.blueAccent,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -198,7 +191,6 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputMerchantType,
-                        color: Colors.blueAccent,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -218,7 +210,6 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputAddress,
-                        color: Colors.blueAccent,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {

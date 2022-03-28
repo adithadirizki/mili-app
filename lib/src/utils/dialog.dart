@@ -18,7 +18,7 @@ void confirmDialog(BuildContext context,
         title: title != null
             ? Text(
                 title,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(),
+                style: Theme.of(context).textTheme.titleMedium,
               )
             : null,
         children: <Widget>[
@@ -28,7 +28,7 @@ void confirmDialog(BuildContext context,
             child: SelectableText(
               msg,
               textAlign: TextAlign.left,
-              // style: Theme.of(context).textTheme.bodySmall!.copyWith(),
+              // style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
           Padding(
@@ -48,11 +48,11 @@ void confirmDialog(BuildContext context,
                   child: cancelText != null
                       ? Text(
                           cancelText,
-                          style: Theme.of(context).textTheme.button!.copyWith(),
+                          // style: Theme.of(context).textTheme.button,
                         )
-                      : Text(
+                      : const Text(
                           'Tidak',
-                          style: Theme.of(context).textTheme.button!.copyWith(),
+                          // style: Theme.of(context).textTheme.button,
                         ),
                 ),
                 TextButton(
@@ -63,11 +63,11 @@ void confirmDialog(BuildContext context,
                   child: confirmText != null
                       ? Text(
                           confirmText,
-                          style: Theme.of(context).textTheme.button!.copyWith(),
+                          // style: Theme.of(context).textTheme.button,
                         )
-                      : Text(
+                      : const Text(
                           'Ya',
-                          style: Theme.of(context).textTheme.button!.copyWith(),
+                          // style: Theme.of(context).textTheme.button,
                         ),
                 )
               ],
@@ -87,7 +87,7 @@ void infoDialog(BuildContext context, {required String msg, String? title}) {
         title: title != null
             ? Text(
                 title,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(),
+                style: Theme.of(context).textTheme.bodyMedium,
               )
             : null,
         children: <Widget>[
@@ -97,7 +97,7 @@ void infoDialog(BuildContext context, {required String msg, String? title}) {
             child: SelectableText(
               msg,
               textAlign: TextAlign.left,
-              // style: Theme.of(context).textTheme.bodySmall!.copyWith(),
+              // style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
           Padding(
@@ -109,9 +109,9 @@ void infoDialog(BuildContext context, {required String msg, String? title}) {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text(
+                  child: const Text(
                     'Tutup',
-                    style: Theme.of(context).textTheme.button!.copyWith(),
+                    // style: Theme.of(context).textTheme.button,
                   ),
                 ),
               ],

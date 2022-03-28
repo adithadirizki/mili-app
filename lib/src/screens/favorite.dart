@@ -111,9 +111,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 _favoriteNameController.clear();
                 Navigator.of(context).pop();
               },
-              child: Text(
+              child: const Text(
                 'Batal',
-                style: Theme.of(context).textTheme.button,
+                // style: Theme.of(context).textTheme.button,
               ),
             ),
             TextButton(
@@ -121,9 +121,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 saveFavorite(fav);
                 await Navigator.of(context).maybePop();
               },
-              child: Text(
+              child: const Text(
                 'Simpan',
-                style: Theme.of(context).textTheme.button,
+                // style: Theme.of(context).textTheme.button,
               ),
             )
           ],
@@ -175,7 +175,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   children: [
                     Text(
                       item.name ?? '-Set Nama-',
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      // style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],
                 ),
@@ -231,17 +231,17 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                       children: [
                         Text(
                           item.productName ?? '',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(fontWeight: FontWeight.bold),
+                          // style: Theme.of(context)
+                          //     .textTheme
+                          //     .bodySmall!
+                          //     .copyWith(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(width: 10),
                       ],
                     ),
                     Text(
                       item.destination,
-                      style: Theme.of(context).textTheme.bodySmall,
+                      // style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),

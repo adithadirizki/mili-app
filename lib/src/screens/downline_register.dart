@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/services/auth.dart';
@@ -139,7 +136,6 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputName,
-                        color: Colors.blueAccent,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -163,7 +159,6 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputPhone,
-                        color: Colors.blueAccent,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -184,7 +179,6 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputEmail,
-                        color: Colors.blueAccent,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -208,7 +202,6 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputMarkup,
-                        color: Colors.blueAccent,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -227,7 +220,6 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                     DropdownButtonFormField<String>(
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputMerchantType,
-                        color: Colors.blueAccent,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       isExpanded: true,
@@ -260,7 +252,6 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputAddress,
-                        color: Colors.blueAccent,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
