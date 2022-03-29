@@ -24,7 +24,7 @@ class UserBalanceState extends ChangeNotifier {
   String? address;
   String? outletType;
   double markup = 0;
-  String groupName = 'GUEST';
+  String groupName = 'RETAIL';
 
   UserBalanceState(this.balance, this.balanceCredit, this.isLoading);
 

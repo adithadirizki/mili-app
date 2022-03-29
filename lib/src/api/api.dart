@@ -755,7 +755,7 @@ class Api {
       required String outletType,
       required String email,
       required double markup,
-      String? address}) {
+      required String address}) {
     Map<String, Object?> body = <String, Object?>{
       'name': name,
       'phone_number': phoneNumber,
@@ -764,6 +764,7 @@ class Api {
       'outlet_type': outletType,
       'address': address,
     };
+    debugPrint('Downline register $body');
     return http
         .post(
           Uri.parse(AppConfig.baseUrl + '/downline'),

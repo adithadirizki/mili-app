@@ -35,7 +35,6 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
   final _addressController = TextEditingController();
   final _markupController = TextEditingController();
 
-  double markup = 0.0;
   List<String> outletTypes = [];
   String? outletType;
 
@@ -50,7 +49,7 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
     });
   }
 
-  FutureOr<void> _handleError(Object e) {
+  FutureOr<void> _handleError(dynamic e) {
     snackBarDialog(context, e.toString());
   }
 
@@ -81,9 +80,6 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
         offset: value.length,
       ),
     );
-    setState(() {
-      markup = number;
-    });
   }
 
   void submit() async {
@@ -92,22 +88,28 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
       var phoneNumber = _phoneController.value.text;
       var email = _emailController.value.text;
       var address = _addressController.value.text;
+      var markup = _markupController.value.text;
 
+      showLoaderDialog(context);
       Api.registerDownline(
-              name: name,
-              phoneNumber: phoneNumber,
-              email: email,
-              outletType: outletType!,
-              markup: markup,
-              address: address)
-          .then((response) {
+        name: name,
+        phoneNumber: phoneNumber,
+        email: email,
+        outletType: outletType!,
+        markup: parseDouble(markup),
+        address: address,
+      ).then((response) async {
         Map<String, dynamic>? bodyMap =
             json.decode(response.body) as Map<String, dynamic>?;
         debugPrint("Response >> ${bodyMap}");
         var status = response.statusCode;
         if (status == 200) {}
+        await popScreen(context);
         popScreenWithCallback<bool>(context, true);
-      }).catchError(_handleError);
+      }).catchError((dynamic e) async {
+        await popScreen(context);
+        _handleError(e);
+      });
     }
   }
 

@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/services/auth.dart';
@@ -108,7 +105,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputCurrentPassword,
-                        color: Colors.blueAccent,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -128,7 +124,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputNewPassword,
-                        color: Colors.blueAccent,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -148,7 +143,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputConfirmPassword,
-                        color: Colors.blueAccent,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {

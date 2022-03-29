@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/models/vendor.dart';
@@ -127,6 +128,10 @@ class _HomeMenuState extends State<HomeMenu> {
       snackBarDialog(
           context, 'Pembelian tiket Kereta Api saat ini belum tersedia');
     }));
+    menuList.add(AppMenu(AppImages.menuKAI, 'Kereta Api', () {
+      snackBarDialog(
+          context, 'Pembelian tiket Kereta Api saat ini belum tersedia');
+    }));
     // menuList.add(AppMenu(AppImages.menuMore, 'More', () {
     //   // // TODO Show reordering menu page
     //   // showSnackBar(context, 'Will coming soon');
@@ -144,27 +149,25 @@ class _HomeMenuState extends State<HomeMenu> {
   Widget itemBuilder(BuildContext context, int position) {
     AppMenu menu = menuList[position];
 
-    return Container(
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: menu.action,
       key: ObjectKey(menu),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: menu.action,
-            child: Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xffCECECE), width: 0.5),
-                //borderRadius: BorderRadius.all(Radius.circular(20.0))
-                color: const Color(0xffFBFBFB),
-                borderRadius: const BorderRadius.all(Radius.elliptical(69, 69)),
-              ),
-              padding: const EdgeInsets.all(12.0),
-              child: Image(
-                image: menu.icon,
-              ),
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              border: Border.all(color: const Color(0xffCECECE), width: 0.5),
+              //borderRadius: BorderRadius.all(Radius.circular(20.0))
+              color: const Color(0xffFBFBFB),
+              borderRadius: const BorderRadius.all(Radius.elliptical(69, 69)),
+            ),
+            padding: const EdgeInsets.all(12.0),
+            child: Image(
+              image: menu.icon,
             ),
           ),
           const SizedBox(height: 6.0),
@@ -172,12 +175,27 @@ class _HomeMenuState extends State<HomeMenu> {
             child: Text(
               menu.label,
               textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
+              overflow: TextOverflow.visible,
               maxLines: 2,
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(height: 1, overflow: TextOverflow.visible),
             ),
           ),
-          const SizedBox(height: 6.0),
+          const SizedBox(height: 20),
+          // Flexible(
+          //   child: Text(
+          //     menu.label,
+          //     textAlign: TextAlign.center,
+          //     overflow: TextOverflow.visible,
+          //     maxLines: 2,
+          //     style: Theme.of(context)
+          //         .textTheme
+          //         .bodyMedium
+          //         ?.copyWith(height: 1, overflow: TextOverflow.visible),
+          //   ),
+          // ),
         ],
       ),
     );
@@ -188,16 +206,19 @@ class _HomeMenuState extends State<HomeMenu> {
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
-          minHeight: 200,
-          maxHeight: 500,
+          minHeight: 250,
+          maxHeight: 600,
         ),
         child: GridView.builder(
           physics: const ClampingScrollPhysics(),
           itemCount: menuList.length,
           shrinkWrap: true,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4),
+            crossAxisCount: 4,
+            mainAxisSpacing: 6,
+          ),
           itemBuilder: itemBuilder,
+          clipBehavior: Clip.antiAlias,
         ),
       ),
     );

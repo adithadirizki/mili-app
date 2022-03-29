@@ -341,6 +341,27 @@ Future<T?> bottomSheetDialog<T>(
   );
 }
 
+void showLoaderDialog(BuildContext context, {String? message}) {
+  AlertDialog alert = AlertDialog(
+    content: Row(
+      children: [
+        const CircularProgressIndicator(),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 10),
+          child: Text(message ?? 'Loading ...'),
+        ),
+      ],
+    ),
+  );
+  showDialog<Widget>(
+    barrierDismissible: false,
+    context: context,
+    builder: (ctx) {
+      return alert;
+    },
+  );
+}
+
 typedef WidgetBuilderCallback = Widget Function(BuildContext);
 
 void pushScreen(BuildContext context, WidgetBuilderCallback builder) {

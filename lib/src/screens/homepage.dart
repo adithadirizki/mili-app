@@ -36,6 +36,8 @@ class _HomepageState extends State<Homepage>
   int selectedPage = -1;
   final initialPage = 0;
 
+  bool synchronized = false;
+
   bool locked = false;
   bool pinEnabled = false;
   bool biometricEnabled = false;
@@ -84,20 +86,31 @@ class _HomepageState extends State<Homepage>
     });
     beginTimer();
     activeBannerState.fetchData();
-    AppDB.syncVendor();
-    AppDB.syncUserConfig();
-    AppDB.syncProduct();
-    AppDB.syncHistory();
-    AppDB.syncTopupHistory();
-    AppDB.syncBalanceMutation();
-    AppDB.syncCreditMutation();
+  }
+
+  void initDB() async {
+    showLoaderDialog(context, message: 'Memperbarui...');
+    await AppDB.syncVendor();
+    await AppDB.syncUserConfig();
+    await AppDB.syncProduct();
+    await AppDB.syncHistory();
+    await AppDB.syncTopupHistory();
+    await AppDB.syncBalanceMutation();
+    await AppDB.syncCreditMutation();
+    synchronized = true;
+    popScreen(context);
   }
 
   void initPin() {
     pinEnabled = AppStorage.getPINEnable();
     biometricEnabled = AppStorage.getBiometricEnable();
+    debugPrint('Pin enabled $pinEnabled && ${userBalanceState.isGuest()}');
     if (!userBalanceState.isGuest() && pinEnabled) {
       locked = true;
+    } else {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        initDB();
+      });
     }
   }
 
@@ -144,6 +157,11 @@ class _HomepageState extends State<Homepage>
 
   void onPINConfirmed(BuildContext ctx) {
     locked = false;
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      if (!locked) {
+        initDB();
+      }
+    });
     setState(() {});
   }
 
@@ -236,6 +254,14 @@ class _HomepageState extends State<Homepage>
     }
   }
 
+  Future<bool> _onWillPop() async {
+    debugPrint('On pop $synchronized -- $locked');
+    if (!synchronized) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -277,50 +303,49 @@ class _HomepageState extends State<Homepage>
             ),
           ),
         ),
-        // icon: Image.asset(
-        //   'images/phone_logo.png',
-        //   fit: BoxFit.fill,
-        // ),
       );
     }
 
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70.0),
-        child: AppBar(
-          // backgroundColor: Colors.white,
-          elevation: 0,
-          toolbarHeight: 70,
-          title: Container(
-            alignment: Alignment.center,
-            child: const Image(
-              image: AppImages.logoColor,
-              height: 40,
-              fit: BoxFit.fill,
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(70.0),
+          child: AppBar(
+            // backgroundColor: Colors.white,
+            elevation: 0,
+            toolbarHeight: 70,
+            title: Container(
+              alignment: Alignment.center,
+              child: const Image(
+                image: AppImages.logoColor,
+                height: 40,
+                fit: BoxFit.fill,
+              ),
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: isShowBottomBar
-          ? HomeBottomBar(
-              pageController: tabController,
-              selectedPage: selectedPage,
-            )
-          : null,
-      body: Container(
-        padding: const EdgeInsets.only(top: 0, bottom: 0),
-        child: TabBarView(
-          key: const PageStorageKey<String>("homepage"),
-          controller: tabController,
-          children: [
-            withHomeScreenProvider(
-              context,
-              HomeScreen(
-                key: const PageStorageKey<String>('MainPage'),
-                scrollBottomBarController: mainScreenScrollController,
+        bottomNavigationBar: isShowBottomBar
+            ? HomeBottomBar(
+                pageController: tabController,
+                selectedPage: selectedPage,
+              )
+            : null,
+        body: Container(
+          padding: const EdgeInsets.only(top: 0, bottom: 0),
+          child: TabBarView(
+            key: const PageStorageKey<String>("homepage"),
+            controller: tabController,
+            children: [
+              withHomeScreenProvider(
+                context,
+                HomeScreen(
+                  key: const PageStorageKey<String>('MainPage'),
+                  scrollBottomBarController: mainScreenScrollController,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
