@@ -17,7 +17,6 @@ import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:miliv2/src/widgets/product_payment.dart';
 import 'package:miliv2/src/widgets/screen.dart';
 import 'package:objectbox/internal.dart';
-import 'package:objectbox/objectbox.dart';
 
 class PurchasePDAMScreen extends StatefulWidget {
   final Vendor vendor;
@@ -179,6 +178,9 @@ class _PurchasePDAMScreenState extends State<PurchasePDAMScreen> {
 
   void onDestinationChange(String value) {
     value = value.trim();
+    if (postpaidKey.currentState != null) {
+      postpaidKey.currentState!.reset();
+    }
     if (destinationNumber != value && value.length > 3) {
       setState(() {
         destinationNumber = value;

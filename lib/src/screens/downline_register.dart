@@ -40,16 +40,20 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
 
   // bool _valid = true;
   late AppAuth authState; // get auth state
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
+    _markupController.text = formatNumber(0);
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       initialize();
     });
   }
 
   FutureOr<void> _handleError(dynamic e) {
+    isLoading = false;
+    setState(() {});
     snackBarDialog(context, e.toString());
   }
 
@@ -90,7 +94,8 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
       var address = _addressController.value.text;
       var markup = _markupController.value.text;
 
-      showLoaderDialog(context);
+      isLoading = true;
+      setState(() {});
       Api.registerDownline(
         name: name,
         phoneNumber: phoneNumber,
@@ -104,12 +109,9 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
         debugPrint("Response >> ${bodyMap}");
         var status = response.statusCode;
         if (status == 200) {}
-        await popScreen(context);
+        snackBarDialog(context, 'Downline berhasil didaftarkan');
         popScreenWithCallback<bool>(context, true);
-      }).catchError((dynamic e) async {
-        await popScreen(context);
-        _handleError(e);
-      });
+      }).catchError(_handleError);
     }
   }
 
@@ -269,7 +271,10 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                     Container(
                       margin: const EdgeInsets.only(bottom: 10, top: 20),
                       child: AppButton(
-                          'Kirim', userBalanceState.isGuest() ? null : submit),
+                          'Kirim',
+                          userBalanceState.isGuest() || isLoading
+                              ? null
+                              : submit),
                     ),
                   ],
                 ),

@@ -52,6 +52,7 @@ class _PurchaseDenomScreenState extends State<PurchaseDenomScreen> {
 
   void onInquiryCompleted(InquiryResponse response) {
     inquiryResponse = response;
+    debugPrint('inquiry completed $response');
     openPayment();
   }
 
@@ -111,6 +112,9 @@ class _PurchaseDenomScreenState extends State<PurchaseDenomScreen> {
 
   void onDestinationChange(String value) {
     value = value.trim();
+    if (postpaidKey.currentState != null) {
+      postpaidKey.currentState!.reset();
+    }
     if (destinationNumber != value && value.length > 3) {
       setState(() {
         destinationNumber = value;
@@ -123,10 +127,9 @@ class _PurchaseDenomScreenState extends State<PurchaseDenomScreen> {
   }
 
   void onAmountChange(String value) {
-    if (inquiryResponse != null) {
-      setState(() {
-        inquiryResponse = null;
-      });
+    debugPrint('Amount change $inquiryResponse');
+    if (postpaidKey.currentState != null) {
+      postpaidKey.currentState!.reset();
     }
     var number = parseDouble(value);
     if (number > 10000000) {

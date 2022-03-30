@@ -95,7 +95,7 @@ Future<String> getBuildNumber() async {
 Future<String> getOSName() async {
   if (Platform.isAndroid) {
     AndroidDeviceInfo info = await _deviceInfo.androidInfo;
-    return '${info.version.codename} ${info.version.release ?? '-'} (${info.version.sdkInt})';
+    return 'Android ${info.version.release ?? '-'} (${info.version.sdkInt})';
   } else if (Platform.isIOS) {
     IosDeviceInfo info = await _deviceInfo.iosInfo;
     return info.model ?? '';

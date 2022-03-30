@@ -47,7 +47,7 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
     buildNumber = await getBuildNumber();
     var ratio = MediaQuery.of(context).devicePixelRatio;
     screen =
-        '${(MediaQuery.of(context).size.width.round() * ratio).round()} x ${(MediaQuery.of(context).size.height.round() * ratio).round()}';
+        '${(MediaQuery.of(context).size.width.ceil() * ratio).ceil()} x ${(MediaQuery.of(context).size.height.ceil() * ratio).ceil()}';
     try {
       var resp = await Api.clientInfo();
 
@@ -69,12 +69,6 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
     try {
       var vendorCount = AppDB.vendorDB.count();
       var productCount = AppDB.productDB.count();
-      // var mutasiCount = AppDB.balanceMutationDB.count();
-      // var creditCount = AppDB.creditMutationDB.count();
-      // var notificationCount = AppDB.notificationDB.count();
-      // var csCount = AppDB.customerServiceDB.count();
-      // var historyCount = AppDB.purchaseHistoryDB.count();
-      // var topupCount = AppDB.topupHistoryDB.count();
 
       databaseInfo = 'Data 1 (${productCount}) | Data 2 ($vendorCount) ';
       // '| Mutasi Utama ($mutasiCount) | Mutasi Kredit ($creditCount) | Notifikasi ($notificationCount) | Customer Service ($csCount) | Transaksi ($historyCount) | Topup ($topupCount)';
@@ -89,9 +83,9 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
   Widget buildContent(BuildContext context) {
     var titleStyle = Theme.of(context)
         .textTheme
-        .bodySmall
+        .bodyMedium
         ?.copyWith(fontWeight: FontWeight.bold, letterSpacing: 1, height: 2);
-    var contentStyle = Theme.of(context).textTheme.bodySmall?.copyWith();
+    var contentStyle = Theme.of(context).textTheme.bodyMedium?.copyWith();
     return ListView(
       // mainAxisAlignment: MainAxisAlignment.start,
       // crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +95,7 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
           style: titleStyle,
         ),
         Text(
-          model,
+          '$model $deviceId',
           style: contentStyle,
         ),
         Text(
@@ -125,7 +119,7 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
           style: titleStyle,
         ),
         Text(
-          '$appVersion \n$deviceId',
+          appVersion,
           style: contentStyle,
         ),
         Text(

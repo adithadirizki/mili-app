@@ -30,6 +30,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   bool _valid = true;
   late AppAuth authState; // get auth state
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -37,6 +38,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   }
 
   FutureOr<void> _handleError(Object e) {
+    isLoading = false;
+    setState(() {});
     snackBarDialog(context, e.toString());
   }
 
@@ -52,6 +55,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         'new_password_confirmation': confirm,
       };
       debugPrint("Request >> ${json.encode(body)}");
+      isLoading = true;
+      setState(() {});
       Api.changePassword(body).then((response) {
         Map<String, dynamic>? bodyMap =
             json.decode(response.body) as Map<String, dynamic>?;
@@ -60,6 +65,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         if (status == 200) {
           userBalanceState.fetchData();
         }
+        snackBarDialog(context, 'Password berhasil diubah');
         popScreen(context);
       }).catchError(_handleError);
     }
@@ -158,7 +164,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     Container(
                       margin: const EdgeInsets.only(bottom: 10, top: 20),
                       child: AppButton(
-                          'Simpan', userBalanceState.isGuest() ? null : submit),
+                          'Simpan',
+                          userBalanceState.isGuest() || isLoading
+                              ? null
+                              : submit),
                     ),
                   ],
                 ),

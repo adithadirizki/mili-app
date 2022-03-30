@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -71,7 +70,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
     });
   }
 
-  FutureOr<void> _handleError(Object e) {
+  FutureOr<void> _handleError(dynamic e) {
     snackBarDialog(context, e.toString());
   }
 
@@ -138,6 +137,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
       var postCode = _postalCodeController.value.text;
       var address = _addressController.value.text;
 
+      var closeLoader = showLoaderDialog(context);
       Api.upgrade(
         idCardNumber: idCard,
         postCode: postCode,
@@ -157,15 +157,22 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
         // }
         if (response.statusCode == 200) {
           await userBalanceState.fetchData();
-          popScreen(context);
+          await closeLoader();
+          await closeLoader();
+          snackBarDialog(context, 'Pendaftaran Akun Premium berhasil');
+          await popScreen(context);
         } else {
+          await closeLoader();
           snackBarDialog(
               context,
               (body['error_msg'] ??
-                      'Pendaftaran gagal, pastikan data sudah lengkap dan sesuai.')
+                      'Pendaftaran gagal, pastikan data sudah lengkap dan sesuai')
                   .toString());
         }
-      }).catchError(_handleError);
+      }).catchError((dynamic e) async {
+        await closeLoader();
+        _handleError(e);
+      });
     }
   }
 
@@ -274,10 +281,8 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
                       ],
-                      cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.upgradeInputIdCard,
-                        color: Colors.blueAccent,
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.attach_file_rounded),
                           onPressed: onPhotoTap(context),
@@ -322,7 +327,6 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                     DropdownButtonFormField<int>(
                       decoration: generateInputDecoration(
                         label: AppLabel.upgradeInputProvince,
-                        color: Colors.blueAccent,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       isExpanded: true,
@@ -359,7 +363,6 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                     DropdownButtonFormField<int>(
                       decoration: generateInputDecoration(
                         label: AppLabel.upgradeInputCity,
-                        color: Colors.blueAccent,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       isExpanded: true,
@@ -396,7 +399,6 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                     DropdownButtonFormField<int>(
                       decoration: generateInputDecoration(
                         label: AppLabel.upgradeInputDistrict,
-                        color: Colors.blueAccent,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       isExpanded: true,
@@ -433,7 +435,6 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                     DropdownButtonFormField<int>(
                       decoration: generateInputDecoration(
                         label: AppLabel.upgradeInputVillage,
-                        color: Colors.blueAccent,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       isExpanded: true,
@@ -465,10 +466,8 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                       textInputAction: TextInputAction.next,
                       maxLength: 200,
                       maxLines: 2,
-                      cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.upgradeInputAddress,
-                        color: Colors.blueAccent,
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -488,10 +487,8 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                         FilteringTextInputFormatter.digitsOnly,
                       ],
                       maxLength: 5,
-                      cursorColor: Colors.blueAccent,
                       decoration: generateInputDecoration(
                         label: AppLabel.upgradeInputPostalCode,
-                        color: Colors.blueAccent,
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {

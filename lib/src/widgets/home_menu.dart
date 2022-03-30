@@ -128,10 +128,6 @@ class _HomeMenuState extends State<HomeMenu> {
       snackBarDialog(
           context, 'Pembelian tiket Kereta Api saat ini belum tersedia');
     }));
-    menuList.add(AppMenu(AppImages.menuKAI, 'Kereta Api', () {
-      snackBarDialog(
-          context, 'Pembelian tiket Kereta Api saat ini belum tersedia');
-    }));
     // menuList.add(AppMenu(AppImages.menuMore, 'More', () {
     //   // // TODO Show reordering menu page
     //   // showSnackBar(context, 'Will coming soon');
@@ -215,7 +211,7 @@ class _HomeMenuState extends State<HomeMenu> {
           shrinkWrap: true,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
-            mainAxisSpacing: 6,
+            mainAxisSpacing: 7,
           ),
           itemBuilder: itemBuilder,
           clipBehavior: Clip.antiAlias,

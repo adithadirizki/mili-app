@@ -191,6 +191,9 @@ class _PurchasePaymentProductScreenState
   }
 
   void onProductChange(Product? value) {
+    if (postpaidKey.currentState != null) {
+      postpaidKey.currentState!.reset();
+    }
     inquiryResponse = null;
     selectedProduct = value;
     setState(() {});

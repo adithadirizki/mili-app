@@ -35,6 +35,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
 
   List<String> outletTypes = [];
   String? outletType;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -63,7 +64,9 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
     }).catchError(_handleError);
   }
 
-  FutureOr<void> _handleError(Object e) {
+  FutureOr<void> _handleError(dynamic e) {
+    isLoading = false;
+    setState(() {});
     snackBarDialog(context, e.toString());
   }
 
@@ -82,6 +85,8 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
         'address': address,
       };
       debugPrint("Request >> ${json.encode(body)}");
+      isLoading = true;
+      setState(() {});
       Api.updateProfile(body).then((response) {
         Map<String, dynamic>? bodyMap =
             json.decode(response.body) as Map<String, dynamic>?;
@@ -90,6 +95,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
         if (status == 200) {
           userBalanceState.fetchData();
         }
+        snackBarDialog(context, 'Profile berhasil diubah');
         popScreen(context);
       }).catchError(_handleError);
     }
@@ -167,6 +173,12 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputEmail,
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Masukkan Email';
+                        }
+                        return null;
+                      },
                     ),
                     // Jenis Toko
                     DropdownButtonFormField<String>(
@@ -208,7 +220,11 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                     // Button
                     Container(
                       margin: const EdgeInsets.only(bottom: 10, top: 20),
-                      child: AppButton('Simpan', submit),
+                      child: AppButton(
+                          'Simpan',
+                          userBalanceState.isGuest() || isLoading
+                              ? null
+                              : submit),
                     ),
                   ],
                 ),

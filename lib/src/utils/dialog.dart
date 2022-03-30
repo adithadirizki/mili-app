@@ -341,7 +341,8 @@ Future<T?> bottomSheetDialog<T>(
   );
 }
 
-void showLoaderDialog(BuildContext context, {String? message}) {
+Future<void> Function() showLoaderDialog(BuildContext context,
+    {String? message}) {
   AlertDialog alert = AlertDialog(
     content: Row(
       children: [
@@ -363,6 +364,10 @@ void showLoaderDialog(BuildContext context, {String? message}) {
       return alert;
     },
   );
+
+  return () {
+    return popScreen(context);
+  };
 }
 
 typedef WidgetBuilderCallback = Widget Function(BuildContext);

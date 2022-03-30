@@ -53,7 +53,7 @@ class _TopupScreenState extends State<TopupScreen> {
     Api.getTopupInfo().then(handleResponseInfo).catchError(handleError);
   }
 
-  FutureOr<void> handleError(Object e) {
+  FutureOr<void> handleError(dynamic e) {
     setState(() {
       isLoading = false;
     });
@@ -78,6 +78,9 @@ class _TopupScreenState extends State<TopupScreen> {
     if (userBalanceState.isGuest()) {
       confirmSignin();
     } else if (formKey.currentState!.validate()) {
+      setState(() {
+        isLoading = true;
+      });
       var amount = parseDouble(textAmountController.value.text);
       Api.createTopupTicket(amount).then((response) {
         int? id;

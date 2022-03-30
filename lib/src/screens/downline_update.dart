@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/downline.dart';
+import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -39,6 +40,7 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
 
   bool _valid = true;
   late AppAuth authState; // get auth state
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -46,12 +48,14 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
     _nameController.text = widget.downline.name;
     _phoneController.text = widget.downline.phoneNumber;
     _emailController.text = widget.downline.email;
-    _markupController.text = widget.downline.markup.toString();
+    _markupController.text = formatNumber(widget.downline.markup);
     _addressController.text = widget.downline.address ?? '';
     _outletTypeController.text = widget.downline.outletType ?? '';
   }
 
-  FutureOr<void> _handleError(Object e) {
+  FutureOr<void> _handleError(dynamic e) {
+    isLoading = false;
+    setState(() {});
     snackBarDialog(context, e.toString());
   }
 
@@ -77,6 +81,8 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
 
   void submit() async {
     if (_formKey.currentState!.validate()) {
+      isLoading = true;
+      setState(() {});
       Api.updateDownline(widget.downline.userId, markup: markup)
           .then((response) {
         Map<String, dynamic>? bodyMap =
@@ -84,6 +90,7 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
         debugPrint("Response >> ${bodyMap}");
         var status = response.statusCode;
         if (status == 200) {}
+        snackBarDialog(context, 'Downline berhasil diubah');
         popScreenWithCallback<bool>(context, true);
       }).catchError(_handleError);
     }
@@ -222,7 +229,11 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
                     // Button
                     Container(
                       margin: const EdgeInsets.only(bottom: 10, top: 20),
-                      child: AppButton('Simpan', submit),
+                      child: AppButton(
+                          'Simpan',
+                          userBalanceState.isGuest() || isLoading
+                              ? null
+                              : submit),
                     ),
                   ],
                 ),
