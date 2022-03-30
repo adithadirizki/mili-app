@@ -345,7 +345,10 @@ void showLoaderDialog(BuildContext context, {String? message}) {
   AlertDialog alert = AlertDialog(
     content: Row(
       children: [
-        const CircularProgressIndicator(),
+        const CircularProgressIndicator(
+          // color: AppColors.blue4,
+          strokeWidth: 2,
+        ),
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Text(message ?? 'Loading ...'),

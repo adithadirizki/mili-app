@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miliv2/src/theme/colors.dart';
 
 abstract class AppTheme {
 //colors
@@ -129,10 +130,9 @@ final ThemeData lightTheme = ThemeData(
     toolbarTextStyle: TextStyle(color: Colors.blue),
     actionsIconTheme: IconThemeData(color: Colors.blue),
   ),
-  primaryColor: const Color(0xff4285F4),
-  // primaryColor: Colors.white,
+  primaryColor: AppColors.blue2,
   accentColor: const Color(0xff4285F4),
-  colorScheme: const ColorScheme.light(primary: Color(0xff4285F4)),
+  colorScheme: const ColorScheme.light(primary: AppColors.blue2),
   primarySwatch: Colors.blue,
   // backgroundColor: isDarkTheme ? Colors.black : Color(0xffF1F5FB),
   backgroundColor: const Color(0xffF1F5FB),

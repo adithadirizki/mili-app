@@ -6,7 +6,6 @@ import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/transaction.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/utils/device.dart';
-import 'package:miliv2/src/utils/dialog.dart';
 
 @immutable
 class PushNotification {
@@ -43,7 +42,7 @@ class AppMessaging {
 
     //
     var initializationSettingsAndroid =
-        const AndroidInitializationSettings('ic_launcher');
+        const AndroidInitializationSettings('@mipmap/ic_launcher');
     // var initializationSettingsIOS = IOSInitializationSettings(
     //     onDidReceiveLocalNotification: onDidRecieveLocalNotification);
     var initializationSettings = InitializationSettings(
@@ -121,7 +120,8 @@ class AppMessaging {
   }
 
   static Future _realtimeHandler(RemoteMessage message) async {
-    debugPrint('Messaging realtime data: ${message.data}');
+    debugPrint(
+        'Messaging realtime data: ${message.data} ${message.notification}');
 
     if (message.data['notification_key'] != null &&
         (message.data['notification_key'] as String) == 'purchase') {
@@ -129,31 +129,31 @@ class AppMessaging {
       transactionState.updateState();
     }
 
-    snackBarDialog(
-      _context,
-      message.notification!.body!,
-      title: message.notification!.title,
-      duration: 3000,
-    );
+    // snackBarDialog(
+    //   _context,
+    //   message.notification!.body!,
+    //   title: message.notification!.title,
+    //   duration: 3000,
+    // );
 
-    // // If `onMessage` is triggered with a notification, construct our own
-    // // local notification to show to users using the created channel.
-    // if (message.notification != null && message.notification!.android != null) {
-    //   var notification = message.notification!;
-    //   var android = message.notification!.android;
-    //   _localNotification.show(
-    //       notification.hashCode,
-    //       notification.title,
-    //       notification.body,
-    //       NotificationDetails(
-    //         android: AndroidNotificationDetails(
-    //           _localChannel.id,
-    //           _localChannel.name,
-    //           channelDescription: _localChannel.description,
-    //           // icon: android?.smallIcon,
-    //         ),
-    //       ));
-    // }
+    // If `onMessage` is triggered with a notification, construct our own
+    // local notification to show to users using the created channel.
+    if (message.notification != null && message.notification!.android != null) {
+      var notification = message.notification!;
+      var android = notification.android;
+      _localNotification.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              _localChannel.id,
+              _localChannel.name,
+              channelDescription: _localChannel.description,
+              // icon: android?.smallIcon,
+            ),
+          ));
+    }
   }
 
   static Future _onMessageOpen(RemoteMessage message) async {

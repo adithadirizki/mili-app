@@ -130,7 +130,7 @@ class _HomeBalanceState extends State<HomeBalance> {
                         style: Theme.of(context)
                             .textTheme
                             .titleMedium
-                            ?.copyWith(color: AppColors.blue6),
+                            ?.copyWith(color: AppColors.blue4),
                         // style: TextStyle(
                         //   color: Color(0xFF00C2FF),
                         //   fontFamily: 'Montserrat',
@@ -146,7 +146,7 @@ class _HomeBalanceState extends State<HomeBalance> {
                         formatNumber(
                             UserBalanceScope.of(context).balanceCredit),
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: AppColors.blue6,
+                            color: AppColors.blue4,
                             fontWeight: FontWeight.bold),
                         // style: const TextStyle(
                         //   color: Color(0xFF00C2FF),

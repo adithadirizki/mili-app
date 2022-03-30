@@ -98,6 +98,7 @@ class _HomepageState extends State<Homepage>
     await AppDB.syncBalanceMutation();
     await AppDB.syncCreditMutation();
     synchronized = true;
+    debugPrint('Completed initDB');
     popScreen(context);
   }
 
@@ -157,12 +158,12 @@ class _HomepageState extends State<Homepage>
 
   void onPINConfirmed(BuildContext ctx) {
     locked = false;
+    setState(() {});
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       if (!locked) {
         initDB();
       }
     });
-    setState(() {});
   }
 
   Future<bool> setNewPIN(String pin) async {
@@ -306,46 +307,43 @@ class _HomepageState extends State<Homepage>
       );
     }
 
-    return WillPopScope(
-      onWillPop: _onWillPop,
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(70.0),
-          child: AppBar(
-            // backgroundColor: Colors.white,
-            elevation: 0,
-            toolbarHeight: 70,
-            title: Container(
-              alignment: Alignment.center,
-              child: const Image(
-                image: AppImages.logoColor,
-                height: 40,
-                fit: BoxFit.fill,
-              ),
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(70.0),
+        child: AppBar(
+          // backgroundColor: Colors.white,
+          elevation: 0,
+          toolbarHeight: 70,
+          title: Container(
+            alignment: Alignment.center,
+            child: const Image(
+              image: AppImages.logoColor,
+              height: 40,
+              fit: BoxFit.fill,
             ),
           ),
         ),
-        bottomNavigationBar: isShowBottomBar
-            ? HomeBottomBar(
-                pageController: tabController,
-                selectedPage: selectedPage,
-              )
-            : null,
-        body: Container(
-          padding: const EdgeInsets.only(top: 0, bottom: 0),
-          child: TabBarView(
-            key: const PageStorageKey<String>("homepage"),
-            controller: tabController,
-            children: [
-              withHomeScreenProvider(
-                context,
-                HomeScreen(
-                  key: const PageStorageKey<String>('MainPage'),
-                  scrollBottomBarController: mainScreenScrollController,
-                ),
+      ),
+      bottomNavigationBar: isShowBottomBar
+          ? HomeBottomBar(
+              pageController: tabController,
+              selectedPage: selectedPage,
+            )
+          : null,
+      body: Container(
+        padding: const EdgeInsets.only(top: 0, bottom: 0),
+        child: TabBarView(
+          key: const PageStorageKey<String>("homepage"),
+          controller: tabController,
+          children: [
+            withHomeScreenProvider(
+              context,
+              HomeScreen(
+                key: const PageStorageKey<String>('MainPage'),
+                scrollBottomBarController: mainScreenScrollController,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

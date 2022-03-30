@@ -32,7 +32,7 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
               style: Theme.of(context)
                   .textTheme
                   .titleMedium
-                  ?.copyWith(color: AppColors.blue1),
+                  ?.copyWith(color: AppColors.blue2),
             ),
             onTap: () {
               Navigator.maybePop(context);
