@@ -38,7 +38,7 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
     var now = DateTime.now();
     firstDate = DateTime(now.year, now.month - 6);
     dateRange = DateTimeRange(
-        start: now.subtract(const Duration(hours: 24 * 7)), end: now);
+        start: now.subtract(const Duration(hours: 24 * 28)), end: now);
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       initDB();
     });

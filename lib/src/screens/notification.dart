@@ -39,7 +39,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     var now = DateTime.now();
     firstDate = DateTime(now.year, now.month - 6);
     dateRange = DateTimeRange(
-        start: now.subtract(const Duration(hours: 24 * 7)), end: now);
+        start: now.subtract(const Duration(hours: 24 * 28)), end: now);
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       initDB();
     });

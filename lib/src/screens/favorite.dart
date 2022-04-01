@@ -230,7 +230,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Text(
-                          item.productName ?? '',
+                          item.productCode.startsWith('PAY')
+                              ? item.productName ?? ''
+                              : item.groupName ?? '',
                           // style: Theme.of(context)
                           //     .textTheme
                           //     .bodySmall!
