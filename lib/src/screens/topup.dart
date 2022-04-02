@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/topup.dart';
 import 'package:miliv2/src/data/user_balance.dart';
-import 'package:miliv2/src/routing.dart';
 import 'package:miliv2/src/screens/topup_history.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
@@ -60,23 +59,9 @@ class _TopupScreenState extends State<TopupScreen> {
     snackBarDialog(context, e.toString());
   }
 
-  void confirmSignin() {
-    confirmDialog(
-      context,
-      title: 'Konfirmasi',
-      msg:
-          'Anda perlu melakukan Pendaftaran atau Login untuk melanjutkan transaksi',
-      confirmAction: () {
-        RouteStateScope.of(context).go('/signin');
-      },
-      confirmText: 'Ya, lanjutkan',
-      cancelText: 'Batal',
-    );
-  }
-
   void submitData() {
     if (userBalanceState.isGuest()) {
-      confirmSignin();
+      confirmSignin(context);
     } else if (formKey.currentState!.validate()) {
       setState(() {
         isLoading = true;

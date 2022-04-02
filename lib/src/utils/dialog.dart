@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:miliv2/src/routing.dart';
 import 'package:miliv2/src/theme/theme.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -198,7 +199,7 @@ void infoDialog(BuildContext context, {required String msg, String? title}) {
 //     );
 
 void snackBarDialog(BuildContext context, String text,
-    {String? title, int duration = 1000}) {
+    {String? title, int duration = 3000}) {
   showTopSnackBar(
     context,
     ConstrainedBox(
@@ -403,4 +404,17 @@ Future<void> popScreenWithCallback<T>(BuildContext context, T? result) async {
 
 Future<void> popScreen(BuildContext context) async {
   await Navigator.of(context).maybePop();
+}
+
+void confirmSignin(BuildContext context) {
+  confirmDialog(
+    context,
+    title: 'Konfirmasi',
+    msg: 'Anda perlu melakukan Pendaftaran atau Login untuk melanjutkan',
+    confirmAction: () {
+      RouteStateScope.of(context).go('/signin');
+    },
+    confirmText: 'Ya, lanjutkan',
+    cancelText: 'Batal',
+  );
 }

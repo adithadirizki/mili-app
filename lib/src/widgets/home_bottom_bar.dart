@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/screens/customer_service.dart';
@@ -113,13 +112,17 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
             IconButton(
               onPressed: () {
                 // gotoPage(4);
-                pushScreen(
-                  context,
-                  (_) => UserBalanceScope(
-                    notifier: userBalanceState,
-                    child: const ProfileScreen(),
-                  ),
-                );
+                if (userBalanceState.isGuest()) {
+                  confirmSignin(context);
+                } else {
+                  pushScreen(
+                    context,
+                    (_) => UserBalanceScope(
+                      notifier: userBalanceState,
+                      child: const ProfileScreen(),
+                    ),
+                  );
+                }
               },
               icon: const Image(
                 image: AppImages.user,

@@ -5,7 +5,6 @@ import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/data/transaction.dart';
 import 'package:miliv2/src/data/user_balance.dart';
-import 'package:miliv2/src/routing.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
@@ -53,23 +52,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
     trxId = DateTime.now().millisecondsSinceEpoch.toString();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       if (userBalanceState.isGuest()) {
-        confirmSignin();
+        confirmSignin(context);
       }
     });
-  }
-
-  void confirmSignin() {
-    confirmDialog(
-      context,
-      title: 'Konfirmasi',
-      msg:
-          'Anda perlu melakukan Pendaftaran atau Login untuk melanjutkan transaksi',
-      confirmAction: () {
-        RouteStateScope.of(context).go('/signin');
-      },
-      confirmText: 'Ya, lanjutkan',
-      cancelText: 'Batal',
-    );
   }
 
   void confirmPayment() {
