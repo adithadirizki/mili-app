@@ -88,7 +88,7 @@ class _HomepageState extends State<Homepage>
     activeBannerState.fetchData();
   }
 
-  void initDB() async {
+  void initialize() async {
     showLoaderDialog(context, message: 'Memperbarui...');
     await AppDB.syncVendor();
     await AppDB.syncUserConfig();
@@ -98,7 +98,7 @@ class _HomepageState extends State<Homepage>
     await AppDB.syncBalanceMutation();
     await AppDB.syncCreditMutation();
     synchronized = true;
-    debugPrint('Completed initDB');
+    debugPrint('Completed initialize');
     popScreen(context);
   }
 
@@ -110,7 +110,7 @@ class _HomepageState extends State<Homepage>
       locked = true;
     } else {
       WidgetsBinding.instance!.addPostFrameCallback((_) {
-        initDB();
+        initialize();
       });
     }
   }
@@ -161,7 +161,7 @@ class _HomepageState extends State<Homepage>
     setState(() {});
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       if (!locked) {
-        initDB();
+        initialize();
       }
     });
   }

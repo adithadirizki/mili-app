@@ -3,9 +3,7 @@ import 'dart:convert';
 import 'package:app_settings/app_settings.dart';
 import 'package:bluetooth_print/bluetooth_print.dart';
 import 'package:bluetooth_print/bluetooth_print_model.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/purchase.dart';
 import 'package:miliv2/src/database/database.dart';
@@ -31,9 +29,10 @@ class _PrinterScreenState extends State<PrinterScreen> {
   bool connected = false;
   String? deviceAddress;
   String tips = 'Langkah-langkah koneksi Printer Bluetooth \n\n'
-      '1. Aktifkan Bluetooth Handphone dan nyalakan Printer \n'
-      '2. Buka menu Setting -> Bluetooth kemudian pilih Printer   \n'
-      '3. Setelah Handphone dan Printer terhubung lakukan Test Print \n'
+      '1. Nyalakan Printer & aktifkan Bluetooth \n'
+      '2. Buka menu Setting -> Bluetooth kemudian pilih Printer, pastikan berhasil terhubung \n'
+      '3. Pilih printer yang muncul pada halaman dibawah \n'
+      '4. Lakukan setting Header atau Footer dan lakukan test print \n'
       '\n** Untuk info lebih lanjut silahkan ikuti petunjuk di Buku Manual Printer Anda';
 
   final formKey = GlobalKey<FormState>();

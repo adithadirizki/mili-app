@@ -20,42 +20,25 @@ class AppPrinter {
     if (_initialized) return;
 
     _printer = BluetoothPrint.instance;
-    // _connected = await _printer.isConnected ?? false;
+    _connected = await _printer.isConnected ?? false;
     _printerAddress = AppStorage.getPrinterAddress();
 
     _printer.state.listen((state) {
       switch (state) {
         case BluetoothPrint.CONNECTED:
-          debugPrint('Printer state Connected');
-          if (_printerAddress != null && !_connected) {
-            _printer.scanResults.listen((deviceList) {
-              var devices =
-                  deviceList.where((d) => d.address == _printerAddress);
-              if (devices.isNotEmpty) {
-                connect(devices.first);
-              }
-            });
-          }
-          // _connected = true;
+          debugPrint('AppPrinter state Connected');
+          _connected = true;
           break;
         case BluetoothPrint.DISCONNECTED:
-          debugPrint('Printer state Disconnected');
-          // _connected = false;
+          debugPrint('AppPrinter state Disconnected');
+          _connected = false;
           break;
         default:
           break;
       }
     });
 
-    // Reconnect
-    if (_printerAddress != null) {
-      Map<String, dynamic> deviceData = <String, dynamic>{};
-      deviceData['name'] = 'Default Printer';
-      deviceData['address'] = _printerAddress;
-      deviceData['connected'] = true;
-      BluetoothDevice device = BluetoothDevice.fromJson(deviceData);
-      _printer.connect(device);
-    }
+    debugPrint('AppPrinter connected $_connected');
 
     _initialized = true;
   }
@@ -111,7 +94,7 @@ class AppPrinter {
   static Future<void> print(List<LineText> rows,
       {Map<String, dynamic>? config}) async {
     if (!_connected) {
-      debugPrint('WARN Printer disconnected !!!');
+      debugPrint('AppPrinter not connected !!!');
       return;
     }
     UserConfig? printerConfig = await getPrinterConfig();
@@ -142,7 +125,7 @@ class AppPrinter {
         headers.add(LineText(
           type: LineText.TYPE_TEXT,
           align: LineText.ALIGN_CENTER,
-          content: '------------------------------',
+          content: '==============================',
           underline: 2,
           linefeed: 1,
         ));
