@@ -10,12 +10,8 @@ class AppButton extends ElevatedButton {
       : super(
           key: key,
           onPressed: onPress,
-          child: Flexible(
-            child: FittedBox(
-                child: Text(
-              label,
-              overflow: TextOverflow.fade,
-            )),
+          child: Text(
+            label
           ),
           style: ElevatedButton.styleFrom(
             textStyle: const TextStyle(
