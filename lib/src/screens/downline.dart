@@ -51,7 +51,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
 
     Map<String, String> params = {
       'sort': json.encode({'last_active': 'desc'}),
-      'limit': '50'
+      'limit': '1000'
     };
     await Api.getDownline(params: params)
         .then(handleDownlineList)

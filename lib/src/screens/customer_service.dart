@@ -10,6 +10,7 @@ import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/customer_service.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
@@ -24,50 +25,77 @@ class CustomerServiceScreen extends StatefulWidget {
 }
 
 class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
+  bool isLoading = true;
   List<types.Message> _messages = [];
   final _user = const types.User(id: '06c33e8b-e835-4736-80f4-63f44b66666c');
+
+  int currentPage = 0;
+  int itemPerPage = 10;
+  bool hasMore = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      initDB();
+      initDB(sync: true);
     });
   }
 
-  Future<void> initDB() async {
-    await AppDB.syncCustomerService();
+  Future<void> initDB({bool sync = false}) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    if (sync) {
+      await AppDB.syncCustomerService();
+      currentPage = 0;
+      _messages = [];
+    }
 
     Condition<CustomerService> filterUser =
         CustomerService_.userId.equals(userBalanceState.userId);
 
     final db = AppDB.customerServiceDB;
-    QueryBuilder<CustomerService> query = db.query(filterUser)
-      ..order(CustomerService_.messageDate, flags: 1);
-    final items = query.build().find();
+    QueryBuilder<CustomerService> qb = db.query(filterUser)
+      ..order(CustomerService_.messageDate, flags: Order.descending);
 
-    debugPrint('Customer Service length ${items.length}');
+    var query = qb.build()
+      ..offset = itemPerPage * currentPage
+      ..limit = itemPerPage;
+
+    final records = query.find();
+    if (records.length >= itemPerPage) {
+      currentPage++;
+      hasMore = true;
+    } else {
+      hasMore = false;
+    }
+
+    debugPrint(
+        'InitDB CS $currentPage x ${records.length} x ${_messages.length}');
+
+    _messages.addAll(records
+        .map<types.Message>((e) => e.photoUrl == null || e.photo!.isEmpty
+            ? types.TextMessage(
+                author: e.isOwnMessage ? _user : types.User(id: e.senderId),
+                createdAt: e.messageDate.millisecondsSinceEpoch,
+                id: e.id.toString(),
+                text: e.message,
+                status: types.Status.delivered,
+              )
+            : types.ImageMessage(
+                author: e.isOwnMessage ? _user : types.User(id: e.senderId),
+                createdAt: e.messageDate.millisecondsSinceEpoch,
+                id: e.id.toString(),
+                size: 100,
+                name: e.photoUrl!,
+                uri: e.photoUrl!,
+                status: types.Status.delivered,
+              ))
+        .toList(growable: true));
 
     setState(() {
-      _messages = items
-          .map<types.Message>((e) => e.photoUrl == null || e.photo!.isEmpty
-              ? types.TextMessage(
-                  author: e.isOwnMessage ? _user : types.User(id: e.senderId),
-                  createdAt: e.messageDate.millisecondsSinceEpoch,
-                  id: e.id.toString(),
-                  text: e.message,
-                  status: types.Status.delivered,
-                )
-              : types.ImageMessage(
-                  author: e.isOwnMessage ? _user : types.User(id: e.senderId),
-                  createdAt: e.messageDate.millisecondsSinceEpoch,
-                  id: e.id.toString(),
-                  size: 100,
-                  name: e.photoUrl!,
-                  uri: e.photoUrl!,
-                  status: types.Status.delivered,
-                ))
-          .toList(growable: true);
+      isLoading = false;
     });
   }
 
@@ -263,6 +291,10 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
   }
 
   Future<void> _handleEndReached() async {
+    if (!isLoading && hasMore) {
+      debugPrint('_handleEndReached');
+      initDB();
+    }
     // final uri = Uri.parse(
     //   'https://api.instantwebtools.net/v1/passenger?page=$_page&size=20',
     // );
@@ -306,6 +338,8 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
           onEndReached: _handleEndReached,
           theme: DefaultChatTheme(
             backgroundColor: Theme.of(context).backgroundColor,
+            primaryColor: AppColors.red1,
+            secondaryColor: AppColors.yellow1,
             inputBackgroundColor: Colors.grey,
             attachmentButtonIcon: const Icon(
               Icons.camera_alt_outlined,
@@ -316,9 +350,9 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
             inputPadding:
                 const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
             inputTextStyle: const TextStyle(
-              fontSize: 14,
+              fontSize: 16,
               fontWeight: FontWeight.w500,
-              height: 1.5,
+              height: 1,
               color: Colors.transparent,
               backgroundColor: Colors.transparent,
             ),

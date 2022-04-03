@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/purchase.dart';
@@ -39,6 +40,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
   late DateTime firstDate;
   late DateTimeRange dateRange;
 
+  late ScrollController scrollController;
+  int currentPage = 0;
+  int itemPerPage = 10;
+  bool hasMore = false;
+
   @override
   void initState() {
     super.initState();
@@ -46,22 +52,46 @@ class _HistoryScreenState extends State<HistoryScreen> {
     firstDate = DateTime(now.year, now.month - 6);
     dateRange = DateTimeRange(
         start: now.subtract(const Duration(hours: 24 * 28)), end: now);
+    scrollController = ScrollController()..addListener(scrollListener);
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      initDB();
+      initDB(sync: true);
       // Refresh DB
       transactionState.addListener(() {
         debugPrint('Refetch History');
-        initDB();
+        initDB(sync: true);
       });
     });
   }
 
-  Future<void> initDB() async {
+  @override
+  void dispose() {
+    scrollController.removeListener(scrollListener);
+    super.dispose();
+  }
+
+  void scrollListener() {
+    var triggerFetchMoreSize = 0.9 * scrollController.position.maxScrollExtent;
+
+    if (scrollController.position.pixels > triggerFetchMoreSize &&
+        !isLoading &&
+        scrollController.position.userScrollDirection ==
+            ScrollDirection.reverse) {
+      if (hasMore) {
+        initDB();
+      }
+    }
+  }
+
+  Future<void> initDB({bool sync = false}) async {
     setState(() {
       isLoading = true;
     });
 
-    await AppDB.syncHistory();
+    if (sync) {
+      await AppDB.syncHistory();
+      currentPage = 0;
+      items = [];
+    }
 
     Condition<PurchaseHistory> filterDate = PurchaseHistory_.transactionDate
         .greaterOrEqual(dateRange.start.millisecondsSinceEpoch)
@@ -73,12 +103,25 @@ class _HistoryScreenState extends State<HistoryScreen> {
         PurchaseHistory_.userId.equals(userBalanceState.userId);
 
     final purchaseHistoryDB = AppDB.purchaseHistoryDB;
-    QueryBuilder<PurchaseHistory> query = purchaseHistoryDB
+    QueryBuilder<PurchaseHistory> qb = purchaseHistoryDB
         .query(filterDate.and(filterUser))
-      ..order(PurchaseHistory_.transactionDate, flags: 1);
-    items = query.build().find();
+      ..order(PurchaseHistory_.transactionDate, flags: Order.descending);
 
-    debugPrint('InitDB History ${items.length}');
+    var query = qb.build()
+      ..offset = itemPerPage * currentPage
+      ..limit = itemPerPage;
+
+    var records = query.find();
+    if (records.length >= itemPerPage) {
+      currentPage++;
+      hasMore = true;
+    } else {
+      hasMore = false;
+    }
+    items.addAll(records);
+
+    debugPrint(
+        'InitDB History $currentPage x ${records.length} x ${items.length}');
 
     setState(() {
       isLoading = false;
@@ -86,7 +129,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   Future<void> onRefresh() {
-    return initDB();
+    return initDB(sync: true);
   }
 
   FutureOr<void> _handleError(Object e) {
@@ -339,7 +382,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       setState(() {
         dateRange = range;
       });
-      initDB();
+      initDB(sync: true);
     }
   }
 
@@ -358,18 +401,32 @@ class _HistoryScreenState extends State<HistoryScreen> {
           ? const Center(
               child: Text('Tidak ada data'),
             )
-          : ListView.builder(
-              key: const PageStorageKey<String>('listHistory'),
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                // return historyItem(items[index]);
-                return PurchaseHistoryItem(
-                  key: Key(items[index].id.toString()),
-                  history: items[index],
-                  execAction: execAction,
-                  openPopup: openPopup,
-                );
-              },
+          : Column(
+              children: [
+                Flexible(
+                  child: ListView.builder(
+                    key: const PageStorageKey<String>('listHistory'),
+                    controller: scrollController,
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      return PurchaseHistoryItem(
+                        key: Key(items[index].id.toString()),
+                        history: items[index],
+                        execAction: execAction,
+                        openPopup: openPopup,
+                      );
+                    },
+                  ),
+                ),
+                isLoading
+                    ? const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const SizedBox()
+              ],
             ),
     );
   }
