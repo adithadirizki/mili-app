@@ -65,9 +65,11 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 class SimpleAppBar2 extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
+  final Widget? widget;
   final List<Widget>? actions;
 
-  const SimpleAppBar2({Key? key, this.title, this.actions}) : super(key: key);
+  const SimpleAppBar2({Key? key, this.title, this.actions, this.widget})
+      : super(key: key);
 
   @override
   Size get preferredSize => const Size.fromHeight(60.0);
@@ -75,11 +77,12 @@ class SimpleAppBar2 extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(
-        title ?? '',
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.titleMedium,
-      ),
+      title: widget ??
+          Text(
+            title ?? '',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
       actions: actions,
       centerTitle: true,
       // backgroundColor: Colors.white,

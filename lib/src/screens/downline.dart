@@ -9,6 +9,8 @@ import 'package:miliv2/src/screens/downline_detail.dart';
 import 'package:miliv2/src/screens/downline_register.dart';
 import 'package:miliv2/src/screens/transfer.dart';
 import 'package:miliv2/src/theme.dart';
+import 'package:miliv2/src/theme/colors.dart';
+import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
@@ -31,6 +33,9 @@ class _DownlineScreenState extends State<DownlineScreen> {
 
   late DateTime firstDate;
   late DateTimeRange dateRange;
+
+  bool openSearch = false;
+  Timer? delayed;
 
   @override
   void initState() {
@@ -76,11 +81,35 @@ class _DownlineScreenState extends State<DownlineScreen> {
     return initDB();
   }
 
+  Future<void> onSearch(String value) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    Map<String, String> params = {
+      'sort': json.encode({'last_active': 'desc'}),
+      'limit': '1000'
+    };
+
+    if (value.isNotEmpty) {
+      params['filter'] = json.encode(<String, dynamic>{'nama': 'like|$value%'});
+    }
+
+    await Api.getDownline(params: params)
+        .then(handleDownlineList)
+        .catchError(handleError);
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   void handleDownlineList(http.Response response) {
     var status = response.statusCode;
     if (status == 200) {
       Map<String, dynamic> bodyMap =
           json.decode(response.body) as Map<String, dynamic>;
+      debugPrint('downline $bodyMap');
       var pagingResponse = PagingResponse.fromJson(bodyMap);
       items = pagingResponse.data
           .map((dynamic e) =>
@@ -151,6 +180,12 @@ class _DownlineScreenState extends State<DownlineScreen> {
       });
       initDB();
     }
+  }
+
+  void toggleSearch() async {
+    openSearch = !openSearch;
+    if (!openSearch) onRefresh();
+    setState(() {});
   }
 
   Widget buildDownlineItem(DownlineResponse downline) {
@@ -385,21 +420,49 @@ class _DownlineScreenState extends State<DownlineScreen> {
     return Scaffold(
       appBar: SimpleAppBar2(
         title: 'Downline',
-        actions: <Widget>[
-          TextButton(
-            child: Text(
-              '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            onPressed: openFilterDate,
-          ),
-          IconButton(
-            onPressed: openFilterDate,
-            icon: const Image(
-              image: AppImages.calendar,
-            ),
-          ),
-        ],
+        widget: openSearch
+            ? Container(
+                alignment: Alignment.centerLeft,
+                color: Colors.white,
+                child: TextField(
+                  onChanged: (value) {
+                    if (delayed != null) delayed!.cancel();
+                    delayed = Timer(const Duration(milliseconds: 500), () {
+                      onSearch(value);
+                    });
+                  },
+                  decoration: generateInputDecoration(
+                    hint: 'Cari Downline',
+                    suffixIcon: IconButton(
+                      color: AppColors.blue6,
+                      icon: const Icon(Icons.close),
+                      onPressed: toggleSearch,
+                    ),
+                  ),
+                ),
+              )
+            : null,
+        actions: openSearch
+            ? []
+            : <Widget>[
+                TextButton(
+                  child: Text(
+                    '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  onPressed: openFilterDate,
+                ),
+                IconButton(
+                  onPressed: openFilterDate,
+                  icon: const Image(
+                    image: AppImages.calendar,
+                  ),
+                ),
+                IconButton(
+                  onPressed: toggleSearch,
+                  icon: const Icon(Icons.search, size: 32),
+                ),
+              ],
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
