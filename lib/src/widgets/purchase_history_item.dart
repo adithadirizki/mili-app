@@ -7,6 +7,7 @@ enum historyAction {
   showDetail,
   showInvoice,
   print,
+  share,
   contactCS,
   addFavorite,
   purchase,

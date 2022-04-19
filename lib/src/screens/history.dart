@@ -22,6 +22,7 @@ import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/utils/product.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:miliv2/src/widgets/purchase_history_item.dart';
+import 'package:share_plus/share_plus.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({Key? key}) : super(key: key);
@@ -278,6 +279,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
           context,
           (_) => const CustomerServiceScreen(),
         );
+      } else if (action == historyAction.share) {
+        final box = context.findRenderObject() as RenderBox?;
+        await Api.getPurchaseDetail(history.serverId).then((response) {
+          Map<String, dynamic> bodyMap =
+              json.decode(response.body) as Map<String, dynamic>;
+          var struct = PurchaseHistoryDetailResponse.fromJson(bodyMap);
+          Share.share(struct.invoice,
+              sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
+        }).catchError(_handleError);
       }
     };
   }
@@ -316,6 +326,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
             leading: const Icon(Icons.print_outlined),
             onTap: execAction(historyAction.print, history),
+          ),
+          ListTile(
+            // contentPadding: EdgeInsets.all(0),
+            title: const Text(
+              'Share',
+              // style: Theme.of(context).textTheme.bodySmall,
+            ),
+            leading: const Icon(Icons.share_rounded),
+            onTap: execAction(historyAction.share, history),
           ),
         ]);
       }
