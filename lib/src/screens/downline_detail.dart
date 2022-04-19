@@ -89,6 +89,8 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
           .map((dynamic e) =>
               PurchaseHistoryResponse.fromJson(e as Map<String, dynamic>))
           .toList(growable: true);
+      items.sort(
+          (a, b) => (a.transactionDate.isAfter(b.transactionDate) ? -1 : 1));
     }
   }
 

@@ -14,7 +14,8 @@ double parseDouble(String string) {
 }
 
 String formatDate(DateTime date, {String? format}) {
-  return DateFormat(format ?? 'd MMM yy HH:mm:ss', locale).format(date);
+  return DateFormat(format ?? 'd MMM yy HH:mm:ss', locale)
+      .format(date.toLocal());
 }
 
 String printDuration(Duration duration) {

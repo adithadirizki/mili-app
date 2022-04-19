@@ -44,7 +44,7 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
   @override
   void initState() {
     super.initState();
-    var now = DateTime.now();
+    now = DateTime.now();
     firstDate = DateTime(now.year, now.month - 6);
     dateRange = DateTimeRange(
         start: now.subtract(const Duration(hours: 24 * 28)), end: now);
