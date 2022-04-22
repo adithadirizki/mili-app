@@ -53,7 +53,7 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
     }
 
     Condition<CustomerService> filterUser =
-        CustomerService_.userId.equals(userBalanceState.userId);
+        CustomerService_.userId.equals(userBalanceState.userId).or(CustomerService_.userId.equals('ALL'));
 
     final db = AppDB.customerServiceDB;
     QueryBuilder<CustomerService> qb = db.query(filterUser)
