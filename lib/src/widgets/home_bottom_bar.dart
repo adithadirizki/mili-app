@@ -39,98 +39,90 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
 
   Widget buildMenuBar() {
     return Container(
-      //margin: EdgeInsets.only(left: 20, right: 20),
-      clipBehavior: Clip.antiAlias,
+      height: 60.0,
+      // margin: const EdgeInsets.only(left: 12.0, right: 12.0),
+      //color: Theme.of(context).backgroundColor,
       decoration: const BoxDecoration(
-        color: Colors.blue,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
+        // borderRadius: BorderRadius.only(
+        //     topLeft: Radius.elliptical(30, 30),
+        //     topRight: Radius.elliptical(30, 30)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(30),
+        ),
+        // color: Color(0xFF00C2FF)
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [Color(0xff0196DD), Color(0xff01C9D0)],
         ),
       ),
-      child: Container(
-        height: 60.0,
-        // margin: const EdgeInsets.only(left: 12.0, right: 12.0),
-        //color: Theme.of(context).backgroundColor,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.elliptical(30, 30),
-              topRight: Radius.elliptical(30, 30)),
-          // color: Color(0xFF00C2FF)
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: [Color(0xff0196DD), Color(0xff01C9D0)],
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          IconButton(
+            onPressed: () {
+              // gotoPage(0);
+              pushScreen(
+                context,
+                (_) => const MutationScreen(),
+              );
+            },
+            icon: const Image(
+              image: AppImages.note,
+              width: 32,
+            ),
           ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              onPressed: () {
-                // gotoPage(0);
+          IconButton(
+            onPressed: () {
+              // gotoPage(1);
+              pushScreen(
+                context,
+                (_) => const NotificationScreen(),
+              );
+            },
+            icon: const Image(
+              image: AppImages.notification,
+              width: 32,
+            ),
+          ),
+          const SizedBox(
+            width: 50.0,
+          ),
+          IconButton(
+            onPressed: () {
+              // gotoPage(3);
+              pushScreen(
+                context,
+                (_) => const CustomerServiceScreen(),
+              );
+            },
+            icon: const Image(
+              image: AppImages.chat,
+              width: 32,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              // gotoPage(4);
+              if (userBalanceState.isGuest()) {
+                confirmSignin(context);
+              } else {
                 pushScreen(
                   context,
-                  (_) => const MutationScreen(),
+                  (_) => UserBalanceScope(
+                    notifier: userBalanceState,
+                    child: const ProfileScreen(),
+                  ),
                 );
-              },
-              icon: const Image(
-                image: AppImages.note,
-                width: 32,
-              ),
+              }
+            },
+            icon: const Image(
+              image: AppImages.user,
+              width: 32,
             ),
-            IconButton(
-              onPressed: () {
-                // gotoPage(1);
-                pushScreen(
-                  context,
-                  (_) => const NotificationScreen(),
-                );
-              },
-              icon: const Image(
-                image: AppImages.notification,
-                width: 32,
-              ),
-            ),
-            const SizedBox(
-              width: 50.0,
-            ),
-            IconButton(
-              onPressed: () {
-                // gotoPage(3);
-                pushScreen(
-                  context,
-                  (_) => const CustomerServiceScreen(),
-                );
-              },
-              icon: const Image(
-                image: AppImages.chat,
-                width: 32,
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                // gotoPage(4);
-                if (userBalanceState.isGuest()) {
-                  confirmSignin(context);
-                } else {
-                  pushScreen(
-                    context,
-                    (_) => UserBalanceScope(
-                      notifier: userBalanceState,
-                      child: const ProfileScreen(),
-                    ),
-                  );
-                }
-              },
-              icon: const Image(
-                image: AppImages.user,
-                width: 32,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -9,6 +9,7 @@ import 'package:miliv2/src/api/notification.dart';
 import 'package:miliv2/src/api/product.dart';
 import 'package:miliv2/src/api/purchase.dart';
 import 'package:miliv2/src/api/topup.dart';
+import 'package:miliv2/src/api/train.dart';
 import 'package:miliv2/src/api/user_config.dart';
 import 'package:miliv2/src/config/config.dart';
 import 'package:miliv2/src/models/customer_service.dart';
@@ -18,6 +19,7 @@ import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/purchase.dart';
 import 'package:miliv2/src/models/timestamp.dart';
 import 'package:miliv2/src/models/topup.dart';
+import 'package:miliv2/src/models/train_station.dart';
 import 'package:miliv2/src/models/user_config.dart';
 import 'package:miliv2/src/models/vendor.dart';
 import 'package:path/path.dart';
@@ -76,6 +78,7 @@ class AppDB {
   static Box<CustomerService> get customerServiceDB =>
       _db.box<CustomerService>();
   static Box<UserConfig> get userConfigDB => _db.box<UserConfig>();
+  static Box<TrainStation> get trainStationDB => _db.box<TrainStation>();
 
   static DateTime? getLastUpdate(String apiCode) {
     ApiSyncTime? rec = timestampDB
@@ -815,6 +818,77 @@ class AppDB {
     }).catchError((dynamic e) {
       _unlockSyncronize(apiCode);
       debugPrint('syncPriceSetting error $e');
+    });
+  }
+
+  static Future<void> syncTrainStation({int offset = 0}) async {
+    const apiCode = 'train-station';
+
+    if (_lockedSyncronize(apiCode)) {
+      return;
+    }
+    _lockSyncronize(apiCode);
+
+    const limit = 50;
+    DateTime? lastUpdate = getLastUpdate(apiCode);
+    String timestamp = lastUpdate == null ? '' : lastUpdate.toIso8601String();
+
+    Map<String, String> params = {
+      'offset': offset.toString(),
+      'limit': limit.toString(),
+      'sort': json.encode({'updated_at': 'asc'}),
+      'filter': json.encode({'updated_at': '>|$timestamp'})
+    };
+
+    debugPrint('syncTrainStation with params $params');
+
+    return Api.getTrainStation(params: params).then((pagingResponse) async {
+      debugPrint('syncTrainStation data length ${pagingResponse.data.length}');
+
+      for (var data in pagingResponse.data) {
+        try {
+          TrainStationResponse res =
+              TrainStationResponse.fromJson(data as Map<String, dynamic>);
+
+          TrainStation? prev = trainStationDB
+              .query(TrainStation_.serverId.equals(res.serverId))
+              .build()
+              .findFirst();
+
+          if (prev != null) {
+            prev.code = res.code;
+            prev.stationName = res.stationName;
+            prev.stationFullname = res.stationFullname;
+            prev.city = res.city;
+            trainStationDB.put(prev);
+            setLastUpdate(apiCode, res.updatedDate);
+          } else {
+            TrainStation station = TrainStation.fromResponse(res);
+            trainStationDB.put(station);
+            setLastUpdate(apiCode, res.updatedDate);
+          }
+        } catch (error) {
+          debugPrint('syncTrainStation error $error at $data');
+        }
+      }
+
+      debugPrint(
+          'syncTrainStation lastUpdate $timestamp get ${pagingResponse.data.length} item from ${pagingResponse.total} ');
+
+      _unlockSyncronize(apiCode);
+      // Get next page
+      if (pagingResponse.data.length >= limit) {
+        DateTime? veryLastUpdate = getLastUpdate(apiCode);
+        if (lastUpdate == veryLastUpdate) {
+          offset += limit;
+        } else {
+          offset = 0;
+        }
+        return await syncTrainStation(offset: offset);
+      }
+    }).catchError((dynamic e) {
+      _unlockSyncronize(apiCode);
+      debugPrint('syncTrainStation error $e');
     });
   }
 }

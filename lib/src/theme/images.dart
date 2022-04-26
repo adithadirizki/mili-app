@@ -67,6 +67,18 @@ class AppImages {
   static const logoTri = AssetImage('assets/images/pulsa/logo_tri.png');
   static const logoXL = AssetImage('assets/images/pulsa/logo_XL.png');
 
+  static const train = AssetImage('assets/images/train/train_in.png');
+  static const trainCalendar = AssetImage('assets/images/train/calendar.png');
+  static const destinationSwap =
+      AssetImage('assets/images/train/destination_exchange.png');
+  static const trainAdult = AssetImage('assets/images/train/adult.png');
+  static const trainBaby = AssetImage('assets/images/train/baby.png');
+  static const trainChild = AssetImage('assets/images/train/child.png');
+  static const trainPurpose = AssetImage('assets/images/train/purpose.png');
+  static const trainSeat = AssetImage('assets/images/train/seat.png');
+  static const trainDestination =
+      AssetImage('assets/images/train/arrow_destination.png');
+
   static AssetImage getAssetImage(String filename) {
     return AssetImage('images/' + filename);
   }

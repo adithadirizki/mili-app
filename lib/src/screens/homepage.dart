@@ -93,10 +93,10 @@ class _HomepageState extends State<Homepage>
     await AppDB.syncVendor();
     await AppDB.syncUserConfig();
     await AppDB.syncProduct();
-    await AppDB.syncHistory();
-    await AppDB.syncTopupHistory();
-    await AppDB.syncBalanceMutation();
-    await AppDB.syncCreditMutation();
+    // await AppDB.syncHistory();
+    // await AppDB.syncTopupHistory();
+    // await AppDB.syncBalanceMutation();
+    // await AppDB.syncCreditMutation();
     synchronized = true;
     debugPrint('Completed initialize');
     popScreen(context);

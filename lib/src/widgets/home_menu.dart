@@ -7,6 +7,7 @@ import 'package:miliv2/src/models/vendor.dart';
 import 'package:miliv2/src/screens/purchase_payment.dart';
 import 'package:miliv2/src/screens/purchase_pln.dart';
 import 'package:miliv2/src/screens/purchase_pulsa.dart';
+import 'package:miliv2/src/screens/train_home.dart';
 import 'package:miliv2/src/screens/vendor.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -125,8 +126,12 @@ class _HomeMenuState extends State<HomeMenu> {
       );
     }));
     menuList.add(AppMenu(AppImages.menuKAI, 'Kereta Api', () {
-      snackBarDialog(
-          context, 'Pembelian tiket Kereta Api saat ini belum tersedia');
+      pushScreen(
+        context,
+        (_) => const TrainHomeScreen(
+          title: 'Tiket Kereta',
+        ),
+      );
     }));
     // menuList.add(AppMenu(AppImages.menuMore, 'More', () {
     //   // // TODO Show reordering menu page

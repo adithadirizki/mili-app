@@ -834,6 +834,22 @@ class Api {
         )
         .then(_parseResponse);
   }
+
+  static Future<PagingResponse> getTrainStation({Map<String, Object>? params}) {
+    return http
+        .get(
+          Uri.parse(AppConfig.baseUrl + '/kai/stations')
+              .replace(queryParameters: params),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse)
+        .then((response) {
+      Map<String, dynamic> bodyMap =
+          json.decode(response.body) as Map<String, dynamic>;
+      var pagingResponse = PagingResponse.fromJson(bodyMap);
+      return pagingResponse;
+    });
+  }
 }
 
 @JsonSerializable()
