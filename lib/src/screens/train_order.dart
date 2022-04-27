@@ -440,7 +440,7 @@ class _TrainOrderState extends State<TrainOrder>
           pushScreen(
             context,
             (_) => TrainScheduleScreen(
-              title: 'Tiket Kereta',
+              title: 'Jadwal Kereta',
               departure: departure!,
               destination: destination!,
               departureDate: departureDate,

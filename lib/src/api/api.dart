@@ -4,6 +4,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
+import 'package:miliv2/src/api/train.dart';
 import 'package:miliv2/src/config/config.dart';
 import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/models/train_station.dart';
@@ -853,12 +854,13 @@ class Api {
     });
   }
 
-  static Future<Map<String, dynamic>> getTrainSchedule(
-      {required TrainStation departure,
-      required TrainStation destination,
-      required int numAdult,
-      required int numChild,
-      required DateTime date}) {
+  static Future<Map<String, dynamic>> getTrainSchedule({
+    required TrainStation departure,
+    required TrainStation destination,
+    required int numAdult,
+    required int numChild,
+    required DateTime date,
+  }) {
     Map<String, dynamic> params = <String, Object?>{
       'departure': departure.code,
       'destination': destination.code,
@@ -880,6 +882,42 @@ class Api {
           json.decode(response.body) as Map<String, dynamic>;
       return bodyMap;
     });
+  }
+
+  static Future<http.Response> createTrainBooking({
+    required TrainStation departure,
+    required TrainStation destination,
+    required int numAdult,
+    required int numChild,
+    required TrainScheduleResponse train,
+    required List<TrainPassengerAdultData> adultPassengers,
+    required List<TrainPassengerChildData> childPassengers,
+  }) {
+    Map<String, dynamic> body = <String, Object?>{
+      'departure': departure.code,
+      'destination': destination.code,
+      'adult': numAdult.toString(),
+      'child': numChild.toString(),
+      'date': formatDate(train.departureDatetime, format: 'yyyy-MM-dd'),
+      'train_no': train.trainNo,
+      'train_name': train.trainName,
+      'class': train.detail.classCode,
+      'sub_class': train.detail.subClass,
+      'depart_datetime':
+          formatDate(train.departureDatetime, format: 'yyyy-MM-dd HH:mm:ss'),
+      'arrival_datetime':
+          formatDate(train.arrivalDatetime, format: 'yyyy-MM-dd HH:mm:ss'),
+      'adultPassengers': adultPassengers,
+      'childPassengers': childPassengers,
+    };
+    debugPrint('Create train booking $body');
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/kai/bookings'),
+          headers: getRequestHeaders(),
+          body: json.encode(body),
+        )
+        .then(_parseResponse);
   }
 }
 

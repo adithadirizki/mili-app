@@ -98,3 +98,48 @@ class TrainScheduleResponse {
 
   Map<String, dynamic> toJson() => _$TrainScheduleResponseToJson(this);
 }
+
+abstract class TrainPassengerData {}
+
+@JsonSerializable()
+class TrainPassengerAdultData implements TrainPassengerData {
+  @JsonKey(name: 'name')
+  String? name;
+
+  @JsonKey(name: 'id_number')
+  String? idNumber;
+
+  @JsonKey(name: 'phone_number')
+  String? phoneNumber;
+
+  TrainPassengerAdultData({this.name, this.idNumber, this.phoneNumber});
+
+  factory TrainPassengerAdultData.fromString(String body) =>
+      _$TrainPassengerAdultDataFromJson(
+          json.decode(body) as Map<String, dynamic>);
+
+  factory TrainPassengerAdultData.fromJson(Map<String, dynamic> json) =>
+      _$TrainPassengerAdultDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TrainPassengerAdultDataToJson(this);
+}
+
+@JsonSerializable()
+class TrainPassengerChildData implements TrainPassengerData {
+  @JsonKey(name: 'name')
+  String? name;
+
+  @JsonKey(name: 'id_number')
+  String? idNumber;
+
+  TrainPassengerChildData({this.name, this.idNumber});
+
+  factory TrainPassengerChildData.fromString(String body) =>
+      _$TrainPassengerChildDataFromJson(
+          json.decode(body) as Map<String, dynamic>);
+
+  factory TrainPassengerChildData.fromJson(Map<String, dynamic> json) =>
+      _$TrainPassengerChildDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TrainPassengerChildDataToJson(this);
+}
