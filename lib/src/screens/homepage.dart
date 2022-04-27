@@ -90,8 +90,8 @@ class _HomepageState extends State<Homepage>
 
   void initialize() async {
     showLoaderDialog(context, message: 'Memperbarui...');
-    await AppDB.syncVendor();
-    await AppDB.syncUserConfig();
+    AppDB.syncVendor();
+    AppDB.syncUserConfig();
     await AppDB.syncProduct();
     // await AppDB.syncHistory();
     // await AppDB.syncTopupHistory();

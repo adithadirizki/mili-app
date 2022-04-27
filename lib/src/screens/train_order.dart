@@ -1,10 +1,10 @@
 import 'dart:math' as math; // import this
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/train_station.dart';
+import 'package:miliv2/src/screens/train_schedule.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -22,15 +22,15 @@ class _TrainOrderState extends State<TrainOrder>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
-  int numAdult = 1;
-  int numBaby = 0;
-
   bool isLoading = false;
   List<TrainStation> stationData = [];
 
   DateTime departureDate = DateTime.now().add(const Duration(days: 1));
   TrainStation? departure;
   TrainStation? destination;
+
+  int numAdult = 1;
+  int numChild = 0;
 
   @override
   void initState() {
@@ -73,21 +73,21 @@ class _TrainOrderState extends State<TrainOrder>
       setState(() {
         numAdult--;
       });
-    } else if (num > 0 && numBaby + numAdult < 4) {
+    } else if (num > 0 && numChild + numAdult < 4) {
       setState(() {
         numAdult++;
       });
     }
   }
 
-  void adjustBaby(int num) {
-    if (num < 0 && numBaby > 0) {
+  void adjustChild(int num) {
+    if (num < 0 && numChild > 0) {
       setState(() {
-        numBaby--;
+        numChild--;
       });
-    } else if (num > 0 && numBaby + numAdult < 4) {
+    } else if (num > 0 && numChild + numAdult < 4) {
       setState(() {
-        numBaby++;
+        numChild++;
       });
     }
   }
@@ -175,7 +175,7 @@ class _TrainOrderState extends State<TrainOrder>
       if (destination != null && destination!.code == station.code) {
         snackBarDialog(
           context,
-          'Pilih statiun lain',
+          'Pilih stasiun lain',
           duration: 2000,
         );
       } else {
@@ -191,7 +191,7 @@ class _TrainOrderState extends State<TrainOrder>
       if (departure != null && departure!.code == station.code) {
         snackBarDialog(
           context,
-          'Pilih statiun lain',
+          'Pilih stasiun lain',
           duration: 2000,
         );
       } else {
@@ -396,7 +396,7 @@ class _TrainOrderState extends State<TrainOrder>
                         children: [
                           IconButton(
                             onPressed: () {
-                              adjustBaby(-1);
+                              adjustChild(-1);
                             },
                             icon: const Icon(
                               Icons.remove_circle_outlined,
@@ -404,10 +404,10 @@ class _TrainOrderState extends State<TrainOrder>
                               size: 32,
                             ),
                           ),
-                          Text(numBaby.toString()),
+                          Text(numChild.toString()),
                           IconButton(
                             onPressed: () {
-                              adjustBaby(1);
+                              adjustChild(1);
                             },
                             icon: const Icon(
                               Icons.add_circle_outlined,
@@ -425,7 +425,30 @@ class _TrainOrderState extends State<TrainOrder>
           ),
         ),
         const SizedBox(height: 20),
-        AppButton('Cari Tiket', () {})
+        AppButton('Cari Tiket', () {
+          if (null == departure || null == destination) {
+            snackBarDialog(context, 'Pilih stasiun keberangkatan dan tujuan');
+            return;
+          } else if (departureDate
+              .isBefore(DateUtils.dateOnly(DateTime.now()))) {
+            snackBarDialog(context, 'Tanggal keberangkatan tidak sesuai');
+            return;
+          } else if (numAdult < 1) {
+            snackBarDialog(context, 'Jumlah penumpang minimal 1 dewasa');
+            return;
+          }
+          pushScreen(
+            context,
+            (_) => TrainScheduleScreen(
+              title: 'Tiket Kereta',
+              departure: departure!,
+              destination: destination!,
+              departureDate: departureDate,
+              numAdult: numAdult,
+              numChild: numChild,
+            ),
+          );
+        })
       ],
     );
   }

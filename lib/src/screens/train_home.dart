@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:miliv2/src/screens/train_history.dart';
+import 'package:miliv2/src/screens/train_order.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
-import 'package:miliv2/src/widgets/train_history.dart';
-import 'package:miliv2/src/widgets/train_order.dart';
 
 class TrainHomeScreen extends StatefulWidget {
   final String title;

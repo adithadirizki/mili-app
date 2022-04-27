@@ -6,7 +6,9 @@ import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:miliv2/src/config/config.dart';
 import 'package:miliv2/src/consts/consts.dart';
+import 'package:miliv2/src/models/train_station.dart';
 import 'package:miliv2/src/models/user_config.dart';
+import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/utils/parsing.dart';
 
 part 'api.g.dart';
@@ -848,6 +850,35 @@ class Api {
           json.decode(response.body) as Map<String, dynamic>;
       var pagingResponse = PagingResponse.fromJson(bodyMap);
       return pagingResponse;
+    });
+  }
+
+  static Future<Map<String, dynamic>> getTrainSchedule(
+      {required TrainStation departure,
+      required TrainStation destination,
+      required int numAdult,
+      required int numChild,
+      required DateTime date}) {
+    Map<String, dynamic> params = <String, Object?>{
+      'departure': departure.code,
+      'destination': destination.code,
+      'adult': numAdult.toString(),
+      'child': numChild.toString(),
+      'date': formatDate(date, format: 'yyyy-MM-dd'),
+    };
+    debugPrint('Get schedules params $params');
+    return http
+        .get(
+          Uri.parse(AppConfig.baseUrl + '/kai/schedules')
+              .replace(queryParameters: params),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse)
+        .then((response) {
+      debugPrint('Response ${response.body}');
+      Map<String, dynamic> bodyMap =
+          json.decode(response.body) as Map<String, dynamic>;
+      return bodyMap;
     });
   }
 }

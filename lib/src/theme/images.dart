@@ -76,7 +76,7 @@ class AppImages {
   static const trainChild = AssetImage('assets/images/train/child.png');
   static const trainPurpose = AssetImage('assets/images/train/purpose.png');
   static const trainSeat = AssetImage('assets/images/train/seat.png');
-  static const trainDestination =
+  static const trainArrow =
       AssetImage('assets/images/train/arrow_destination.png');
 
   static AssetImage getAssetImage(String filename) {
