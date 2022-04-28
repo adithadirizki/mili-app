@@ -919,6 +919,37 @@ class Api {
         )
         .then(_parseResponse);
   }
+
+  static Future<PagingResponse> getTrainBookingList(
+      {Map<String, Object>? params}) {
+    return http
+        .get(
+          Uri.parse(AppConfig.baseUrl + '/kai/bookings')
+              .replace(queryParameters: params),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse)
+        .then((response) {
+      Map<String, dynamic> bodyMap =
+          json.decode(response.body) as Map<String, dynamic>;
+      var pagingResponse = PagingResponse.fromJson(bodyMap);
+      return pagingResponse;
+    });
+  }
+
+  static Future<Map<String, dynamic>> getTrainBookingDetail(int bookingId) {
+    return http
+        .get(
+          Uri.parse(AppConfig.baseUrl + '/kai/bookings/$bookingId'),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse)
+        .then((response) {
+      Map<String, dynamic> bodyMap =
+          json.decode(response.body) as Map<String, dynamic>;
+      return bodyMap;
+    });
+  }
 }
 
 @JsonSerializable()

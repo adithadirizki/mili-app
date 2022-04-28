@@ -61,7 +61,7 @@ class _TrainHomeScreenState extends State<TrainHomeScreen>
               controller: tabController,
               children: const [
                 TrainOrder(),
-                TrainHistory(),
+                TrainHistoryScreen(),
               ],
             ),
           ),

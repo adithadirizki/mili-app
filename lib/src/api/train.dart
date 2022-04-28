@@ -143,3 +143,128 @@ class TrainPassengerChildData implements TrainPassengerData {
 
   Map<String, dynamic> toJson() => _$TrainPassengerChildDataToJson(this);
 }
+
+@JsonSerializable()
+class TrainBookingResponse {
+  @JsonKey(name: 'departure')
+  final String departureCode;
+
+  @JsonKey(name: 'departure_station')
+  final Map<String, dynamic> departure;
+
+  @JsonKey(name: 'destination')
+  final String destinationCode;
+
+  @JsonKey(name: 'destination_station')
+  final Map<String, dynamic> destination;
+
+  @JsonKey(name: 'depart_date')
+  final DateTime departureDate;
+
+  @JsonKey(name: 'adult_number')
+  final int adultNum;
+
+  @JsonKey(name: 'child_number')
+  final int childNum;
+
+  @JsonKey(name: 'train_no')
+  final String trainNo;
+
+  @JsonKey(name: 'train_name')
+  final String trainName;
+
+  @JsonKey(name: 'class')
+  final String classCode;
+
+  @JsonKey(name: 'class_name')
+  final String className;
+
+  @JsonKey(name: 'sub_class')
+  final String subClass;
+
+  @JsonKey(name: 'adult_price')
+  final double adultPrice;
+
+  @JsonKey(name: 'child_price')
+  final double childPrice;
+
+  @JsonKey(name: 'total_price')
+  final double totalPrice;
+
+  @JsonKey(name: 'total_admin')
+  final double totalAdmin;
+
+  @JsonKey(name: 'total_discount')
+  final double totalDiscount;
+
+  @JsonKey(name: 'grand_total')
+  final double grandTotal;
+
+  @JsonKey(name: 'booking_code')
+  final String bookingCode;
+
+  @JsonKey(name: 'booking_number')
+  final String bookingNumber;
+
+  @JsonKey(name: 'status')
+  final String status;
+
+  @JsonKey(name: 'status_description')
+  final String statusDescription;
+
+  @JsonKey(name: 'train_depart_date')
+  final DateTime departureDatetime;
+
+  @JsonKey(name: 'train_arrival_date')
+  final DateTime arrivalDatetime;
+
+  @JsonKey(name: 'created_at')
+  final DateTime createdDatetime;
+
+  @JsonKey(name: 'expired_at')
+  final DateTime expiredAt;
+
+  // @JsonKey(name: 'detail')
+  // final TrainScheduleDetailResponse detail;
+
+  TrainBookingResponse(
+    this.departureCode,
+    this.destinationCode,
+    this.departureDate,
+    this.adultNum,
+    this.childNum,
+    this.trainNo,
+    this.trainName,
+    this.classCode,
+    this.className,
+    this.subClass,
+    this.adultPrice,
+    this.childPrice,
+    this.totalPrice,
+    this.totalAdmin,
+    this.totalDiscount,
+    this.grandTotal,
+    this.bookingCode,
+    this.bookingNumber,
+    this.status,
+    this.statusDescription,
+    this.departureDatetime,
+    this.arrivalDatetime,
+    this.departure,
+    this.destination,
+    this.createdDatetime,
+    this.expiredAt,
+  );
+
+  factory TrainBookingResponse.fromString(String body) =>
+      _$TrainBookingResponseFromJson(json.decode(body) as Map<String, dynamic>);
+
+  factory TrainBookingResponse.fromJson(Map<String, dynamic> json) =>
+      _$TrainBookingResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TrainBookingResponseToJson(this);
+
+  bool isOpen() => status.toUpperCase() == 'OPEN';
+
+  bool isCompleted() => status.toUpperCase() == 'CLOSED';
+}
