@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:miliv2/src/api/train.dart';
 import 'package:miliv2/src/models/train_station.dart';
 import 'package:miliv2/src/screens/train_payment.dart';
+import 'package:miliv2/src/screens/train_seat.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
@@ -299,6 +300,15 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
     // });
   }
 
+  void changeSeat() {
+    pushScreen(context, (ctx) {
+      return TrainSeatScreen(
+        title: 'Ganti Kursi',
+        booking: widget.booking,
+      );
+    });
+  }
+
   void _onPaymentConfirmed() {
     // confirmDialog(
     //   context,
@@ -467,16 +477,7 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
                                 const Spacer(),
                                 data.isOpen()
                                     ? TextButton(
-                                        onPressed: () {
-                                          // pushScreen(
-                                          //   context,
-                                          //   (_) => TrainBookingScreen(
-                                          //     title: 'Ganti Kursi',
-                                          //     booking: data,
-                                          //     // bookingId: data.bookingId,
-                                          //   ),
-                                          // );
-                                        },
+                                        onPressed: changeSeat,
                                         child: const Text('Ganti Kursi'),
                                       )
                                     : const SizedBox(),

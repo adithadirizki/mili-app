@@ -14,3 +14,7 @@ bool intToBool(dynamic e) => e as int == 1;
 int boolToInt(bool e) => e ? 1 : 0;
 
 int offsetLimitEncoder(dynamic e) => e is int ? e : 0;
+
+String intToStr(dynamic e) => e.toString();
+
+int strToInt(dynamic e) => e is int ? e : 0;

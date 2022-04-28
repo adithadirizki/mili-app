@@ -937,10 +937,12 @@ class Api {
     });
   }
 
-  static Future<Map<String, dynamic>> getTrainBookingDetail(int bookingId) {
+  static Future<Map<String, dynamic>> getTrainBookingDetail({
+    required TrainBookingResponse booking,
+  }) {
     return http
         .get(
-          Uri.parse(AppConfig.baseUrl + '/kai/bookings/$bookingId'),
+          Uri.parse(AppConfig.baseUrl + '/kai/bookings/${booking.bookingId}'),
           headers: getRequestHeaders(),
         )
         .then(_parseResponse)
@@ -960,6 +962,51 @@ class Api {
           headers: getRequestHeaders(),
         )
         .then(_parseResponse);
+  }
+
+  static Future<Map<String, dynamic>> getTrainSeatMap({
+    required TrainBookingResponse booking,
+  }) {
+    return http
+        .get(
+          Uri.parse(AppConfig.baseUrl + '/kai/seatmaps/${booking.bookingId}'),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse)
+        .then((response) {
+      Map<String, dynamic> bodyMap =
+          json.decode(response.body) as Map<String, dynamic>;
+      return bodyMap;
+    });
+  }
+
+  static Future<Map<String, dynamic>> changeTrainSeat({
+    required int passengerId,
+    required String wagonCode,
+    required String wagonNo,
+    required TrainRowData seat,
+  }) {
+    Map<String, dynamic> body = <String, Object?>{
+      'wagon_code': wagonCode,
+      'wagon_no': wagonNo,
+      'row': seat.row.toString(),
+      'column': seat.column.toString(),
+      'seat_row': seat.seatRow.toString(),
+      'seat_column': seat.seatColumn,
+    };
+    debugPrint('Change seat $body');
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/kai/seats/$passengerId'),
+          headers: getRequestHeaders(),
+          body: json.encode(body),
+        )
+        .then(_parseResponse)
+        .then((response) {
+      Map<String, dynamic> bodyMap =
+          json.decode(response.body) as Map<String, dynamic>;
+      return bodyMap;
+    });
   }
 }
 
