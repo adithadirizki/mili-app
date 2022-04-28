@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:miliv2/src/api/train.dart';
 import 'package:miliv2/src/models/train_station.dart';
+import 'package:miliv2/src/screens/train_payment.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
@@ -280,33 +281,38 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
     }
   }
 
-  void submitData() async {
-    // if (_formKey.currentState!.validate()) {
-    //   void exec() {
-    //     setState(() {
-    //       isLoading = true;
-    //     });
-    //     Api.createTrainBooking(
-    //       departure: widget.departure,
-    //       destination: widget.destination,
-    //       numAdult: widget.numAdult,
-    //       numChild: widget.numChild,
-    //       train: widget.train,
-    //       adultPassengers:
-    //           passengerData.whereType<TrainPassengerAdultData>().toList(),
-    //       childPassengers:
-    //           passengerData.whereType<TrainPassengerChildData>().toList(),
-    //     ).then((response) {
-    //       debugPrint('Response ${response.body}');
-    //       popScreen(context);
-    //     }).catchError(_handleError);
-    //   }
-    //
-    //   confirmDialog(context,
-    //       msg: 'Data yang dimasukkan sudah benar ?',
-    //       title: 'Konfirmasi',
-    //       confirmAction: exec);
-    // }
+  void openPayment() {
+    pushScreen(context, (ctx) {
+      return TrainPaymentScreen(
+        booking: widget.booking,
+        onPaymentConfirmed: _onPaymentConfirmed,
+      );
+    });
+  }
+
+  void printReceipt() {
+    // pushScreen(context, (ctx) {
+    //   return TrainPaymentScreen(
+    //     booking: widget.booking,
+    //     onPaymentConfirmed: _onPaymentConfirmed,
+    //   );
+    // });
+  }
+
+  void _onPaymentConfirmed() {
+    // confirmDialog(
+    //   context,
+    //   title: 'Konfirmasi',
+    //   msg: 'Pembelian sedang diproses, lanjutkan transaksi ?',
+    //   confirmAction: () {
+    //     reset();
+    //   },
+    //   cancelAction: () {
+    //     popScreen(context);
+    //   },
+    //   confirmText: 'Ya',
+    //   cancelText: 'Tidak',
+    // );
   }
 
   @override
@@ -604,18 +610,21 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
                           ],
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
             ),
           ),
-          data.isOpen()
+          data.isOpen() || data.isCompleted()
               ? Container(
                   padding: const EdgeInsets.all(10),
-                  child: AppButton('Pembayaran', isLoading ? null : submitData),
+                  child: data.isOpen()
+                      ? AppButton('Pembayaran', isLoading ? null : openPayment)
+                      : AppButton(
+                          'Cetak Struk', isLoading ? null : printReceipt),
                 )
-              : const SizedBox()
+              : const SizedBox(),
         ],
       ),
     );

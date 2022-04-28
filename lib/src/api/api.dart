@@ -950,6 +950,17 @@ class Api {
       return bodyMap;
     });
   }
+
+  static Future<http.Response> payTrainBooking({
+    required TrainBookingResponse booking,
+  }) {
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/kai/payment/${booking.bookingId}'),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse);
+  }
 }
 
 @JsonSerializable()

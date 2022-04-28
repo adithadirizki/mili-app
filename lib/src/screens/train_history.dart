@@ -9,7 +9,6 @@ import 'package:miliv2/src/models/train_station.dart';
 import 'package:miliv2/src/screens/train_booking.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 import '../theme.dart';
 
@@ -243,30 +242,31 @@ class _TrainHistoryScreenState extends State<TrainHistoryScreen> {
                               ),
                             ),
                           )
-                        : data.isCompleted()
-                            ? Column(
-                                children: [
-                                  const Text('Kode Booking'),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    // mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      QrImage(
-                                        data: data.bookingCode,
-                                        version: QrVersions.auto,
-                                        size: 100,
-                                      ),
-                                      Text(
-                                        data.bookingCode,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headlineMedium,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              )
-                            : const SizedBox(),
+                        : const SizedBox(),
+                    // data.isCompleted()
+                    //     ? Column(
+                    //         children: [
+                    //           const Text('Kode Booking'),
+                    //           Row(
+                    //             mainAxisAlignment: MainAxisAlignment.center,
+                    //             // mainAxisSize: MainAxisSize.max,
+                    //             children: [
+                    //               QrImage(
+                    //                 data: data.bookingCode,
+                    //                 version: QrVersions.auto,
+                    //                 size: 100,
+                    //               ),
+                    //               Text(
+                    //                 data.bookingCode,
+                    //                 style: Theme.of(context)
+                    //                     .textTheme
+                    //                     .headlineMedium,
+                    //               ),
+                    //             ],
+                    //           ),
+                    //         ],
+                    //       )
+                    //     : const SizedBox(),
                   ],
                 ),
               ),
