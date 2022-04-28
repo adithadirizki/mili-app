@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/train.dart';
 import 'package:miliv2/src/models/train_station.dart';
 import 'package:miliv2/src/theme.dart';
@@ -13,15 +12,16 @@ import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:miliv2/src/widgets/button.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class TrainBookingScreen extends StatefulWidget {
   final String title;
-  final int bookingId;
+  final TrainBookingResponse booking;
 
   const TrainBookingScreen({
     Key? key,
     required this.title,
-    required this.bookingId,
+    required this.booking,
   }) : super(key: key);
 
   @override
@@ -39,14 +39,12 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
   int numChild = 0;
   TrainScheduleResponse? train;
 
-  List<TrainPassengerData> passengerData = [];
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      initialize();
-    });
+    // WidgetsBinding.instance!.addPostFrameCallback((_) {
+    //   initialize();
+    // });
   }
 
   @override
@@ -61,14 +59,15 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
   }
 
   void initialize() {
-    setState(() {
-      isLoading = true;
-    });
-    Api.getTrainBookingDetail(widget.bookingId).then((response) {
-      debugPrint('Get booking ${response}');
-      isLoading = false;
-      setState(() {});
-    }).catchError(_handleError);
+    // setState(() {
+    //   isLoading = true;
+    // });
+    // Api.getTrainBookingDetail(widget.bookingId).then((response) {
+    //   debugPrint('Get booking ${response}');
+    //   bookingData = TrainBookingResponse.fromJson(response['data'] as Map<String, dynamic>);
+    //   isLoading = false;
+    //   setState(() {});
+    // }).catchError(_handleError);
   }
 
   Widget buildSchedulesItem(TrainScheduleResponse schedule) {
@@ -312,6 +311,12 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final data = widget.booking;
+
+    final timeDiff = data.arrivalDatetime.difference(data.departureDatetime);
+    final hours = (timeDiff.inMinutes / 60).floor();
+    final minutes = timeDiff.inMinutes % 60;
+
     return Scaffold(
       appBar: SimpleAppBar(title: widget.title),
       body: Column(
@@ -330,18 +335,24 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
               color: Colors.white,
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
                       child: Column(
                         children: [
                           Text(
-                            departure?.code ?? '',
+                            data.departure['code'] == null
+                                ? ''
+                                : data.departure['code'] as String,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          Text(departure?.stationName ?? '')
+                          Text(data.departure['name'] == null
+                              ? ''
+                              : data.departure['name'] as String)
                         ],
                       ),
                     ),
@@ -350,44 +361,261 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
                       child: Column(
                         children: [
                           Text(
-                            destination?.code ?? '',
+                            data.destination['code'] == null
+                                ? ''
+                                : data.destination['code'] as String,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          Text(destination?.stationName ?? '')
+                          Text(data.destination['name'] == null
+                              ? ''
+                              : data.destination['name'] as String)
                         ],
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
-                train == null
-                    ? Text('')
-                    : Text(
-                        '${formatDate(train!.departureDatetime, format: 'EEEE, d MMMM yyyy')} - ${numAdult} Dewasa ${numChild > 0 ? numChild.toString() + ' Bayi' : ''}',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      )
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      formatDate(data.departureDatetime,
+                          format: 'EEEE, dd MMMM yyyy HH:mm'),
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    // const SizedBox(width: 20),
+                    Text(
+                      '$hours Jam $minutes Menit',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('${data.trainName} - No. ${data.trainNo}'),
+                        Text(
+                            '${data.className} (${data.classCode}) / ${data.subClass}'),
+                      ],
+                    ),
+                    const Spacer(),
+                    Text('Dewasa ( ${data.adultNum} )'),
+                    data.childNum > 0
+                        ? Text('Anak ( ${data.childNum} )')
+                        : const SizedBox(),
+                  ],
+                ),
               ],
             ),
           ),
-          train == null ? SizedBox() : buildSchedulesItem(train!),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-              child: Form(
-                key: _formKey,
-                child: ListView.builder(
-                  itemCount: passengerData.length,
-                  itemBuilder: (context, index) {
-                    return buildPassengerItem(passengerData[index], index);
-                  },
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    data.isCompleted()
+                        ? Card(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 20, horizontal: 10),
+                              child: Column(
+                                children: [
+                                  const Text('Kode Booking'),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    // mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      QrImage(
+                                        data: data.bookingCode,
+                                        version: QrVersions.auto,
+                                        size: 100,
+                                      ),
+                                      Text(
+                                        data.bookingCode,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineMedium,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : const SizedBox(),
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Text('Penumpang'),
+                                const Spacer(),
+                                data.isOpen()
+                                    ? TextButton(
+                                        onPressed: () {
+                                          // pushScreen(
+                                          //   context,
+                                          //   (_) => TrainBookingScreen(
+                                          //     title: 'Ganti Kursi',
+                                          //     booking: data,
+                                          //     // bookingId: data.bookingId,
+                                          //   ),
+                                          // );
+                                        },
+                                        child: const Text('Ganti Kursi'),
+                                      )
+                                    : const SizedBox(),
+                              ],
+                            ),
+                            const Divider(),
+                            for (var passanger in data.passengers)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(passanger['name'] as String),
+                                  Text(
+                                    '${passanger['wagon_code'] ?? '-'} ${passanger['wagon_no'] ?? '-'} / ${passanger['seat_row'] ?? '-'}${passanger['seat_column'] ?? '-'}',
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                  const SizedBox(height: 10)
+                                ],
+                              )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Biaya'),
+                            const Divider(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Dewasa x${data.adultNum}',
+                                ),
+                                Text(
+                                  'Rp. ${formatNumber(data.adultNum * data.adultPrice)}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(color: Colors.deepOrange),
+                                ),
+                              ],
+                            ),
+                            data.childNum > 0
+                                ? Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Anak x${data.childNum}',
+                                      ),
+                                      Text(
+                                        'Rp. ${formatNumber(data.childNum * data.childPrice)}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                                color: Colors.deepOrange),
+                                      ),
+                                    ],
+                                  )
+                                : const SizedBox(),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Sub Total',
+                                ),
+                                Text(
+                                  'Rp. ${formatNumber(data.totalPrice)}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(color: Colors.deepOrange),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Biaya Admin',
+                                ),
+                                Text(
+                                  'Rp. ${formatNumber(data.totalAdmin)}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(color: Colors.deepOrange),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Potongan',
+                                ),
+                                Text(
+                                  'Rp. ${formatNumber(data.totalDiscount)}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(color: Colors.deepOrange),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Total Pembayaran',
+                                ),
+                                Text(
+                                  'Rp. ${formatNumber(data.grandTotal)}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(color: Colors.deepOrange),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.all(10),
-            child: AppButton('Pesan Tiket', isLoading ? null : submitData),
-          )
+          data.isOpen()
+              ? Container(
+                  padding: const EdgeInsets.all(10),
+                  child: AppButton('Pembayaran', isLoading ? null : submitData),
+                )
+              : const SizedBox()
         ],
       ),
     );

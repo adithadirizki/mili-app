@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/train.dart';
 import 'package:miliv2/src/models/train_station.dart';
+import 'package:miliv2/src/screens/train_booking.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -62,7 +63,6 @@ class _TrainHistoryScreenState extends State<TrainHistoryScreen> {
     params['sort'] = '{"created_at":"desc"}';
     params['limit'] = '50';
     Api.getTrainBookingList(params: params).then((response) {
-      debugPrint('Bookings ${response.toJson()}');
       bookingData = response.data
           .map((dynamic e) =>
               TrainBookingResponse.fromJson(e as Map<String, dynamic>))
@@ -80,17 +80,14 @@ class _TrainHistoryScreenState extends State<TrainHistoryScreen> {
       elevation: 3,
       child: InkWell(
         onTap: () {
-          // pushScreen(
-          //   context,
-          //   (_) => TrainPassangerScreen(
-          //     title: 'Data Penumpang',
-          //     departure: departure,
-          //     destination: destination,
-          //     numAdult: numAdult,
-          //     numChild: numChild,
-          //     train: schedule,
-          //   ),
-          // );
+          pushScreen(
+            context,
+            (_) => TrainBookingScreen(
+              title: 'Detail Pembelian',
+              booking: data,
+              // bookingId: data.bookingId,
+            ),
+          );
         },
         child: Padding(
           padding: const EdgeInsets.all(15.0),

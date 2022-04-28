@@ -146,6 +146,9 @@ class TrainPassengerChildData implements TrainPassengerData {
 
 @JsonSerializable()
 class TrainBookingResponse {
+  @JsonKey(name: 'id')
+  final int bookingId;
+
   @JsonKey(name: 'departure')
   final String departureCode;
 
@@ -224,10 +227,11 @@ class TrainBookingResponse {
   @JsonKey(name: 'expired_at')
   final DateTime expiredAt;
 
-  // @JsonKey(name: 'detail')
-  // final TrainScheduleDetailResponse detail;
+  @JsonKey(name: 'passengers')
+  final List<Map<String, dynamic>> passengers;
 
   TrainBookingResponse(
+    this.bookingId,
     this.departureCode,
     this.destinationCode,
     this.departureDate,
@@ -254,6 +258,7 @@ class TrainBookingResponse {
     this.destination,
     this.createdDatetime,
     this.expiredAt,
+    this.passengers,
   );
 
   factory TrainBookingResponse.fromString(String body) =>
@@ -266,5 +271,5 @@ class TrainBookingResponse {
 
   bool isOpen() => status.toUpperCase() == 'OPEN';
 
-  bool isCompleted() => status.toUpperCase() == 'CLOSED';
+  bool isCompleted() => status.toUpperCase() == 'PAID';
 }
