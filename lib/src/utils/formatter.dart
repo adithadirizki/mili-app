@@ -13,6 +13,12 @@ double parseDouble(String string) {
       : double.parse(string.replaceAll(RegExp('[^0-9]'), ''));
 }
 
+int parseInt(String string) {
+  return string.isEmpty
+      ? 0
+      : int.parse(string.replaceAll(RegExp('[^0-9]'), ''));
+}
+
 String formatDate(DateTime date, {String? format}) {
   return DateFormat(format ?? 'd MMM yy HH:mm:ss', locale)
       .format(date.toLocal());

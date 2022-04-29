@@ -110,7 +110,7 @@ class _TrainPaymentScreenState extends State<TrainPaymentScreen> {
     description +=
         '\nDari ${data.departure['name']} (${data.departure['code']}) ke ${data.destination['name']} (${data.destination['code']})';
     description +=
-        '\nPenumpang (${data.passengers.map((e) => e['name'] as String).join(',')})';
+        '\nPenumpang (${data.passengers.map((e) => e.name).join(',')})';
     description +=
         '\nKeberangkatan ${formatDate(data.departureDatetime, format: 'EEEE, dd MMMM yyyy')} jam ${formatDate(data.departureDatetime, format: 'HH:mm')}';
     description += '\nKereta ${data.trainName} ${data.trainNo}';

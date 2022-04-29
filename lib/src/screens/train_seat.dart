@@ -23,14 +23,15 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
   bool isLoading = false;
   List<TrainWagonData> wagonData = [];
   TrainWagonData? currentWagon;
-  Map<String, dynamic>? currentPassenger;
+  TrainPassenger? currentPassenger;
   TrainRowData? currentSeat;
   late TrainBookingResponse booking;
 
   @override
   void initState() {
     super.initState();
-    booking = TrainBookingResponse.fromJson(widget.booking.toJson());
+    // booking = TrainBookingResponse.fromJson(widget.booking.toJson());
+    booking = widget.booking;
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       initialize();
     });
@@ -84,15 +85,12 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
     );
   }
 
-  VoidCallback onPassengerTap(Map<String, dynamic> passenger) {
+  VoidCallback onPassengerTap(TrainPassenger passenger) {
     return () {
-      if (passenger['wagon_code'] != null &&
-          passenger['wagon_no'] != null &&
-          (passenger['wagon_code'] as String).isNotEmpty &&
-          (passenger['wagon_no'] as String).isNotEmpty) {
+      if (passenger.wagonCode.isNotEmpty && passenger.wagonNo.isNotEmpty) {
         var searchWagon = wagonData.where((wagon) =>
-            wagon.wagonCode == passenger['wagon_code'] &&
-            wagon.wagonNo == passenger['wagon_no']);
+            wagon.wagonCode == passenger.wagonCode &&
+            wagon.wagonNo == passenger.wagonNo);
         if (searchWagon.isNotEmpty) {
           currentWagon = searchWagon.first;
         }
@@ -103,7 +101,7 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
     };
   }
 
-  Widget buildPassengerCard(Map<String, dynamic> passenger) {
+  Widget buildPassengerCard(TrainPassenger passenger) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: GestureDetector(
@@ -113,7 +111,7 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
             Container(
               decoration: BoxDecoration(
                 color: currentPassenger != null &&
-                        currentPassenger!['id'] == passenger['id']
+                        currentPassenger!.passengerId == passenger.passengerId
                     ? AppColors.red1
                     : AppColors.blue6,
                 borderRadius: const BorderRadius.all(
@@ -123,16 +121,16 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               margin: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                '${passenger['seat_row'] ?? '-'}${passenger['seat_column'] ?? '-'}',
+                '${passenger.seatRow}${passenger.seatColumn}',
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
                     ?.copyWith(color: Colors.white),
               ),
             ),
-            Text(passenger['name'] as String),
+            Text(passenger.name),
             Text(
-              '${passenger['wagon_code'] ?? '-'} ${passenger['wagon_no'] ?? '-'}',
+              '${passenger.wagonCode} ${passenger.wagonNo}',
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
@@ -149,15 +147,15 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
           return;
         }
         Api.changeTrainSeat(
-                passengerId: currentPassenger!['id'] as int,
+                passengerId: currentPassenger!.passengerId,
                 wagonCode: currentWagon!.wagonCode,
                 wagonNo: currentWagon!.wagonNo,
                 seat: seat)
             .then((response) {
-          currentPassenger!['seat_row'] = seat.seatRow;
-          currentPassenger!['seat_column'] = seat.seatColumn;
-          currentPassenger!['wagon_code'] = currentWagon!.wagonCode;
-          currentPassenger!['wagon_no'] = currentWagon!.wagonNo;
+          currentPassenger!.seatRow = seat.seatRow;
+          currentPassenger!.seatColumn = seat.seatColumn;
+          currentPassenger!.wagonCode = currentWagon!.wagonCode;
+          currentPassenger!.wagonNo = currentWagon!.wagonNo;
           if (currentSeat != null) {
             currentSeat!.isEmpty = true;
           }
@@ -170,10 +168,10 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
 
   Widget buildSeat(TrainRowData row) {
     bool isCurrentPassengerSeat = currentPassenger != null &&
-        currentPassenger!['wagon_code'] == currentWagon!.wagonCode &&
-        currentPassenger!['wagon_no'] == currentWagon!.wagonNo &&
-        currentPassenger!['seat_row'] == row.seatRow &&
-        currentPassenger!['seat_column'] == row.seatColumn;
+        currentPassenger!.wagonCode == currentWagon!.wagonCode &&
+        currentPassenger!.wagonNo == currentWagon!.wagonNo &&
+        currentPassenger!.seatRow == row.seatRow &&
+        currentPassenger!.seatColumn == row.seatColumn;
     currentSeat = isCurrentPassengerSeat ? row : currentSeat;
     return row.seatRow == 0
         ? Container(
@@ -189,7 +187,7 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
                 border: Border.all(color: Colors.green, width: 1),
                 // borderRadius: const BorderRadius.all(Radius.circular(10)),
                 shape: BoxShape.circle,
-                color: row.isEmpty
+                color: row.isEmpty && !isCurrentPassengerSeat
                     ? Colors.white
                     : isCurrentPassengerSeat
                         ? AppColors.red1
@@ -202,7 +200,9 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
               alignment: Alignment.center,
               child: Text('${row.seatRow}${row.seatColumn}',
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: row.isEmpty ? Colors.green : Colors.white)),
+                      color: row.isEmpty && !isCurrentPassengerSeat
+                          ? Colors.green
+                          : Colors.white)),
             ),
           );
   }

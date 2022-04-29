@@ -488,9 +488,9 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(passanger['name'] as String),
+                                  Text(passanger.name),
                                   Text(
-                                    '${passanger['wagon_code'] ?? '-'} ${passanger['wagon_no'] ?? '-'} / ${passanger['seat_row'] ?? '-'}${passanger['seat_column'] ?? '-'}',
+                                    '${passanger.wagonCode} ${passanger.wagonNo} / ${passanger.seatRow}${passanger.seatColumn}',
                                     style:
                                         Theme.of(context).textTheme.bodySmall,
                                   ),

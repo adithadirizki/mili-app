@@ -101,15 +101,15 @@ class TrainScheduleResponse {
 }
 
 @JsonSerializable()
-class TrainPassenger implements TrainPassengerData {
+class TrainPassenger {
   @JsonKey(name: 'id')
   final int passengerId;
 
   @JsonKey(name: 'wagon_code', fromJson: intToStr)
-  final String wagonCode;
+  String wagonCode;
 
   @JsonKey(name: 'wagon_no', fromJson: intToStr)
-  final String wagonNo;
+  String wagonNo;
 
   @JsonKey(name: 'row', fromJson: strToInt)
   final int row;
@@ -118,10 +118,10 @@ class TrainPassenger implements TrainPassengerData {
   final int column;
 
   @JsonKey(name: 'seat_row', fromJson: strToInt)
-  final int seatRow;
+  int seatRow;
 
   @JsonKey(name: 'seat_column')
-  final String seatColumn;
+  String seatColumn;
 
   @JsonKey(name: 'name')
   final String name;
@@ -150,7 +150,7 @@ class TrainPassenger implements TrainPassengerData {
   factory TrainPassenger.fromJson(Map<String, dynamic> json) =>
       _$TrainPassengerFromJson(json);
 
-  Map<String, dynamic> toJson() => _$TrainPassengerAdultDataToJson(this);
+  Map<String, dynamic> toJson() => _$TrainPassengerToJson(this);
 }
 
 abstract class TrainPassengerData {}
@@ -282,7 +282,7 @@ class TrainBookingResponse {
   final DateTime expiredAt;
 
   @JsonKey(name: 'passengers')
-  final List<Map<String, dynamic>> passengers;
+  final List<TrainPassenger> passengers;
 
   TrainBookingResponse(
     this.bookingId,
