@@ -304,19 +304,7 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
   }
 
   void _onPaymentConfirmed() {
-    // confirmDialog(
-    //   context,
-    //   title: 'Konfirmasi',
-    //   msg: 'Pembelian sedang diproses, lanjutkan transaksi ?',
-    //   confirmAction: () {
-    //     reset();
-    //   },
-    //   cancelAction: () {
-    //     popScreen(context);
-    //   },
-    //   confirmText: 'Ya',
-    //   cancelText: 'Tidak',
-    // );
+    popScreenWithCallback<bool>(context, true);
   }
 
   @override

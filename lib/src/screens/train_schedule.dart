@@ -83,15 +83,15 @@ class _TrainScheduleScreenState extends State<TrainScheduleScreen> {
   }
 
   Widget buildSchedulesItem(TrainScheduleResponse schedule) {
-    var timeDiff =
-        schedule.arrivalDatetime.difference(schedule.departureDatetime);
-    var hours = (timeDiff.inMinutes / 60).floor();
-    var minutes = timeDiff.inMinutes % 60;
     var availableSeat = schedule.detail.availableSeat;
     return Card(
       elevation: 3,
       child: InkWell(
         onTap: () {
+          if (availableSeat < widget.numAdult) {
+            snackBarDialog(context, 'Kursi tidak tersedia');
+            return;
+          }
           pushScreen(
             context,
             (_) => TrainPassangerScreen(
@@ -137,7 +137,7 @@ class _TrainScheduleScreenState extends State<TrainScheduleScreen> {
                             Text(
                                 '${formatDate(schedule.departureDatetime, format: 'HH:mm')} - ${formatDate(schedule.arrivalDatetime, format: 'HH:mm')}'),
                             Text(
-                              '$hours Jam $minutes Menit',
+                              schedule.estimationTime(),
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],

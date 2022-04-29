@@ -93,91 +93,91 @@ class _TrainPassangerScreenState extends State<TrainPassangerScreen> {
   }
 
   Widget buildSchedulesItem(TrainScheduleResponse schedule) {
-    var timeDiff =
-        schedule.arrivalDatetime.difference(schedule.departureDatetime);
-    var hours = (timeDiff.inMinutes / 60).floor();
-    var minutes = timeDiff.inMinutes % 60;
-    var availableSeat = schedule.detail.availableSeat;
-    return Card(
-      elevation: 3,
-      child: InkWell(
-        onTap: () {},
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(schedule.trainName),
-                      ],
-                    ),
-                    const Spacer(),
-                    Text(schedule.trainNo)
-                  ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Card(
+        elevation: 3,
+        child: InkWell(
+          onTap: () {},
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(schedule.trainName),
+                        ],
+                      ),
+                      const Spacer(),
+                      Text(schedule.trainNo)
+                    ],
+                  ),
                 ),
-              ),
-              const Divider(),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                                '${formatDate(schedule.departureDatetime, format: 'HH:mm')} - ${formatDate(schedule.arrivalDatetime, format: 'HH:mm')}'),
-                            Text(
-                              '$hours Jam $minutes Menit',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                                '${schedule.detail.className} (${schedule.detail.classCode}) / ${schedule.detail.subClass}'),
-                            // Text(
-                            //   'Tersedia ${availableSeat} Kursi',
-                            //   style: Theme.of(context)
-                            //       .textTheme
-                            //       .bodyMedium!
-                            //       .copyWith(
-                            //           color: availableSeat == 0
-                            //               ? Colors.redAccent
-                            //               : null),
-                            // ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    Row(
-                      children: [
-                        Text(
-                          'Rp. ${formatNumber(schedule.detail.adultPrice)}',
-                          style:
-                              Theme.of(context).textTheme.titleLarge!.copyWith(
-                                    color: AppColors.blue4,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                        Text(' / orang'),
-                      ],
-                    ),
-                  ],
+                const Divider(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                  '${formatDate(schedule.departureDatetime, format: 'HH:mm')} - ${formatDate(schedule.arrivalDatetime, format: 'HH:mm')}'),
+                              Text(
+                                schedule.estimationTime(),
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                  '${schedule.detail.className} (${schedule.detail.classCode}) / ${schedule.detail.subClass}'),
+                              // Text(
+                              //   'Tersedia ${availableSeat} Kursi',
+                              //   style: Theme.of(context)
+                              //       .textTheme
+                              //       .bodyMedium!
+                              //       .copyWith(
+                              //           color: availableSeat == 0
+                              //               ? Colors.redAccent
+                              //               : null),
+                              // ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      Row(
+                        children: [
+                          Text(
+                            'Rp. ${formatNumber(schedule.detail.adultPrice)}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                  color: AppColors.blue4,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                          Text(' / orang'),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -391,7 +391,7 @@ class _TrainPassangerScreenState extends State<TrainPassangerScreen> {
           buildSchedulesItem(widget.train),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+              padding: const EdgeInsets.only(top: 5, left: 10, right: 10),
               child: Form(
                 key: _formKey,
                 child: ListView.builder(

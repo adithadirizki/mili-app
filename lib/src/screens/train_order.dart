@@ -52,6 +52,8 @@ class _TrainOrderState extends State<TrainOrder>
   }
 
   Future<void> initDB() async {
+    showLoaderDialog(context, message: 'Mohon menunggu...');
+
     isLoading = true;
 
     await AppDB.syncTrainStation();
@@ -66,6 +68,8 @@ class _TrainOrderState extends State<TrainOrder>
 
     isLoading = false;
     setState(() {});
+
+    popScreen(context);
   }
 
   void adjustAdult(int num) {
@@ -370,30 +374,33 @@ class _TrainOrderState extends State<TrainOrder>
           ),
         ),
         const SizedBox(height: 20),
-        AppButton('Cari Tiket', () {
-          if (null == departure || null == destination) {
-            snackBarDialog(context, 'Pilih stasiun keberangkatan dan tujuan');
-            return;
-          } else if (departureDate
-              .isBefore(DateUtils.dateOnly(DateTime.now()))) {
-            snackBarDialog(context, 'Tanggal keberangkatan tidak sesuai');
-            return;
-          } else if (numAdult < 1) {
-            snackBarDialog(context, 'Jumlah penumpang minimal 1 dewasa');
-            return;
-          }
-          pushScreen(
-            context,
-            (_) => TrainScheduleScreen(
-              title: 'Jadwal Kereta',
-              departure: departure!,
-              destination: destination!,
-              departureDate: departureDate,
-              numAdult: numAdult,
-              numChild: numChild,
-            ),
-          );
-        })
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: AppButton('Cari Tiket', () {
+            if (null == departure || null == destination) {
+              snackBarDialog(context, 'Pilih stasiun keberangkatan dan tujuan');
+              return;
+            } else if (departureDate
+                .isBefore(DateUtils.dateOnly(DateTime.now()))) {
+              snackBarDialog(context, 'Tanggal keberangkatan tidak sesuai');
+              return;
+            } else if (numAdult < 1) {
+              snackBarDialog(context, 'Jumlah penumpang minimal 1 dewasa');
+              return;
+            }
+            pushScreen(
+              context,
+              (_) => TrainScheduleScreen(
+                title: 'Jadwal Kereta',
+                departure: departure!,
+                destination: destination!,
+                departureDate: departureDate,
+                numAdult: numAdult,
+                numChild: numChild,
+              ),
+            );
+          }),
+        )
       ],
     );
   }

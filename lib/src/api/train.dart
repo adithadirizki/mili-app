@@ -98,6 +98,13 @@ class TrainScheduleResponse {
       _$TrainScheduleResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$TrainScheduleResponseToJson(this);
+
+  String estimationTime() {
+    final timeDiff = arrivalDatetime.difference(departureDatetime);
+    final hours = (timeDiff.inMinutes / 60).floor();
+    final minutes = timeDiff.inMinutes % 60;
+    return '$hours Jam $minutes Menit';
+  }
 }
 
 @JsonSerializable()

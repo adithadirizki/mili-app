@@ -72,14 +72,11 @@ class _TrainHistoryScreenState extends State<TrainHistoryScreen> {
   }
 
   Widget buildBookingItem(TrainBookingResponse data) {
-    var timeDiff = data.arrivalDatetime.difference(data.departureDatetime);
-    var hours = (timeDiff.inMinutes / 60).floor();
-    var minutes = timeDiff.inMinutes % 60;
     return Card(
       elevation: 3,
       child: InkWell(
-        onTap: () {
-          pushScreen(
+        onTap: () async {
+          var refresh = await pushScreenWithCallback<bool>(
             context,
             (_) => TrainBookingScreen(
               title: 'Detail Pembelian',
@@ -87,6 +84,9 @@ class _TrainHistoryScreenState extends State<TrainHistoryScreen> {
               // bookingId: data.bookingId,
             ),
           );
+          if (refresh == true) {
+            initialize();
+          }
         },
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -157,7 +157,7 @@ class _TrainHistoryScreenState extends State<TrainHistoryScreen> {
                         ),
                         // const SizedBox(width: 20),
                         Text(
-                          '$hours Jam $minutes Menit',
+                          data.estimationTime(),
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ],

@@ -31,9 +31,9 @@ class _TrainStationListState extends State<TrainStationList> {
             station.city.toUpperCase().contains(query.toUpperCase()))
         .toList();
     return DraggableScrollableSheet(
-      initialChildSize: 0.5,
+      initialChildSize: 0.7,
       minChildSize: 0.5,
-      maxChildSize: 0.9,
+      maxChildSize: 0.7,
       builder: (context, scrollController) {
         return Container(
           decoration: BoxDecoration(
@@ -48,11 +48,11 @@ class _TrainStationListState extends State<TrainStationList> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
-                  autofocus: true,
+                  autofocus: false,
                   decoration: generateInputDecoration(
                       outlineBorder: true,
                       // color: Colors.grey,
-                      hint: 'Cari Stasiun'
+                      hint: 'Cari Stasiun (${widget.stationData.length})'
                       // suffixIcon: IconButton(
                       //   color: Colors.white,
                       //   icon: const Icon(Icons.add_circle_outline_sharp),

@@ -139,14 +139,15 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
     );
   }
 
-  VoidCallback selectSeat(TrainRowData seat) {
-    return () {
+  VoidCallback onSelectSeat(TrainRowData seat) {
+    return () async {
       if (seat.isEmpty) {
         if (currentPassenger == null) {
           snackBarDialog(context, 'Pilih penumpang');
           return;
         }
-        Api.changeTrainSeat(
+        showLoaderDialog(context, message: 'Mohon tunggu...');
+        await Api.changeTrainSeat(
                 passengerId: currentPassenger!.passengerId,
                 wagonCode: currentWagon!.wagonCode,
                 wagonNo: currentWagon!.wagonNo,
@@ -162,6 +163,7 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
           seat.isEmpty = false;
           setState(() {});
         }).catchError(_handleError);
+        popScreen(context);
       }
     };
   }
@@ -183,7 +185,7 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
                 height: 50,
               )
             : InkWell(
-                onTap: selectSeat(row),
+                onTap: onSelectSeat(row),
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.green, width: 1),
@@ -276,17 +278,23 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
           ),
           Expanded(
             flex: 1,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Pilih Kursi'),
-                const SizedBox(height: 10),
-                currentWagon != null
-                    ? buildWagonSeatMap(currentWagon!)
-                    : const SizedBox()
-              ],
-            ),
+            child: isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                    ),
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Pilih Kursi'),
+                      const SizedBox(height: 10),
+                      currentWagon != null
+                          ? buildWagonSeatMap(currentWagon!)
+                          : const SizedBox()
+                    ],
+                  ),
           ),
           Container(
             padding: const EdgeInsets.all(10),
