@@ -108,7 +108,7 @@ class _TrainPaymentScreenState extends State<TrainPaymentScreen> {
     var data = widget.booking;
     var description = 'Pembelian Tiket Kereta';
     description +=
-        '\nDari ${data.departure['name']} (${data.departure['code']}) ke ${data.destination['name']} (${data.destination['code']})';
+        '\nDari ${data.departure.stationName} (${data.departure.code}) ke ${data.destination.stationName} (${data.destination.code})';
     description +=
         '\nPenumpang (${data.passengers.map((e) => e.name).join(',')})';
     description +=

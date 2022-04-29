@@ -7,6 +7,7 @@ import 'package:miliv2/src/api/train.dart';
 import 'package:miliv2/src/models/train_station.dart';
 import 'package:miliv2/src/screens/train_payment.dart';
 import 'package:miliv2/src/screens/train_seat.dart';
+import 'package:miliv2/src/services/printer.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
@@ -31,8 +32,6 @@ class TrainBookingScreen extends StatefulWidget {
 }
 
 class _TrainBookingScreenState extends State<TrainBookingScreen> {
-  final _formKey = GlobalKey<FormState>();
-
   bool isLoading = false;
 
   TrainStation? departure;
@@ -292,12 +291,7 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
   }
 
   void printReceipt() {
-    // pushScreen(context, (ctx) {
-    //   return TrainPaymentScreen(
-    //     booking: widget.booking,
-    //     onPaymentConfirmed: _onPaymentConfirmed,
-    //   );
-    // });
+    AppPrinter.printTrainReceipt(widget.booking);
   }
 
   void changeSeat() {
@@ -329,10 +323,6 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
   Widget build(BuildContext context) {
     final data = widget.booking;
 
-    final timeDiff = data.arrivalDatetime.difference(data.departureDatetime);
-    final hours = (timeDiff.inMinutes / 60).floor();
-    final minutes = timeDiff.inMinutes % 60;
-
     return Scaffold(
       appBar: SimpleAppBar(title: widget.title),
       body: Column(
@@ -361,14 +351,10 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
                       child: Column(
                         children: [
                           Text(
-                            data.departure['code'] == null
-                                ? ''
-                                : data.departure['code'] as String,
+                            data.departure.code,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          Text(data.departure['name'] == null
-                              ? ''
-                              : data.departure['name'] as String)
+                          Text(data.departure.stationName)
                         ],
                       ),
                     ),
@@ -377,14 +363,10 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
                       child: Column(
                         children: [
                           Text(
-                            data.destination['code'] == null
-                                ? ''
-                                : data.destination['code'] as String,
+                            data.destination.code,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          Text(data.destination['name'] == null
-                              ? ''
-                              : data.destination['name'] as String)
+                          Text(data.destination.stationName)
                         ],
                       ),
                     ),
@@ -401,7 +383,7 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
                     ),
                     // const SizedBox(width: 20),
                     Text(
-                      '$hours Jam $minutes Menit',
+                      data.estimationTime(),
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],

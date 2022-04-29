@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -215,20 +214,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   VoidCallback execAction(historyAction action, PurchaseHistory history) {
     void print(PurchaseHistoryDetailResponse invoice) {
-      if (invoice.config == null || true) {
-        // FIXME disable printConfig for now
-        List<LineText> rows = [];
-        rows.add(LineText(
-          type: LineText.TYPE_TEXT,
-          content: invoice.invoice,
-          weight: 0,
-          align: LineText.ALIGN_LEFT,
-        ));
-
-        AppPrinter.print(rows);
-      } else {
-        AppPrinter.printConfig(invoice.config!);
-      }
+      AppPrinter.printPurchaseHistory(invoice);
     }
 
     return () async {

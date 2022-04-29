@@ -87,20 +87,7 @@ class _PrinterScreenState extends State<PrinterScreen> {
       Map<String, dynamic> bodyMap =
           json.decode(response.body) as Map<String, dynamic>;
       var struct = PurchaseHistoryDetailResponse.fromJson(bodyMap);
-
-      if (struct.config == null) {
-        List<LineText> rows = [];
-        rows.add(LineText(
-          type: LineText.TYPE_TEXT,
-          content: struct.invoice,
-          weight: 0,
-          align: LineText.ALIGN_LEFT,
-        ));
-
-        AppPrinter.print(rows);
-      } else {
-        AppPrinter.printConfig(struct.config!);
-      }
+      AppPrinter.printPurchaseHistory(struct);
     });
   }
 

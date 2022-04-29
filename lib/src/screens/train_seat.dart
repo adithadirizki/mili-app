@@ -173,38 +173,40 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
         currentPassenger!.seatRow == row.seatRow &&
         currentPassenger!.seatColumn == row.seatColumn;
     currentSeat = isCurrentPassengerSeat ? row : currentSeat;
-    return row.seatRow == 0
-        ? Container(
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.all(2),
-            width: 60,
-            height: 50,
-          )
-        : InkWell(
-            onTap: selectSeat(row),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.green, width: 1),
-                // borderRadius: const BorderRadius.all(Radius.circular(10)),
-                shape: BoxShape.circle,
-                color: row.isEmpty && !isCurrentPassengerSeat
-                    ? Colors.white
-                    : isCurrentPassengerSeat
-                        ? AppColors.red1
-                        : Colors.grey,
-              ),
-              padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.all(2),
-              height: 50,
-              width: 60,
-              alignment: Alignment.center,
-              child: Text('${row.seatRow}${row.seatColumn}',
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: row.isEmpty && !isCurrentPassengerSeat
-                          ? Colors.green
-                          : Colors.white)),
-            ),
-          );
+    return row.seatColumn.isEmpty
+        ? const SizedBox()
+        : row.seatRow == 0
+            ? Container(
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.all(2),
+                width: 60,
+                height: 50,
+              )
+            : InkWell(
+                onTap: selectSeat(row),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.green, width: 1),
+                    // borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    shape: BoxShape.circle,
+                    color: row.isEmpty && !isCurrentPassengerSeat
+                        ? Colors.white
+                        : isCurrentPassengerSeat
+                            ? AppColors.red1
+                            : Colors.grey,
+                  ),
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.all(2),
+                  height: 50,
+                  width: 60,
+                  alignment: Alignment.center,
+                  child: Text('${row.seatRow}${row.seatColumn}',
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: row.isEmpty && !isCurrentPassengerSeat
+                              ? Colors.green
+                              : Colors.white)),
+                ),
+              );
   }
 
   Widget buildWagonSeatMap(TrainWagonData wagon) {

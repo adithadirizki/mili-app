@@ -125,14 +125,10 @@ class _TrainHistoryScreenState extends State<TrainHistoryScreen> {
                           child: Column(
                             children: [
                               Text(
-                                data.departure['code'] == null
-                                    ? ''
-                                    : data.departure['code'] as String,
+                                data.departure.code,
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
-                              Text(data.departure['name'] == null
-                                  ? ''
-                                  : data.departure['name'] as String)
+                              Text(data.departure.stationName)
                             ],
                           ),
                         ),
@@ -141,14 +137,10 @@ class _TrainHistoryScreenState extends State<TrainHistoryScreen> {
                           child: Column(
                             children: [
                               Text(
-                                data.destination['code'] == null
-                                    ? ''
-                                    : data.destination['code'] as String,
+                                data.destination.code,
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
-                              Text(data.destination['name'] == null
-                                  ? ''
-                                  : data.destination['name'] as String)
+                              Text(data.destination.stationName)
                             ],
                           ),
                         ),

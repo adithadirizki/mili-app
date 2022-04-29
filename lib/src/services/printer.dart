@@ -2,10 +2,13 @@ import 'package:bluetooth_print/bluetooth_print.dart';
 import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:miliv2/objectbox.g.dart';
+import 'package:miliv2/src/api/purchase.dart';
+import 'package:miliv2/src/api/train.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/user_config.dart';
 import 'package:miliv2/src/services/storage.dart';
+import 'package:miliv2/src/utils/formatter.dart';
 
 /// See https://pub.dev/packages/bluetooth_print for detail
 class AppPrinter {
@@ -91,7 +94,7 @@ class AppPrinter {
     AppStorage.setPrinterAddress(null);
   }
 
-  static Future<void> print(List<LineText> rows,
+  static Future<void> _print(List<LineText> rows,
       {Map<String, dynamic>? config}) async {
     if (!_connected) {
       debugPrint('AppPrinter not connected !!!');
@@ -152,7 +155,7 @@ class AppPrinter {
         ));
       }
       if (footers.isNotEmpty) {
-        footers.insert(0, LineText(linefeed: 1));
+        // footers.insert(0, LineText(linefeed: 1));
         rows.addAll(footers);
       }
     }
@@ -160,7 +163,7 @@ class AppPrinter {
     await _printer.printReceipt(config ?? <String, dynamic>{}, rows);
   }
 
-  static Future<void> printConfig(List<Map<String, dynamic>> configs,
+  static Future<void> _printByConfig(List<Map<String, dynamic>> configs,
       {Map<String, dynamic>? config}) async {
     List<LineText> rows = [];
 
@@ -202,6 +205,7 @@ class AppPrinter {
       );
     }
 
+    // FIXME printConfig by column
     for (var config in configs) {
       if (config.containsKey('columns')) {
         var columns = config['columns'] as List<dynamic>;
@@ -214,6 +218,167 @@ class AppPrinter {
       }
     }
 
-    await print(rows, config: config);
+    await _print(rows, config: config);
+  }
+
+  static Future<void> printPurchaseHistory(PurchaseHistoryDetailResponse data,
+      {Map<String, dynamic>? config}) async {
+    if (data.config == null) {
+      List<LineText> rows = [];
+      rows.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: data.invoice,
+        weight: 0,
+        align: LineText.ALIGN_LEFT,
+        linefeed: 1,
+      ));
+
+      rows.add(LineText(
+        linefeed: 1,
+      ));
+
+      await _print(rows, config: config);
+    } else {
+      await _printByConfig(data.config!, config: config);
+    }
+  }
+
+  static Future<void> printTrainReceipt(TrainBookingResponse data,
+      {Map<String, dynamic>? config}) async {
+    if (!_connected) {
+      debugPrint('AppPrinter not connected !!!');
+      return;
+    }
+    List<LineText> rows = [];
+    rows.add(LineText(
+      type: LineText.TYPE_TEXT,
+      content:
+          'Tanggal : ${formatDate(data.createdDatetime, format: 'dd/MM/yyyy HH:mm')}',
+      weight: 0,
+      align: LineText.ALIGN_LEFT,
+      linefeed: 1,
+    ));
+    rows.add(LineText(
+      type: LineText.TYPE_TEXT,
+      content: 'Kereta : ${data.trainName}',
+      weight: 0,
+      align: LineText.ALIGN_LEFT,
+      linefeed: 1,
+    ));
+    rows.add(LineText(
+      type: LineText.TYPE_TEXT,
+      content: 'No : ${data.trainNo}',
+      weight: 0,
+      align: LineText.ALIGN_LEFT,
+      linefeed: 1,
+    ));
+    rows.add(LineText(
+      type: LineText.TYPE_TEXT,
+      content:
+          'Stasiun : ${data.departure.stationName} (${data.departure.code})',
+      weight: 0,
+      align: LineText.ALIGN_LEFT,
+      linefeed: 1,
+    ));
+    rows.add(LineText(
+      type: LineText.TYPE_TEXT,
+      content:
+          'Tanggal : ${formatDate(data.departureDatetime, format: 'EEEE, dd MMMM yyyy HH:mm')}',
+      weight: 0,
+      align: LineText.ALIGN_LEFT,
+      linefeed: 1,
+    ));
+    rows.add(LineText(
+      type: LineText.TYPE_TEXT,
+      content:
+          'Penumpang : Dewasa (x${data.adultNum}) ${data.childNum > 0 ? ', Anak (x${data.childNum})' : ''}',
+      weight: 0,
+      align: LineText.ALIGN_LEFT,
+      linefeed: 1,
+    ));
+    rows.add(LineText(
+      type: LineText.TYPE_TEXT,
+      content:
+          'Tujuan : ${data.destination.stationName} (${data.destination.code})',
+      weight: 0,
+      align: LineText.ALIGN_LEFT,
+      linefeed: 1,
+    ));
+    rows.add(LineText(
+      type: LineText.TYPE_TEXT,
+      content: 'Waktu : ${data.estimationTime()}',
+      weight: 0,
+      align: LineText.ALIGN_LEFT,
+      linefeed: 1,
+    ));
+    rows.add(LineText(
+      type: LineText.TYPE_TEXT,
+      content: 'Reff ID : ${data.bookingNumber}',
+      weight: 0,
+      align: LineText.ALIGN_LEFT,
+      linefeed: 1,
+    ));
+    rows.add(LineText(
+      type: LineText.TYPE_TEXT,
+      content: 'Total : ${formatNumber(data.totalPrice)}',
+      weight: 0,
+      align: LineText.ALIGN_LEFT,
+      linefeed: 1,
+    ));
+    rows.add(LineText(
+      type: LineText.TYPE_TEXT,
+      content: 'Admin : ${formatNumber(data.totalAdmin)}',
+      weight: 0,
+      align: LineText.ALIGN_LEFT,
+      linefeed: 1,
+    ));
+    if (data.totalDiscount > 0) {
+      rows.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: 'Potongan : ${formatNumber(data.totalDiscount)}',
+        weight: 0,
+        align: LineText.ALIGN_LEFT,
+        linefeed: 1,
+      ));
+    }
+    rows.add(LineText(
+      type: LineText.TYPE_TEXT,
+      content: 'Bayar : ${formatNumber(data.grandTotal)}',
+      weight: 0,
+      align: LineText.ALIGN_LEFT,
+      linefeed: 1,
+    ));
+    rows.add(LineText(
+      linefeed: 1,
+    ));
+    rows.add(LineText(
+      type: LineText.TYPE_TEXT,
+      content: 'Kode Booking',
+      weight: 0,
+      align: LineText.ALIGN_CENTER,
+      linefeed: 1,
+    ));
+    rows.add(LineText(
+      type: LineText.TYPE_TEXT,
+      content: data.bookingCode,
+      weight: 0,
+      height: 1,
+      width: 1,
+      align: LineText.ALIGN_CENTER,
+      linefeed: 1,
+    ));
+    rows.add(LineText(
+      linefeed: 1,
+    ));
+    rows.add(LineText(
+      type: LineText.TYPE_QRCODE,
+      content: data.bookingCode,
+      weight: 0,
+      size: 7,
+      align: LineText.ALIGN_CENTER,
+      linefeed: 1,
+    ));
+
+    await _print(rows, config: config);
   }
 }

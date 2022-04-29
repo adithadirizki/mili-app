@@ -207,13 +207,13 @@ class TrainBookingResponse {
   final String departureCode;
 
   @JsonKey(name: 'departure_station')
-  final Map<String, dynamic> departure;
+  final TrainStationResponse departure;
 
   @JsonKey(name: 'destination')
   final String destinationCode;
 
   @JsonKey(name: 'destination_station')
-  final Map<String, dynamic> destination;
+  final TrainStationResponse destination;
 
   @JsonKey(name: 'depart_date')
   final DateTime departureDate;
@@ -324,8 +324,13 @@ class TrainBookingResponse {
   Map<String, dynamic> toJson() => _$TrainBookingResponseToJson(this);
 
   bool isOpen() => status.toUpperCase() == 'OPEN';
-
   bool isCompleted() => status.toUpperCase() == 'PAID';
+  String estimationTime() {
+    final timeDiff = arrivalDatetime.difference(departureDatetime);
+    final hours = (timeDiff.inMinutes / 60).floor();
+    final minutes = timeDiff.inMinutes % 60;
+    return '$hours Jam $minutes Menit';
+  }
 }
 
 // Rows
