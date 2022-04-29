@@ -6,10 +6,10 @@ import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/train_station.dart';
 import 'package:miliv2/src/screens/train_schedule.dart';
 import 'package:miliv2/src/theme.dart';
-import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/button.dart';
+import 'package:miliv2/src/widgets/train_station_list.dart';
 
 class TrainOrder extends StatefulWidget {
   const TrainOrder({Key? key}) : super(key: key);
@@ -113,58 +113,9 @@ class _TrainOrderState extends State<TrainOrder>
       backgroundColor: Colors.transparent,
       context: context,
       builder: (context) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.7,
-          minChildSize: 0.5,
-          maxChildSize: 0.9,
-          builder: (context, scrollController) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(20),
-                ),
-              ),
-              padding: const EdgeInsets.only(top: 10),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      autofocus: true,
-                      decoration: generateInputDecoration(
-                        outlineBorder: true,
-                        color: Colors.white,
-                        // suffixIcon: IconButton(
-                        //   color: Colors.white,
-                        //   icon: const Icon(Icons.add_circle_outline_sharp),
-                        //   onPressed: () {},
-                        // ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: ListView.builder(
-                      controller: scrollController,
-                      itemCount: stationData.length,
-                      itemBuilder: (context, index) {
-                        var data = stationData[index];
-                        return ListTile(
-                          onTap: () {
-                            onItemTap(data);
-                            popScreen(context);
-                          },
-                          title: Text(
-                              '${data.stationName} (${data.code}) - ${data.city}'),
-                        );
-                      },
-                    ),
-                  )
-                ],
-              ),
-            );
-          },
+        return TrainStationList(
+          stationData: stationData,
+          onItemTap: onItemTap,
         );
       },
     );
@@ -214,7 +165,7 @@ class _TrainOrderState extends State<TrainOrder>
             padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   flex: 2,
@@ -225,7 +176,7 @@ class _TrainOrderState extends State<TrainOrder>
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text('Dari'),
+                        const Text('Keberangkatan'),
                         const Image(image: AppImages.train, width: 120),
                         departure != null
                             ? Text(
@@ -233,28 +184,22 @@ class _TrainOrderState extends State<TrainOrder>
                                 textAlign: TextAlign.center,
                               )
                             : const Text(
-                                'Cari Stasiun',
+                                'Cari Stasiun\n',
                                 textAlign: TextAlign.center,
                               ),
                       ],
                     ),
                   ),
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: const [
-                    // Container(
-                    //   width: 2,
-                    //   height: double.infinity,
-                    //   decoration: BoxDecoration(
-                    //     border: Border.all(color: Colors.grey, width: 1),
-                    //   ),
-                    // ),
-                    Image(image: AppImages.destinationSwap, width: 50),
-                  ],
-                ),
+                GestureDetector(
+                    onTap: () {
+                      var temp = departure;
+                      departure = destination;
+                      destination = temp;
+                      setState(() {});
+                    },
+                    child: const Image(
+                        image: AppImages.destinationSwap, width: 50)),
                 Expanded(
                   flex: 2,
                   child: GestureDetector(
@@ -277,7 +222,7 @@ class _TrainOrderState extends State<TrainOrder>
                                 textAlign: TextAlign.center,
                               )
                             : const Text(
-                                'Cari Stasiun',
+                                'Cari Stasiun\n',
                                 textAlign: TextAlign.center,
                               ),
                       ],
