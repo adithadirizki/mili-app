@@ -62,11 +62,13 @@ class Api {
         break;
       case 401:
       case 403:
-        exception = UnauthorisedException(errorMsg);
+        exception = UnauthorisedException('Unauthorized Access');
         break;
       case 500:
+        exception = FetchDataException('Internal Server Error');
+        break;
       default:
-        exception = FetchDataException(errorMsg);
+        exception = FetchDataException('Tidak bisa terhubung ke server');
         break;
     }
 
