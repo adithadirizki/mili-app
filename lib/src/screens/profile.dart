@@ -20,6 +20,7 @@ import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/device.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/profile_picture.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 enum historyAction {
   toggleFavorite,
@@ -154,6 +155,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context,
       (_) => const SystemInfoScreen(title: 'Informasi Sistem'),
     );
+  }
+
+  void playStore() async {
+    const url =
+        'https://play.google.com/store/apps/details?id=com.sridata.mili';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      snackBarDialog(context, 'Tidak bisa membuka link');
+    }
   }
 
   Widget itemBuilder1(AppMenu menu) {
@@ -528,6 +539,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ],
                         ),
                         onPressed: privacy,
+                        style: ElevatedButton.styleFrom(
+                          primary: AppColors.blue5,
+                          minimumSize: const Size(200, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      OutlinedButton(
+                        child: Row(
+                          children: [
+                            // const Image(
+                            //   image: AppImages.info,
+                            //   color: Color(0xFFFFFFFF),
+                            //   width: 24,
+                            // ),
+                            const Icon(Icons.wifi_protected_setup_rounded,
+                                color: Colors.white),
+                            const SizedBox(width: 20),
+                            Text(
+                              'Perbarui Aplikasi',
+                              // style: TextStyle(color: Colors.white),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: AppColors.white1),
+                            ),
+                          ],
+                        ),
+                        onPressed: playStore,
                         style: ElevatedButton.styleFrom(
                           primary: AppColors.blue5,
                           minimumSize: const Size(200, 50),

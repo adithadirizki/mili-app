@@ -95,7 +95,7 @@ class _SystemInfoScreenState extends State<SystemInfoScreen> {
           style: titleStyle,
         ),
         Text(
-          '$model $deviceId',
+          '$model',
           style: contentStyle,
         ),
         Text(

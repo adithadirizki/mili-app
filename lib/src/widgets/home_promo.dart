@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/api/banner.dart';
 import 'package:miliv2/src/data/active_banner.dart';
+import 'package:miliv2/src/utils/dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePromo extends StatefulWidget {
   const HomePromo({Key? key}) : super(key: key);
@@ -45,16 +47,16 @@ class _HomePromoState extends State<HomePromo> {
           clipBehavior: Clip.hardEdge,
           borderRadius: BorderRadius.circular(10.0),
           child: GestureDetector(
-            onTap: () {
-              // Navigator.pushNamed(
-              //   context,
-              //   '/browser',
-              //   arguments: ScreenArguments(
-              //     promo.title!,
-              //     promo.image!,
-              //   ),
-              // );
-            },
+            onTap: (promo.bannerLink != null && promo.bannerLink!.isNotEmpty)
+                ? () async {
+                    if (await canLaunch(promo.bannerLink!)) {
+                      debugPrint('Launch ${promo.bannerLink}');
+                      await launch(promo.bannerLink!);
+                    } else {
+                      snackBarDialog(context, 'Tidak bisa membuka link');
+                    }
+                  }
+                : null,
             child: CachedNetworkImage(
               imageUrl: promo.getImageUrl(),
               placeholder: (context, url) => const Center(
@@ -72,6 +74,14 @@ class _HomePromoState extends State<HomePromo> {
                     //     ColorFilter.mode(Colors.red, BlendMode.colorBurn),
                   ),
                 ),
+                alignment: Alignment.topRight,
+                child:
+                    (promo.bannerLink != null && promo.bannerLink!.isNotEmpty)
+                        ? const Icon(
+                            Icons.info_outlined,
+                            color: Colors.white,
+                          )
+                        : null,
               ),
             ),
           ),
