@@ -146,7 +146,7 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
           snackBarDialog(context, 'Pilih penumpang');
           return;
         }
-        showLoaderDialog(context, message: 'Mohon tunggu...');
+        var closeLoader = showLoaderDialog(context, message: 'Mohon tunggu...');
         await Api.changeTrainSeat(
                 passengerId: currentPassenger!.passengerId,
                 wagonCode: currentWagon!.wagonCode,
@@ -163,7 +163,7 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
           seat.isEmpty = false;
           setState(() {});
         }).catchError(_handleError);
-        popScreen(context);
+        await closeLoader();
       }
     };
   }

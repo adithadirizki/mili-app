@@ -68,7 +68,8 @@ class AppImages {
   static const logoXL = AssetImage('assets/images/pulsa/logo_XL.png');
 
   static const train = AssetImage('assets/images/train/train_in.png');
-  static const trainCalendar = AssetImage('assets/images/train/calendar.png');
+  static const trainCalendar =
+      AssetImage('assets/images/train/train-calendar.png');
   static const destinationSwap =
       AssetImage('assets/images/train/destination_exchange.png');
   static const trainAdult = AssetImage('assets/images/train/adult.png');

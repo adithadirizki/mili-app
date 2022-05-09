@@ -79,6 +79,17 @@ class Api {
     throw exception;
   }
 
+  static http.Response _parseException(Object e) {
+    if (e is BadRequestException ||
+        e is UnauthorisedException ||
+        e is FetchDataException) {
+      throw e;
+    } else {
+      var message = 'Tidak bisa terhubung, periksa koneksi internet Anda';
+      throw message;
+    }
+  }
+
   static Map<String, String>? getRequestHeaders(
       {String contentType = 'application/json'}) {
     if (_token == '') {
@@ -117,7 +128,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> requestOTP(OTPType otpType) {
@@ -144,7 +156,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> verifyOTP(String otp) {
@@ -158,7 +171,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> verifyReferral(String referralCode) {
@@ -171,7 +185,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> resetPassword(
@@ -187,7 +202,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> register(Map<String, Object> body) {
@@ -197,7 +213,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> changePassword(Map<String, Object> body) {
@@ -207,7 +224,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> guest(String imei, String ipAddress) {
@@ -221,7 +239,8 @@ class Api {
               body: json.encode(body), ipAddress: ipAddress),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> clientInfo() {
@@ -229,7 +248,8 @@ class Api {
         .get(
           Uri.parse(AppConfig.baseUrl + '/client'),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> subscribeMessaging(
@@ -250,7 +270,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getProfile() {
@@ -259,7 +280,8 @@ class Api {
           Uri.parse(AppConfig.baseUrl + '/profile'),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> updateProfile(Map<String, Object> body) {
@@ -269,7 +291,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.StreamedResponse> updatePhotoProfile(
@@ -326,7 +349,8 @@ class Api {
           Uri.parse(AppConfig.baseUrl + '/regions/provinces'),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getCity(int? provinceId) {
@@ -339,7 +363,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getDistrict(int? cityId) {
@@ -352,7 +377,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getVillage(int? districtId) {
@@ -365,7 +391,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getActiveBanner() {
@@ -374,7 +401,8 @@ class Api {
           Uri.parse(AppConfig.baseUrl + '/active-banners'),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getTopupInfo() {
@@ -383,7 +411,8 @@ class Api {
           Uri.parse(AppConfig.baseUrl + '/balance/info'),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<Map<String, dynamic>> createTopupTicket(double amount) {
@@ -397,7 +426,8 @@ class Api {
           body: json.encode(body),
         )
         .then(_parseResponse)
-        .then((response) => json.decode(response.body) as Map<String, dynamic>);
+        .then((response) => json.decode(response.body) as Map<String, dynamic>)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> cancelTopupTicket(int id) {
@@ -410,7 +440,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   // TODO ganti semua response paging ke PagingResponse<T>
@@ -427,7 +458,7 @@ class Api {
           json.decode(response.body) as Map<String, dynamic>;
       var pagingResponse = PagingResponse.fromJson(bodyMap);
       return pagingResponse;
-    });
+    }).catchError(_parseException);
   }
 
   static Future<http.Response> getTransferInfo() {
@@ -436,7 +467,8 @@ class Api {
           Uri.parse(AppConfig.baseUrl + '/purchase/transfer-info'),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> inquiryTransfer(double amount, String userId) {
@@ -450,7 +482,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> transferBalance(double amount, String userId) {
@@ -464,7 +497,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getAllProducts({Map<String, Object>? params}) {
@@ -474,7 +508,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getProductVendor({Map<String, Object>? params}) {
@@ -484,7 +519,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getProductCriteria(String productCode) {
@@ -493,7 +529,8 @@ class Api {
           Uri.parse(AppConfig.baseUrl + '/products/criteria/$productCode'),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getPdamArea(String productCode) {
@@ -502,7 +539,8 @@ class Api {
           Uri.parse(AppConfig.baseUrl + '/products/pdam'),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> purchaseProduct(
@@ -524,7 +562,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> inquiryPayment({
@@ -552,7 +591,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getPurchaseHistory(
@@ -563,7 +603,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getPurchaseDetail(int pruchaseId,
@@ -574,7 +615,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getFavorite({Map<String, Object>? params}) {
@@ -584,7 +626,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> addFavorite(
@@ -600,7 +643,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> updateFavorite(int id, String name) {
@@ -613,7 +657,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> removeFavorite(int id) {
@@ -622,7 +667,8 @@ class Api {
           Uri.parse(AppConfig.baseUrl + '/purchase/favorite/$id'),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getBalanceMutation(
@@ -633,7 +679,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getCreditMutation(
@@ -644,7 +691,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getNotification({Map<String, Object>? params}) {
@@ -654,7 +702,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getCustomerService(
@@ -665,7 +714,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.StreamedResponse> sendImageMessage(
@@ -697,7 +747,8 @@ class Api {
           headers: getRequestHeaders(contentType: 'multipart/form-data'),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> saveUserConfig(UserConfig config) {
@@ -711,7 +762,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getUserConfig({Map<String, Object>? params}) {
@@ -721,7 +773,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getPrintSample({Map<String, Object>? params}) {
@@ -731,7 +784,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getOutletType({Map<String, Object>? params}) {
@@ -741,7 +795,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getDownline({Map<String, Object>? params}) {
@@ -751,7 +806,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> registerDownline(
@@ -776,7 +832,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getDownlineSummary(
@@ -787,7 +844,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getDownlineLastTransaction(
@@ -798,7 +856,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> updateDownline(String userId,
@@ -812,7 +871,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> getPriceSetting({Map<String, Object>? params}) {
@@ -822,7 +882,8 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<http.Response> updatePriceSetting(
@@ -837,7 +898,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<PagingResponse> getTrainStation({Map<String, Object>? params}) {
@@ -853,7 +915,7 @@ class Api {
           json.decode(response.body) as Map<String, dynamic>;
       var pagingResponse = PagingResponse.fromJson(bodyMap);
       return pagingResponse;
-    });
+    }).catchError(_parseException);
   }
 
   static Future<Map<String, dynamic>> getTrainSchedule({
@@ -883,7 +945,7 @@ class Api {
       Map<String, dynamic> bodyMap =
           json.decode(response.body) as Map<String, dynamic>;
       return bodyMap;
-    });
+    }).catchError(_parseException);
   }
 
   static Future<http.Response> createTrainBooking({
@@ -919,7 +981,8 @@ class Api {
           headers: getRequestHeaders(),
           body: json.encode(body),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<PagingResponse> getTrainBookingList(
@@ -936,7 +999,7 @@ class Api {
           json.decode(response.body) as Map<String, dynamic>;
       var pagingResponse = PagingResponse.fromJson(bodyMap);
       return pagingResponse;
-    });
+    }).catchError(_parseException);
   }
 
   static Future<Map<String, dynamic>> getTrainBookingDetail({
@@ -952,7 +1015,7 @@ class Api {
       Map<String, dynamic> bodyMap =
           json.decode(response.body) as Map<String, dynamic>;
       return bodyMap;
-    });
+    }).catchError(_parseException);
   }
 
   static Future<http.Response> payTrainBooking({
@@ -963,7 +1026,8 @@ class Api {
           Uri.parse(AppConfig.baseUrl + '/kai/payment/${booking.bookingId}'),
           headers: getRequestHeaders(),
         )
-        .then(_parseResponse);
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 
   static Future<Map<String, dynamic>> getTrainSeatMap({
@@ -979,7 +1043,7 @@ class Api {
       Map<String, dynamic> bodyMap =
           json.decode(response.body) as Map<String, dynamic>;
       return bodyMap;
-    });
+    }).catchError(_parseException);
   }
 
   static Future<Map<String, dynamic>> changeTrainSeat({
@@ -1008,7 +1072,7 @@ class Api {
       Map<String, dynamic> bodyMap =
           json.decode(response.body) as Map<String, dynamic>;
       return bodyMap;
-    });
+    }).catchError(_parseException);
   }
 }
 

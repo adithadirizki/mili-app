@@ -89,7 +89,7 @@ class _HomepageState extends State<Homepage>
   }
 
   void initialize() async {
-    showLoaderDialog(context, message: 'Memperbarui...');
+    var closeLoader = showLoaderDialog(context, message: 'Memperbarui...');
     AppDB.syncVendor();
     AppDB.syncUserConfig();
     await AppDB.syncProduct();
@@ -98,8 +98,8 @@ class _HomepageState extends State<Homepage>
     // await AppDB.syncBalanceMutation();
     // await AppDB.syncCreditMutation();
     synchronized = true;
+    await closeLoader();
     debugPrint('Completed initialize');
-    popScreen(context);
   }
 
   void initPin() {

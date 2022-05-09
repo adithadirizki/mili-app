@@ -52,7 +52,7 @@ class _TrainOrderState extends State<TrainOrder>
   }
 
   Future<void> initDB() async {
-    showLoaderDialog(context, message: 'Mohon menunggu...');
+    var closeLoader = showLoaderDialog(context, message: 'Mohon menunggu...');
 
     isLoading = true;
 
@@ -69,7 +69,7 @@ class _TrainOrderState extends State<TrainOrder>
     isLoading = false;
     setState(() {});
 
-    popScreen(context);
+    await closeLoader();
   }
 
   void adjustAdult(int num) {
