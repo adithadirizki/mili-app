@@ -25,7 +25,7 @@ class UserBalanceState extends ChangeNotifier {
   String? address;
   String? outletType;
   double markup = 0;
-  String groupName = 'RETAIL';
+  String groupName = '';
 
   UserBalanceState(this.balance, this.balanceCredit, this.isLoading);
 
@@ -78,8 +78,6 @@ class UserBalanceState extends ChangeNotifier {
     outletType = profile.outletType;
     markup = profile.markup ?? 0;
     groupName = profile.groupName;
-
-    debugPrint('Fetch UserBalanceState success ${bodyMap}');
     notifyListeners();
   }
 
@@ -95,15 +93,10 @@ class UserBalanceState extends ChangeNotifier {
     return !isGuest() && phoneVerified;
   }
 
-  FutureOr<void> _handleError(Object e) {
-    debugPrint('Fetch UserBalanceState error $e');
-    throw e;
-  }
-
   Future<void> fetchData() {
     isLoading = true;
     notifyListeners();
-    return Api.getProfile().then(_handleResponse).catchError(_handleError);
+    return Api.getProfile().then(_handleResponse);
   }
 }
 

@@ -123,10 +123,16 @@ class AppMessaging {
     debugPrint(
         'Messaging realtime data: ${message.data} ${message.notification}');
 
-    if (message.data['notification_key'] != null &&
-        (message.data['notification_key'] as String) == 'purchase') {
-      userBalanceState.fetchData();
-      transactionState.updateState();
+    if (message.data['notification_key'] != null) {
+      var key = message.data['notification_key'] as String;
+      if (key == 'purchase') {
+        userBalanceState.fetchData();
+        transactionState.updateState();
+      } else if (key == 'deposit' ||
+          key == 'mutasi' ||
+          key == 'transfer_deposit') {
+        userBalanceState.fetchData();
+      }
     }
 
     // snackBarDialog(
