@@ -6,6 +6,7 @@ import 'package:http/http.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/profile.dart';
 import 'package:miliv2/src/config/config.dart';
+import 'package:miliv2/src/services/storage.dart';
 
 class UserBalanceState extends ChangeNotifier {
   bool isLoading = false;
@@ -28,7 +29,37 @@ class UserBalanceState extends ChangeNotifier {
 
   UserBalanceState(this.balance, this.balanceCredit, this.isLoading);
 
+  factory UserBalanceState.fromCache() {
+    var body = AppStorage.getUserProfile(); // Cache
+    if (body.isEmpty) {
+      return UserBalanceState(0, 0, false);
+    }
+    try {
+      Map<String, dynamic> bodyMap = json.decode(body) as Map<String, dynamic>;
+      var profile =
+          ProfileResponse.fromJson(bodyMap['data'] as Map<String, dynamic>);
+      return UserBalanceState(0, 0, false)
+        ..balance = (profile.balance ?? 0)
+        ..balanceCredit = profile.balanceCredit ?? 0
+        ..level = profile.level
+        ..userId = profile.userId
+        ..name = profile.name
+        ..referralCode = profile.referralCode
+        ..phoneNumber = profile.phoneNumber
+        ..email = profile.email
+        ..photo = profile.photo
+        ..premium = profile.premium
+        ..address = profile.address
+        ..outletType = profile.outletType
+        ..markup = profile.markup ?? 0
+        ..groupName = profile.groupName;
+    } catch (e) {
+      return UserBalanceState(0, 0, false);
+    }
+  }
+
   void _handleResponse(Response response) {
+    AppStorage.seUserProfile(response.body); // Cache
     Map<String, dynamic> bodyMap =
         json.decode(response.body) as Map<String, dynamic>;
     var profile =
@@ -82,7 +113,7 @@ class UserBalanceState extends ChangeNotifier {
 // });
 
 // Initialized
-final userBalanceState = UserBalanceState(0, 0, false);
+final userBalanceState = UserBalanceState.fromCache();
 
 class UserBalanceScope extends InheritedNotifier<UserBalanceState> {
   const UserBalanceScope({

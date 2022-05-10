@@ -6,6 +6,7 @@ class AppStorage {
   static const String _signedInKey = "_signedIn";
   static const String _verifiedKey = "_vefified";
   static const String _usernameKey = "_username";
+  static const String _profileKey = "_profile";
 
   // Private
   static const String _pinEnable = "_pinEnable";
@@ -74,6 +75,19 @@ class AppStorage {
 
   static String getUsername() {
     String? value = _engine.getString(_usernameKey);
+    return value ?? '';
+  }
+
+  static void seUserProfile(String? value) {
+    if (null != value) {
+      _engine.setString(_profileKey, value);
+    } else {
+      _engine.remove(_profileKey);
+    }
+  }
+
+  static String getUserProfile() {
+    String? value = _engine.getString(_profileKey);
     return value ?? '';
   }
 
