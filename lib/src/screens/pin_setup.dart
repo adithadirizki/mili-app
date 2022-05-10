@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/models/user_config.dart';
 import 'package:miliv2/src/screens/otp_verification.dart';
+import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/services/biometry.dart';
 import 'package:miliv2/src/services/storage.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -18,6 +19,7 @@ class PINSetupScreen extends StatefulWidget {
 class _PINSetupScreenState extends State<PINSetupScreen> {
   bool pinActive = false;
   bool biometricActive = false;
+  bool transactionActive = false;
 
   String currentPin = '';
   String newPin = '';
@@ -36,6 +38,7 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
     currentPin = AppStorage.getPIN();
     pinActive = AppStorage.getPINEnable() && currentPin.isNotEmpty;
     biometricActive = AppStorage.getBiometricEnable();
+    transactionActive = AppStorage.getTransactionPINEnable();
 
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       initialize();
@@ -277,6 +280,23 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
     }
   }
 
+  void onTransactionPINChange(bool value) {
+    AppAuth.pinAuthentication(context, (context) {
+      if (!transactionActive && value) {
+        AppStorage.setTransactionPINEnable(true);
+        setState(() {
+          transactionActive = true;
+        });
+      } else {
+        AppStorage.setTransactionPINEnable(false);
+        setState(() {
+          transactionActive = false;
+        });
+      }
+      popScreen(context);
+    });
+  }
+
   void onPINChange() {
     if (pinActive) {
       beginChangePIN();
@@ -385,6 +405,17 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
                 trailing: Switch(
                   onChanged: pinActive ? onBiometricChange : null,
                   value: biometricActive,
+                  activeColor: Colors.lightBlueAccent,
+                ),
+              ),
+              ListTile(
+                title: const Text(
+                  'Transaksi menggunakan PIN',
+                  // style: Theme.of(context).textTheme.bodySmall,
+                ),
+                trailing: Switch(
+                  onChanged: pinActive ? onTransactionPINChange : null,
+                  value: transactionActive,
                   activeColor: Colors.lightBlueAccent,
                 ),
               ),

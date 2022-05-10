@@ -5,6 +5,7 @@ import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/data/transaction.dart';
 import 'package:miliv2/src/data/user_balance.dart';
+import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
@@ -58,14 +59,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   void confirmPayment() {
-    confirmDialog(
-      context,
-      title: 'Konfirmasi',
-      msg: 'Lanjutkan pembelian ?',
-      confirmAction: execPayment,
-      confirmText: 'Ya, lanjutkan',
-      cancelText: 'Batal',
-    );
+    if (AppAuth.pinTransactionRequired()) {
+      AppAuth.pinAuthentication(context, (context) {
+        popScreen(context);
+        execPayment();
+      });
+    } else {
+      confirmDialog(
+        context,
+        title: 'Konfirmasi',
+        msg: 'Lanjutkan pembelian ?',
+        confirmAction: execPayment,
+        confirmText: 'Ya, lanjutkan',
+        cancelText: 'Batal',
+      );
+    }
   }
 
   FutureOr<Null> _handleError(Object e) async {

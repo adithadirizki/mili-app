@@ -12,6 +12,7 @@ class AppStorage {
   static const String _pinEnable = "_pinEnable";
   static const String _userPIN = "_userPIN";
   static const String _biometricEnable = "_biometricEnable";
+  static const String _transactionPIN = "_transactionPIN";
   static const String _printerAddress = "_printerAddress";
 
   static late final SharedPreferences _engine;
@@ -128,6 +129,15 @@ class AppStorage {
 
   static bool getBiometricEnable() {
     bool? value = _engine.getBool(_biometricEnable);
+    return value ?? false;
+  }
+
+  static void setTransactionPINEnable(bool value) {
+    _engine.setBool(_transactionPIN, value);
+  }
+
+  static bool getTransactionPINEnable() {
+    bool? value = _engine.getBool(_transactionPIN);
     return value ?? false;
   }
 

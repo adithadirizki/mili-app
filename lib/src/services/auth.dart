@@ -5,10 +5,14 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/login.dart';
+import 'package:miliv2/src/services/biometry.dart';
 import 'package:miliv2/src/services/storage.dart';
+import 'package:miliv2/src/utils/dialog.dart';
+import 'package:miliv2/src/widgets/pin_verification.dart';
 
 /// App State
 /// A mock authentication service
@@ -184,6 +188,58 @@ class AppAuth extends ChangeNotifier {
     Api.setDeviceId(deviceId);
 
     return true;
+  }
+
+  static bool pinTransactionRequired() {
+    return AppStorage.getPINEnable() && AppStorage.getTransactionPINEnable();
+  }
+
+  static final verifyPinState = GlobalKey<PINVerificationState>();
+
+  static Function pinAuthentication(
+      BuildContext context, void Function(BuildContext) callback) {
+    var pinEnabled = AppStorage.getPINEnable();
+    var biometricEnabled = AppStorage.getBiometricEnable();
+    var currentPin = AppStorage.getPIN();
+
+    if (biometricEnabled) {
+      authenticateBiometric('Autentikasi aplikasi').then((confirmed) {
+        if (confirmed) {
+          callback(context);
+        }
+      });
+    }
+
+    pushScreen(
+      context,
+      (_) => PINVerification.withGradientBackground(
+        key: verifyPinState,
+        otpLength: 4,
+        secured: true,
+        title: '',
+        subTitle: 'Masukkan PIN',
+        invalidMessage: 'PIN tidak sesuai',
+        validateOtp: (pin) async {
+          return pin == currentPin;
+        },
+        onValidateSuccess: callback,
+        onInvalid: (_) {
+          verifyPinState.currentState!.clearOtp();
+        },
+        topColor: const Color.fromRGBO(0, 255, 193, 1),
+        bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
+        themeColor: Colors.white,
+        titleColor: Colors.white,
+        // icon: Image.asset(
+        //   'images/phone_logo.png',
+        //   fit: BoxFit.fill,
+        // ),
+      ),
+    );
+
+    return () {
+      popScreen(context);
+    };
   }
 
   @override
