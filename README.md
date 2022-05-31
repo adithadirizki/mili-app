@@ -146,3 +146,7 @@ in the [main Flutter repo](https://github.com/flutter/flutter/issues).
 [RouteInformationParser]: https://api.flutter.dev/flutter/widgets/RouteInformationParser-class.html
 [router-ctor]: https://api.flutter.dev/flutter/material/MaterialApp/MaterialApp.router.html
 [deep linking]: https://flutter.dev/docs/development/ui/navigation/deep-linking
+
+
+## Flutter Firebase
+- Configure authorization with ```flutterfire configure``` https://firebase.google.com/docs/flutter/setup?platform=ios
