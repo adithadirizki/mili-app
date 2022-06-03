@@ -8,6 +8,7 @@ import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/user_config.dart';
 import 'package:miliv2/src/services/storage.dart';
+import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 
 /// See https://pub.dev/packages/bluetooth_print for detail
@@ -81,12 +82,15 @@ class AppPrinter {
     return _printer.scanResults;
   }
 
-  static Future<void> connect(BluetoothDevice device) async {
+  static Future<void> connect(
+      BluetoothDevice device, BuildContext context) async {
     debugPrint('Printer connecting ${device.address}');
+    simpleSnackBarDialog(context, 'Menghubungkan printer ...');
     await _printer.connect(device);
     _printerAddress = device.address;
     _connected = true;
     AppStorage.setPrinterAddress(device.address!);
+    simpleSnackBarDialog(context, 'Berhasil menghubungkan printer ...');
   }
 
   static Future<void> disconnect() async {
@@ -95,11 +99,13 @@ class AppPrinter {
   }
 
   static Future<void> _print(List<LineText> rows,
-      {Map<String, dynamic>? config}) async {
+      {Map<String, dynamic>? config, required BuildContext context}) async {
     if (!_connected) {
       debugPrint('AppPrinter not connected !!!');
+      simpleSnackBarDialog(context, 'Printer tidak terhubung');
       return;
     }
+    simpleSnackBarDialog(context, 'Mencetak data ...');
     UserConfig? printerConfig = await getPrinterConfig();
     if (printerConfig != null) {
       var configMap = printerConfig.configMap;
@@ -164,7 +170,7 @@ class AppPrinter {
   }
 
   static Future<void> _printByConfig(List<Map<String, dynamic>> configs,
-      {Map<String, dynamic>? config}) async {
+      {Map<String, dynamic>? config, required BuildContext context}) async {
     List<LineText> rows = [];
 
     // build LineText from config
@@ -218,11 +224,11 @@ class AppPrinter {
       }
     }
 
-    await _print(rows, config: config);
+    await _print(rows, context: context, config: config);
   }
 
   static Future<void> printPurchaseHistory(PurchaseHistoryDetailResponse data,
-      {Map<String, dynamic>? config}) async {
+      {Map<String, dynamic>? config, required BuildContext context}) async {
     if (data.config == null) {
       List<LineText> rows = [];
       rows.add(LineText(
@@ -237,14 +243,14 @@ class AppPrinter {
         linefeed: 1,
       ));
 
-      await _print(rows, config: config);
+      await _print(rows, context: context, config: config);
     } else {
-      await _printByConfig(data.config!, config: config);
+      await _printByConfig(data.config!, context: context, config: config);
     }
   }
 
   static Future<void> printTrainReceipt(TrainBookingResponse data,
-      {Map<String, dynamic>? config}) async {
+      {Map<String, dynamic>? config, required BuildContext context}) async {
     if (!_connected) {
       debugPrint('AppPrinter not connected !!!');
       return;
@@ -379,6 +385,6 @@ class AppPrinter {
       linefeed: 1,
     ));
 
-    await _print(rows, config: config);
+    await _print(rows, context: context, config: config);
   }
 }

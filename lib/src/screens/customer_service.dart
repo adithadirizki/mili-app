@@ -36,7 +36,7 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initDB(sync: true);
     });
   }
@@ -52,8 +52,9 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
       _messages = [];
     }
 
-    Condition<CustomerService> filterUser =
-        CustomerService_.userId.equals(userBalanceState.userId).or(CustomerService_.userId.equals('ALL'));
+    Condition<CustomerService> filterUser = CustomerService_.userId
+        .equals(userBalanceState.userId)
+        .or(CustomerService_.userId.equals('ALL'));
 
     final db = AppDB.customerServiceDB;
     QueryBuilder<CustomerService> qb = db.query(filterUser)

@@ -47,7 +47,7 @@ class _PricePulsaScreenState extends State<PricePulsaScreen>
     super.initState();
     debugPrint('initState price_pulsa');
     tabController = TabController(length: 2, initialIndex: 0, vsync: this);
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initDB();
     });
   }

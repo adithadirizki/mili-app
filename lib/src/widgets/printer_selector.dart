@@ -12,7 +12,7 @@ class _PrinterSelectorState extends State<PrinterSelector> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) => initBluetooth());
+    WidgetsBinding.instance?.addPostFrameCallback((_) => initBluetooth());
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.

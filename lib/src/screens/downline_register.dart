@@ -46,7 +46,7 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
   void initState() {
     super.initState();
     _markupController.text = formatNumber(0);
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initialize();
     });
   }

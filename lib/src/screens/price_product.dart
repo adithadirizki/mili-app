@@ -53,7 +53,7 @@ class _PriceProductScreenState extends State<PriceProductScreen>
     super.initState();
     debugPrint('initState price_product');
     tabController = TabController(length: 2, initialIndex: 0, vsync: this);
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initDB();
     });
   }

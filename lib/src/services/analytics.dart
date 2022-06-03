@@ -4,8 +4,8 @@ class AppAnalytic {
   AppAnalytic._();
 
   static Future<void> initialize() async {
-    FirebaseCrashlytics.instance.setCustomKey('app_name', 'MILI V2');
-    FirebaseCrashlytics.instance.setCustomKey('debug', '4');
+    FirebaseCrashlytics.instance.setCustomKey('app_name', 'MILI V2'); // FIXME Harusnya otomatis dari package name
+    FirebaseCrashlytics.instance.setCustomKey('debug', '5'); // FIXME Otomamtis dari debug code
   }
 
   static void setUserId(String userId) {

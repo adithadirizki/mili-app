@@ -75,7 +75,7 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
     super.initState();
     destinationNumber = widget.destination ?? '';
     textController.text = widget.destination ?? '';
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initialize();
     });
   }

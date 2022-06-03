@@ -43,7 +43,7 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance!.addPostFrameCallback((_) {
+    // WidgetsBinding.instance?.addPostFrameCallback((_) {
     //   initialize();
     // });
   }
@@ -291,7 +291,7 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
   }
 
   void printReceipt() {
-    AppPrinter.printTrainReceipt(widget.booking);
+    AppPrinter.printTrainReceipt(widget.booking, context: context);
   }
 
   void changeSeat() {

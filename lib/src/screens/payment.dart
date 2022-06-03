@@ -51,7 +51,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   void initState() {
     super.initState();
     trxId = DateTime.now().millisecondsSinceEpoch.toString();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       if (userBalanceState.isGuest()) {
         confirmSignin(context);
       }

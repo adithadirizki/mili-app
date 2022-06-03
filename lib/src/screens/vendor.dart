@@ -25,7 +25,7 @@ class _VendorScreenState extends State<VendorScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initDB();
     });
   }

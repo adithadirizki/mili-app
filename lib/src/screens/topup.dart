@@ -33,7 +33,7 @@ class _TopupScreenState extends State<TopupScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initialize();
     });
   }

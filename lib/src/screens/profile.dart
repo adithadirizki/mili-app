@@ -90,7 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         (_) => const CustomerServiceScreen(),
       );
     }));
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initialize();
     });
   }

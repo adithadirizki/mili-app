@@ -42,7 +42,7 @@ class _PrinterScreenState extends State<PrinterScreen> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
       await initDB();
       await initBluetooth();
     });
@@ -87,7 +87,7 @@ class _PrinterScreenState extends State<PrinterScreen> {
       Map<String, dynamic> bodyMap =
           json.decode(response.body) as Map<String, dynamic>;
       var struct = PurchaseHistoryDetailResponse.fromJson(bodyMap);
-      AppPrinter.printPurchaseHistory(struct);
+      AppPrinter.printPurchaseHistory(struct, context: context);
     });
   }
 
@@ -231,7 +231,7 @@ class _PrinterScreenState extends State<PrinterScreen> {
 
   VoidCallback selectPrinter(BluetoothDevice d) {
     return () async {
-      await AppPrinter.connect(d);
+      await AppPrinter.connect(d, context);
       setState(() {
         deviceAddress = d.address;
         connected = true;

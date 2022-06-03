@@ -78,10 +78,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initialize();
     });
-    // WidgetsBinding.instance!.addPostFrameCallback((_) {
+    // WidgetsBinding.instance?.addPostFrameCallback((_) {
     //   Future.delayed(const Duration(seconds: 1), openPopup);
     //   authState = AppAuthScope.of(context);
     // });

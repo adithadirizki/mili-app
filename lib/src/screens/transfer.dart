@@ -37,7 +37,7 @@ class _TransferScreenState extends State<TransferScreen> {
   void initState() {
     super.initState();
     textUserIdController.text = widget.userId ?? '';
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initialize();
     });
   }

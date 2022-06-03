@@ -65,7 +65,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
     if (Platform.isAndroid) {
       WebView.platform = SurfaceAndroidWebView(); // AndroidWebView();
     }
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       getProvince();
     });
   }

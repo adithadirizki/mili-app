@@ -43,7 +43,7 @@ class _ProductPulsaState extends State<ProductPulsa>
     super.initState();
     debugPrint('initState product_pulsa');
     tabController = TabController(length: 2, initialIndex: 0, vsync: this);
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initDB();
     });
   }

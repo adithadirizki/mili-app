@@ -58,7 +58,7 @@ class _HomepageState extends State<Homepage>
 
     initPin();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initProvider();
     });
   }
@@ -109,7 +109,7 @@ class _HomepageState extends State<Homepage>
     if (!userBalanceState.isGuest() && pinEnabled) {
       locked = true;
     } else {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
         initialize();
       });
     }
@@ -159,7 +159,7 @@ class _HomepageState extends State<Homepage>
   void onPINConfirmed(BuildContext ctx) {
     locked = false;
     setState(() {});
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       if (!locked) {
         initialize();
       }

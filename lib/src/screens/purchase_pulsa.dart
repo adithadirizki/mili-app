@@ -72,7 +72,7 @@ class _PurchasePulsaScreenState extends State<PurchasePulsaScreen> {
     super.initState();
     destinationNumber = widget.destination ?? '';
     textController.text = widget.destination ?? '';
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initialize();
     });
   }

@@ -55,7 +55,7 @@ class _TrainPassangerScreenState extends State<TrainPassangerScreen> {
     for (var i = 0; i < widget.numChild; i++) {
       passengerData.add(TrainPassengerChildData());
     }
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initialize();
     });
   }

@@ -45,7 +45,7 @@ class _TrainScheduleScreenState extends State<TrainScheduleScreen> {
   void initState() {
     super.initState();
     // _controller = AnimationController(vsync: this);
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initialize();
     });
   }

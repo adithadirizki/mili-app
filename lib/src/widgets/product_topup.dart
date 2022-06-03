@@ -44,7 +44,7 @@ class _ProductTopupState extends State<ProductTopup>
     userMarkup = userBalanceState.markup;
     super.initState();
     debugPrint('initState ProductTopup');
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initDB();
     });
   }

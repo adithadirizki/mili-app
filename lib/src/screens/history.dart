@@ -53,7 +53,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     dateRange = DateTimeRange(
         start: now.subtract(const Duration(hours: 24 * 28)), end: now);
     scrollController = ScrollController()..addListener(scrollListener);
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initDB(sync: true);
       // Refresh DB
       transactionState.addListener(() {
@@ -214,7 +214,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   VoidCallback execAction(historyAction action, PurchaseHistory history) {
     void print(PurchaseHistoryDetailResponse invoice) {
-      AppPrinter.printPurchaseHistory(invoice);
+      AppPrinter.printPurchaseHistory(invoice, context: context);
     }
 
     return () async {

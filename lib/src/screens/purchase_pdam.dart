@@ -48,7 +48,7 @@ class _PurchasePDAMScreenState extends State<PurchasePDAMScreen> {
     super.initState();
     destinationNumber = widget.destination ?? '';
     textController.text = widget.destination ?? '';
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initDB();
     });
   }

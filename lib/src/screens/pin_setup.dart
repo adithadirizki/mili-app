@@ -40,7 +40,7 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
     biometricActive = AppStorage.getBiometricEnable();
     transactionActive = AppStorage.getTransactionPINEnable();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initialize();
     });
   }

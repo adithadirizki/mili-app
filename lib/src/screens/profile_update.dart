@@ -44,7 +44,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
     _phoneController.text = userBalanceState.phoneNumber;
     _emailController.text = userBalanceState.email;
     _addressController.text = userBalanceState.address ?? '';
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initialize();
     });
   }

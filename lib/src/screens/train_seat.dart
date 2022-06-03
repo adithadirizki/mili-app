@@ -32,7 +32,7 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
     super.initState();
     // booking = TrainBookingResponse.fromJson(widget.booking.toJson());
     booking = widget.booking;
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       initialize();
     });
   }
