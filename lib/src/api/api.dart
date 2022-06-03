@@ -199,7 +199,7 @@ class Api {
     return http
         .post(
           Uri.parse(AppConfig.baseUrl + '/reset-password'),
-          headers: getRequestHeaders(),
+          headers: getRequestHeaders()?..remove('Authorization'),
           body: json.encode(body),
         )
         .then(_parseResponse)

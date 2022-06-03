@@ -110,6 +110,10 @@ class AppAuth extends ChangeNotifier {
     _username = '';
     _deviceId = '';
 
+    Api.setToken('');
+    Api.setUsername(_username);
+    Api.setDeviceId(_deviceId);
+
     notifyListeners();
   }
 
