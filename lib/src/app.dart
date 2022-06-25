@@ -50,7 +50,7 @@ class _AppState extends State<App> {
         // '/author/:authorId',
       ],
       guard: _guard,
-      initialRoute: '/splash',
+      initialRoute: '/',
     );
 
     _routeState = RouteState(_routeParser);

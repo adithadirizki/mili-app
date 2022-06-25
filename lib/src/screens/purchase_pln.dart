@@ -50,6 +50,9 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
   List<Product> productTopup = [];
   Product? selectedProduct;
 
+  late final int userLevel;
+  late final double userMarkup;
+
   InquiryResponse? inquiryAccountResult;
   bool isLoading = false;
   String trxId = ''; // TODO generate local trxid
@@ -72,6 +75,8 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
 
   @override
   void initState() {
+    userLevel = userBalanceState.level;
+    userMarkup = userBalanceState.markup;
     super.initState();
     destinationNumber = widget.destination ?? '';
     textController.text = widget.destination ?? '';
@@ -124,16 +129,26 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
 
     final productDB = AppDB.productDB;
 
-    // Product Pulsa
-    QueryBuilder<Product> queryPulsa = productDB.query(dbCriteria)
-      ..order(Product_.groupName);
-    productTopup = queryPulsa.build().find();
+    // Product Topup
+    QueryBuilder<Product> queryProduct = productDB.query(dbCriteria)
+      ..order(Product_.groupName)
+      ..order(Product_.nominal)
+      ..order(Product_.productName);
+    productTopup = queryProduct.build().find();
+    productTopup = filterProduct(productTopup).toList();
 
     debugPrint(
         'PurchasePaymentProductScreen product size ${productTopup.length}');
 
     isLoading = false;
     setState(() {});
+  }
+
+  Iterable<Product> filterProduct(List<Product> productList) {
+    return productList.where((product) {
+      double price = product.getUserPrice(userLevel);
+      return price > 1;
+    });
   }
 
   FutureOr<Null> _handleError(Object e) {
@@ -420,7 +435,9 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
                       //to show search box
                       showSearchBox: false,
                       itemAsString: (item) {
-                        return item == null ? '' : item.productName;
+                        return item == null
+                            ? ''
+                            : '${item.productName} (${formatNumber(item.getUserPrice(userLevel))})';
                       },
                       // showSelectedItems: true,
                       //list of dropdown items

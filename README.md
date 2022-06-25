@@ -150,3 +150,6 @@ in the [main Flutter repo](https://github.com/flutter/flutter/issues).
 
 ## Flutter Firebase
 - Configure authorization with ```flutterfire configure``` https://firebase.google.com/docs/flutter/setup?platform=ios
+
+## Nox Player
+- Run ```adb connect 127.0.0.1:62001``` to open connection to emulator

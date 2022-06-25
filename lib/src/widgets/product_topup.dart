@@ -33,7 +33,7 @@ class _ProductTopupState extends State<ProductTopup>
   bool isLoading = true;
   Product? selectedProduct;
 
-  List<Product> productPulsa = [];
+  List<Product> productTopup = [];
 
   late final int userLevel;
   late final double userMarkup;
@@ -92,11 +92,13 @@ class _ProductTopupState extends State<ProductTopup>
     final productDB = AppDB.productDB;
 
     // Product Pulsa
-    QueryBuilder<Product> queryPulsa = productDB.query(dbCriteria)
-      ..order(Product_.groupName);
-    productPulsa = queryPulsa.build().find();
+    QueryBuilder<Product> queryProduct = productDB.query(dbCriteria)
+      ..order(Product_.groupName)
+      ..order(Product_.nominal)
+      ..order(Product_.productName);
+    productTopup = queryProduct.build().find();
 
-    debugPrint('ProductTopup product size ${productPulsa.length}');
+    debugPrint('ProductTopup product size ${productTopup.length}');
 
     isLoading = false;
     setState(() {});
@@ -220,7 +222,7 @@ class _ProductTopupState extends State<ProductTopup>
       );
     }
 
-    var filteredProduct = filterByPrefix(productPulsa);
+    var filteredProduct = filterByPrefix(productTopup);
 
     if (filteredProduct.isEmpty) {
       return const Center(

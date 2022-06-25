@@ -93,7 +93,9 @@ class _PurchasePaymentProductScreenState
 
     // Product Pulsa
     QueryBuilder<Product> queryPulsa = productDB.query(dbCriteria)
-      ..order(Product_.groupName);
+      ..order(Product_.groupName)
+      ..order(Product_.nominal)
+      ..order(Product_.productName);
     productPulsa = queryPulsa.build().find();
 
     debugPrint(
