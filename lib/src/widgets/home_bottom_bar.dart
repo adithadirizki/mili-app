@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/screens/customer_service.dart';
 import 'package:miliv2/src/screens/mutation.dart';
 import 'package:miliv2/src/screens/notification.dart';
 import 'package:miliv2/src/screens/profile.dart';
+import 'package:miliv2/src/screens/qris_scan.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -141,22 +144,36 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
           left: MediaQuery.of(context).size.width / 2 - 25,
           child: FloatingActionButton(
             isExtended: false,
-            onPressed: () {
-              gotoPage(0);
+            onPressed: () async {
+              var code = await pushScreenWithCallback<String>(
+                context,
+                (_) => const QrisScannerScreen(),
+              );
+              // debugPrint('Read code $code');
+              if (code != null) {
+                Timer(const Duration(milliseconds: 200), () {
+                  infoDialog(context, msg: code);
+                });
+              }
             },
-            backgroundColor: AppColors.blue5,
-            tooltip: "Home",
+            backgroundColor: AppColors.red2,
+            splashColor: AppColors.red2,
+            focusColor: AppColors.red2,
+            foregroundColor: AppColors.red2,
+            tooltip: 'Pembayaran QRIS',
             child: Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 // color: AppColors.blue5,
-                border: Border.all(color: Colors.white, width: 2.5),
+                border: Border.all(color: Colors.white, width: 2),
                 borderRadius: const BorderRadius.all(Radius.circular(40)),
               ),
               clipBehavior: Clip.antiAlias,
+              alignment: Alignment.center,
               child: const Image(
-                image: AppImages.logonavbar,
-                width: 80,
+                fit: BoxFit.fitWidth,
+                image: AppImages.logoQris,
+                // width: 100,
               ),
             ),
             elevation: 2.0,

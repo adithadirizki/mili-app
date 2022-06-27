@@ -10,6 +10,8 @@ import 'package:miliv2/src/services/storage.dart';
 
 class UserBalanceState extends ChangeNotifier {
   bool isLoading = false;
+  bool walletActive = false;
+  double walletBalance = 0;
   double balance = 0;
   double balanceCredit = 0;
   int level = 0;
@@ -97,6 +99,21 @@ class UserBalanceState extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     return Api.getProfile().then(_handleResponse);
+  }
+
+  Future<Response> fetchWallet() {
+    isLoading = true;
+    notifyListeners();
+    return Api.walletBalance().then((response) {
+      Map<String, dynamic> bodyMap =
+          json.decode(response.body) as Map<String, dynamic>;
+      if (bodyMap['status'] == 1) {
+        walletBalance = ((bodyMap['data'] as num?)?.toDouble()) ?? 0;
+        walletActive = true;
+        notifyListeners();
+      }
+      return response;
+    });
   }
 }
 

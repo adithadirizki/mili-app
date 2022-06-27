@@ -553,7 +553,7 @@ class Api {
       'product_code': productCode,
       'transaction_number': destination,
       'payment_type':
-          method == PaymentMethod.creditBalance ? 'credit' : 'balance'
+          method == PaymentMethod.wallet ? 'wallet' : (method == PaymentMethod.creditBalance ? 'credit' : 'balance')
     };
     debugPrint('purchaseProduct $body');
     return http
@@ -1073,6 +1073,110 @@ class Api {
           json.decode(response.body) as Map<String, dynamic>;
       return bodyMap;
     }).catchError(_parseException);
+  }
+
+  /// WALLET API
+
+  static Future<http.Response> walletActivation() {
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/activation'),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> walletConfirmation(String otp) {
+    Map<String, dynamic> body = <String, Object?>{
+      'otp': otp,
+    };
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/confirmation'),
+          headers: getRequestHeaders(),
+          body: json.encode(body),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> walletProfile() {
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/profile'),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> walletTopup() {
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/topup'),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> walletBalance() {
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/balance'),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> walletTransfer(
+      double amount, String userId, String desc) {
+    Map<String, Object> body = <String, Object>{
+      'amount': amount,
+      'phoneNumber': userId,
+      'description': desc,
+    };
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/transfer'),
+          headers: getRequestHeaders(),
+          body: json.encode(body),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> walletHistory(
+      DateTime startDate, DateTime endDate) {
+    Map<String, Object> body = <String, Object>{
+      'startDate': formatDate(startDate, format: 'yyyy-MM-dd'),
+      'endDate': formatDate(endDate, format: 'yyyy-MM-dd'),
+    };
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/history'),
+          headers: getRequestHeaders(),
+          body: json.encode(body),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> walletPayment(String paymentCode) {
+    Map<String, Object> body = <String, Object>{
+      'paymentCode': paymentCode,
+    };
+
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/payment'),
+          headers: getRequestHeaders(),
+          body: json.encode(body),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
   }
 }
 

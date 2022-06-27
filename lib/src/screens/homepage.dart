@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -49,6 +50,8 @@ class _HomepageState extends State<Homepage>
   final confirmPinState = GlobalKey<PINVerificationState>();
   final verifyPinState = GlobalKey<PINVerificationState>();
 
+  final walletOTPState = GlobalKey<PINVerificationState>();
+
   @override
   void initState() {
     super.initState();
@@ -63,30 +66,98 @@ class _HomepageState extends State<Homepage>
     });
   }
 
+  FutureOr<Null> _handleError(Object e) async {
+    snackBarDialog(context, e.toString());
+    if (e is UnauthorisedException) {
+      debugPrint('Homepage _handleError  ${e.toString()}');
+      AppAuthScope.of(context).signOut();
+    }
+    return;
+  }
+
   Timer? _timer;
   void beginTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 60), (timer) {
-      debugPrint('Homepage timer');
-      userBalanceState.fetchData().catchError((dynamic e) {
-        if (e is UnauthorisedException) {
-          AppAuthScope.of(context).signOut();
-        }
-      });
+    debugPrint('Register timer');
+    _timer = Timer.periodic(const Duration(seconds: 60), (timer) async {
+      await userBalanceState.fetchData().catchError(_handleError);
+      await userBalanceState.fetchWallet().catchError(_handleError);
     });
   }
 
-  void initProvider() {
+  Future<void> initProvider() async {
     AppAnalytic.setUserId(userBalanceState.userId);
-    AppMessaging.requestPermission(context);
-    userBalanceState.fetchData().catchError((dynamic e) {
-      if (e is UnauthorisedException) {
-        debugPrint('Homepage init provider ${e.toString()}');
-        AppAuthScope.of(context).signOut();
-      }
-    });
-    beginTimer();
+    await AppMessaging.requestPermission(context);
     activeBannerState.fetchData();
+    await userBalanceState.fetchData().catchError(_handleError);
+    // Get Wallet Balance
+    await userBalanceState.fetchWallet().then((response) {
+      Map<String, dynamic> bodyMap =
+          json.decode(response.body) as Map<String, dynamic>;
+      debugPrint('Homepage fetchWallet $bodyMap');
+      if (bodyMap['status'] == 1) {
+        // Start timer
+        beginTimer();
+      } else {
+        // Activation wallet
+        walletActivation();
+      }
+    }).catchError(_handleError);
   }
+
+  // Begin FinPay related function
+  void openWalletOtp() {
+    pushScreen(
+      context,
+      (_) => PINVerification.withGradientBackground(
+        key: walletOTPState,
+        otpLength: 6,
+        secured: false,
+        title: 'Aktivasi FinPay',
+        subTitle: 'Masukkan Kode OTP',
+        invalidMessage: 'Kode OTP tidak sesuai',
+        validateOtp: (otp) async {
+          return Api.walletConfirmation(otp).then((response) {
+            return true;
+          }).catchError((Object e) {
+            _handleError(e);
+            return false;
+          });
+        },
+        onValidateSuccess: (ctx) {
+          walletOTPState.currentState!.clearOtp();
+          popScreen(context);
+          // Start timer
+          beginTimer();
+        },
+        onInvalid: (_) {
+          walletOTPState.currentState!.clearOtp();
+        },
+        topColor: const Color.fromRGBO(0, 255, 193, 1),
+        bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
+        themeColor: Colors.white,
+        titleColor: Colors.white,
+        // icon: Image.asset(
+        //   'images/phone_logo.png',
+        //   fit: BoxFit.fill,
+        // ),
+      ),
+    );
+  }
+
+  void walletActivation() {
+    confirmDialog(context,
+        title: 'Aktivasi FinPay',
+        msg:
+            'Untuk melanjutkan transaksi Anda diwajibkan untuk mengaktifkan fitur saldo FinPay, '
+            'dimana saldo Anda saat ini akan dipindahkan menjadi Saldo FinPay. \n\nDengan menggunakan Saldo FinPay Anda dapat melakukan semua pembayaran yang terdaftar dalam QRIS '
+            'dan mendapatkan berbagai keuntungan lainnya. ', confirmAction: () {
+      Api.walletActivation().then((response) {
+        openWalletOtp();
+      }).catchError(_handleError);
+    });
+  }
+
+  // End FinPay function
 
   void initialize() async {
     var closeLoader = showLoaderDialog(context, message: 'Memperbarui...');

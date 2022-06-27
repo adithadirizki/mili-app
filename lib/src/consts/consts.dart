@@ -4,11 +4,12 @@ enum OTPType {
   email,
 }
 
-enum PaymentMethod { mainBalance, creditBalance }
+enum PaymentMethod { mainBalance, creditBalance, wallet }
 
 const Map<PaymentMethod, String> paymentMethodLabel = {
   PaymentMethod.mainBalance: 'Saldo Utama',
   PaymentMethod.creditBalance: 'Saldo Kredit',
+  PaymentMethod.wallet: 'Saldo Finpay',
 };
 
 // const List<String> outletTypes = [

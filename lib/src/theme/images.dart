@@ -79,6 +79,10 @@ class AppImages {
   static const trainSeat = AssetImage('assets/images/train/seat.png');
   static const trainArrow =
       AssetImage('assets/images/train/arrow_destination.png');
+  static const logoWallet = AssetImage('assets/images/finpay.png');
+  static const logoWalletPowered =
+      AssetImage('assets/images/finpay_powered.png');
+  static const logoQris = AssetImage('assets/images/qris.png');
 
   static AssetImage getAssetImage(String filename) {
     return AssetImage('images/' + filename);

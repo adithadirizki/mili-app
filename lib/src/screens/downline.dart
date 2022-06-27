@@ -7,7 +7,7 @@ import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/downline.dart';
 import 'package:miliv2/src/screens/downline_detail.dart';
 import 'package:miliv2/src/screens/downline_register.dart';
-import 'package:miliv2/src/screens/transfer.dart';
+import 'package:miliv2/src/screens/transfer_wallet.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
@@ -163,7 +163,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
     return () {
       pushScreen(
         context,
-        (_) => TransferScreen(
+        (_) => TransferWalletScreen(
           userId: downline.phoneNumber,
         ),
       );
@@ -256,52 +256,52 @@ class _DownlineScreenState extends State<DownlineScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(width: 60),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Text(
-                          'Saldo Utama',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(width: 10),
-                      ],
-                    ),
-                    Text(
-                      formatNumber(downline.balance),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Text(
-                          'Saldo Kredit',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(width: 10),
-                      ],
-                    ),
-                    Text(
-                      formatNumber(downline.balanceCredit),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
+                // Column(
+                //   crossAxisAlignment: CrossAxisAlignment.start,
+                //   children: [
+                //     Row(
+                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //       mainAxisSize: MainAxisSize.max,
+                //       children: [
+                //         Text(
+                //           'Saldo Utama',
+                //           style: Theme.of(context)
+                //               .textTheme
+                //               .bodySmall!
+                //               .copyWith(fontWeight: FontWeight.bold),
+                //         ),
+                //         const SizedBox(width: 10),
+                //       ],
+                //     ),
+                //     Text(
+                //       formatNumber(downline.balance),
+                //       style: Theme.of(context).textTheme.bodySmall,
+                //     ),
+                //   ],
+                // ),
+                // Column(
+                //   crossAxisAlignment: CrossAxisAlignment.start,
+                //   children: [
+                //     Row(
+                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //       mainAxisSize: MainAxisSize.max,
+                //       children: [
+                //         Text(
+                //           'Saldo Kredit',
+                //           style: Theme.of(context)
+                //               .textTheme
+                //               .bodySmall!
+                //               .copyWith(fontWeight: FontWeight.bold),
+                //         ),
+                //         const SizedBox(width: 10),
+                //       ],
+                //     ),
+                //     Text(
+                //       formatNumber(downline.balanceCredit),
+                //       style: Theme.of(context).textTheme.bodySmall,
+                //     ),
+                //   ],
+                // ),
                 const Spacer(),
                 AppButton(
                   'Transfer',

@@ -43,7 +43,7 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  PaymentMethod selectedPayment = PaymentMethod.mainBalance;
+  PaymentMethod selectedPayment = PaymentMethod.wallet;
   bool isLoading = false;
   String trxId = '';
 
@@ -111,6 +111,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
       return widget.total <= userBalanceState.balance;
     } else if (selectedPayment == PaymentMethod.creditBalance) {
       return widget.total <= userBalanceState.balanceCredit;
+    } else if (selectedPayment == PaymentMethod.wallet) {
+      return widget.total <= userBalanceState.walletBalance;
     }
     return false;
   }
@@ -120,6 +122,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
       return userBalanceState.balance;
     } else if (selectedPayment == PaymentMethod.creditBalance) {
       return userBalanceState.balanceCredit;
+    } else if (selectedPayment == PaymentMethod.wallet) {
+      return userBalanceState.walletBalance;
     }
     return 0;
   }
@@ -153,7 +157,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 setState(() {});
               },
               items: <PaymentMethod>[
-                PaymentMethod.mainBalance,
+                // PaymentMethod.mainBalance,
+                !userBalanceState.walletActive
+                    ? PaymentMethod.mainBalance
+                    : PaymentMethod.wallet,
                 PaymentMethod.creditBalance
               ].map<DropdownMenuItem<PaymentMethod>>((value) {
                 return DropdownMenuItem<PaymentMethod>(

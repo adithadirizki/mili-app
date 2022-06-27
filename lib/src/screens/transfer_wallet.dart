@@ -11,24 +11,28 @@ import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
-import 'package:miliv2/src/widgets/balance_card.dart';
 import 'package:miliv2/src/widgets/button.dart';
 import 'package:miliv2/src/widgets/screen.dart';
+import 'package:miliv2/src/widgets/wallet_card.dart';
 
-class TransferScreen extends StatefulWidget {
+class TransferWalletScreen extends StatefulWidget {
+  final String title;
   final String? userId;
 
-  const TransferScreen({Key? key, this.userId}) : super(key: key);
+  const TransferWalletScreen(
+      {Key? key, this.title = 'Transfer Saldo MyFinPay', this.userId})
+      : super(key: key);
 
   @override
-  _TransferScreenState createState() => _TransferScreenState();
+  _TransferWalletScreenState createState() => _TransferWalletScreenState();
 }
 
-class _TransferScreenState extends State<TransferScreen> {
+class _TransferWalletScreenState extends State<TransferWalletScreen> {
   final formKey = GlobalKey<FormState>();
   TransferInquiryResponse? inquiryResponse;
   final TextEditingController textAmountController = TextEditingController();
   final TextEditingController textUserIdController = TextEditingController();
+  final TextEditingController textDescController = TextEditingController();
   bool isLoading = false;
 
   TransferInfoResponse transferInfo = TransferInfoResponse('', 50000, 1000000);
@@ -64,36 +68,18 @@ class _TransferScreenState extends State<TransferScreen> {
     snackBarDialog(context, e.toString());
   }
 
-  void inquiry() {
-    if (userBalanceState.isGuest()) {
-      confirmSignin(context);
-    } else if (formKey.currentState!.validate()) {
-      setState(() {
-        isLoading = true;
-      });
-      var amount = parseDouble(textAmountController.value.text);
-      var userId = textUserIdController.value.text;
-      Api.inquiryTransfer(amount, userId).then((response) {
-        Map<String, dynamic> bodyMap =
-            json.decode(response.body) as Map<String, dynamic>;
-        setState(() {
-          isLoading = false;
-          inquiryResponse = TransferInquiryResponse.fromJson(bodyMap);
-        });
-      }).catchError(handleError);
-    }
-  }
-
   void confirmation() {
     var amount = parseDouble(textAmountController.value.text);
     var userId = textUserIdController.value.text;
-    confirmDialog(context,
-        title: 'Transfer Saldo',
-        msg:
-            'Lanjutkan transfer saldo sebesar ${formatNumber(amount)} ke $userId ?',
-        confirmAction: execTransfer,
-        confirmText: 'Ya, lanjutkan',
-        cancelText: 'Batal');
+    if (formKey.currentState!.validate()) {
+      confirmDialog(context,
+          title: 'Transfer Saldo',
+          msg:
+              'Lanjutkan transfer saldo sebesar ${formatNumber(amount)} ke $userId ?',
+          confirmAction: execTransfer,
+          confirmText: 'Ya, lanjutkan',
+          cancelText: 'Batal');
+    }
   }
 
   void execTransfer() {
@@ -103,14 +89,15 @@ class _TransferScreenState extends State<TransferScreen> {
       });
       var amount = parseDouble(textAmountController.value.text);
       var userId = textUserIdController.value.text;
-      Api.transferBalance(amount, userId).then((response) {
+      var desc = textDescController.value.text;
+      Api.walletTransfer(amount, userId, desc).then((response) {
         Map<String, dynamic> bodyMap =
             json.decode(response.body) as Map<String, dynamic>;
 
         setState(() {
           isLoading = false;
         });
-        userBalanceState.fetchData();
+        userBalanceState.fetchWallet();
         popScreenWithCallback<bool>(context, true);
       }).catchError(handleError);
     }
@@ -119,12 +106,12 @@ class _TransferScreenState extends State<TransferScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const SimpleAppBar(title: 'Transfer'),
+      appBar: SimpleAppBar(title: widget.title),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Column(
           children: [
-            const BalanceCard(),
+            const WalletCard(),
             FlexBoxGray(
               margin: const EdgeInsets.only(top: 10),
               child: Column(
@@ -133,6 +120,31 @@ class _TransferScreenState extends State<TransferScreen> {
                     key: formKey,
                     child: Column(
                       children: [
+                        TextFormField(
+                          controller: textUserIdController,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.done,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          onChanged: (string) {
+                            if (inquiryResponse != null) {
+                              setState(() {
+                                inquiryResponse = null;
+                              });
+                            }
+                          },
+                          decoration: generateInputDecoration(
+                              hint: '08xxxxxxxxxx', label: 'Nomor Penerima'),
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value == '0') {
+                              return 'Masukkan Nomor Penerima';
+                            }
+                            return null;
+                          },
+                        ),
                         TextFormField(
                           controller: textAmountController,
                           keyboardType: TextInputType.number,
@@ -173,37 +185,38 @@ class _TransferScreenState extends State<TransferScreen> {
                                 amount < transferInfo.minAmount) {
                               return 'Jumlah tidak sesuai';
                             }
-                            if (amount > userBalanceState.balance) {
+                            if (amount > userBalanceState.walletBalance) {
                               return 'Saldo tidak mencukupi';
                             }
                             return null;
                           },
                         ),
                         TextFormField(
-                          controller: textUserIdController,
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.done,
+                          controller: textDescController,
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.next,
                           inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
+                            FilteringTextInputFormatter.singleLineFormatter,
                           ],
-                          onChanged: (string) {
-                            if (inquiryResponse != null) {
-                              setState(() {
-                                inquiryResponse = null;
-                              });
-                            }
-                          },
-                          decoration: generateInputDecoration(
-                              hint: '08xxxxxxxxxx', label: 'Nomor Penerima'),
+                          // onChanged: (string) {
+                          //   textDescController.value = TextEditingValue(
+                          //     text: string,
+                          //     selection: TextSelection.collapsed(
+                          //       offset: string.length,
+                          //     ),
+                          //   );
+                          // },
+                          decoration:
+                              generateInputDecoration(label: 'Keterangan'),
                           validator: (value) {
                             if (value == null ||
                                 value.isEmpty ||
                                 value == '0') {
-                              return 'Masukkan Nomor Penerima';
+                              return 'Masukkan Keterangan';
                             }
                             return null;
                           },
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -252,9 +265,7 @@ class _TransferScreenState extends State<TransferScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  inquiryResponse == null
-                      ? AppButton('Lanjutkan', isLoading ? null : inquiry)
-                      : AppButton('Kirim', isLoading ? null : confirmation),
+                  AppButton('Kirim', isLoading ? null : confirmation),
                 ],
               ),
             ),

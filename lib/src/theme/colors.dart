@@ -19,4 +19,5 @@ class AppColors {
   static const Color button = Color.fromRGBO(255, 204, 64, 1);
 
   static const Color red1 = Color(0xFFFF005C);
+  static const Color red2 = Color(0xFFE62053);
 }

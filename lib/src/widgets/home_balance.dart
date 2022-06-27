@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/screens/history.dart';
+import 'package:miliv2/src/screens/profile_wallet.dart';
 import 'package:miliv2/src/screens/topup.dart';
+import 'package:miliv2/src/screens/topup_wallet.dart';
 import 'package:miliv2/src/screens/transfer.dart';
+import 'package:miliv2/src/screens/transfer_wallet.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -21,6 +24,18 @@ class _HomeBalanceState extends State<HomeBalance> {
     super.initState();
   }
 
+  void profileWalletScreen() {
+    pushScreen(context, (_) => const ProfileWalletScreen());
+  }
+
+  void topupWalletScreen() {
+    pushScreen(context, (_) => const TopupWalletScreen());
+  }
+
+  void transferWalletScreen() {
+    pushScreen(context, (_) => const TransferWalletScreen());
+  }
+
   void topupScreen() {
     pushScreen(context, (_) => const TopupScreen());
   }
@@ -36,6 +51,7 @@ class _HomeBalanceState extends State<HomeBalance> {
   @override
   Widget build(BuildContext context) {
     print('Build HomeBalance');
+    bool walletActive = UserBalanceScope.of(context).walletActive;
     return Container(
       height: 120,
       padding: const EdgeInsets.all(10),
@@ -68,23 +84,44 @@ class _HomeBalanceState extends State<HomeBalance> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      const Image(
-                        image: AppImages.iconBalance,
-                        width: 20,
-                      ),
-                      const SizedBox(width: 5),
-                      Flexible(
-                        child: FittedBox(
-                          child: Text(
-                            'Saldo',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
+                  walletActive
+                      ? Row(
+                          children: [
+                            const Image(
+                              image: AppImages.logoWallet,
+                              height: 20,
+                            ),
+                            const Spacer(),
+                            GestureDetector(
+                              child:
+                                const Icon(
+                                  Icons.info,
+                                  color: AppColors.blue6,
+                                  size: 20,
+                                )
+                              ,
+                              onTap: profileWalletScreen,
+                            ),
+                          ],
+                        )
+                      : Row(
+                          children: [
+                            const Image(
+                              image: AppImages.iconBalance,
+                              width: 20,
+                            ),
+                            const SizedBox(width: 5),
+                            Flexible(
+                              child: FittedBox(
+                                child: Text(
+                                  'Saldo',
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -98,7 +135,9 @@ class _HomeBalanceState extends State<HomeBalance> {
                       Flexible(
                         child: FittedBox(
                           child: Text(
-                            formatNumber(UserBalanceScope.of(context).balance),
+                            formatNumber(!walletActive
+                                ? UserBalanceScope.of(context).balance
+                                : UserBalanceScope.of(context).walletBalance),
                             softWrap: false,
                             maxLines: 1,
                             style: Theme.of(context)
@@ -173,7 +212,7 @@ class _HomeBalanceState extends State<HomeBalance> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: topupScreen,
+                      onTap: topupWalletScreen,
                       child: const Image(
                         image: AppImages.topup,
                         height: 32,
@@ -193,7 +232,7 @@ class _HomeBalanceState extends State<HomeBalance> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: transferScreen,
+                      onTap: transferWalletScreen,
                       child: const Image(
                         image: AppImages.transfer,
                         height: 32,
