@@ -9,7 +9,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/location.dart';
-import 'package:miliv2/src/config/config.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
@@ -41,6 +40,8 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
 
+  String? widgetUrl;
+
   final _formKey = GlobalKey<FormState>();
 
   final _idCardController = TextEditingController();
@@ -65,6 +66,13 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
     if (Platform.isAndroid) {
       WebView.platform = SurfaceAndroidWebView(); // AndroidWebView();
     }
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        setState(() {
+          widgetUrl = 'https://www.mymili.id/upgrade-premium/';
+        });
+      });
+    });
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       getProvince();
     });
@@ -518,6 +526,13 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
   }
 
   Widget buildTerm() {
+    if (widgetUrl == null) {
+      return const Center(
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+        ),
+      );
+    }
     return SafeArea(
       child: Column(
         children: [
@@ -526,35 +541,31 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
               value: loadingPercentage / 100.0,
             ),
           Expanded(
-            child: AppConfig.devMode
-                ? Container(
-                    color: Colors.grey,
-                  )
-                : WebView(
-                    initialUrl: 'https://www.mymili.id/upgrade-premium/',
-                    zoomEnabled: true,
-                    onWebResourceError: (error) {
-                      debugPrint('PrivacyScreen error $error');
-                    },
-                    onWebViewCreated: (webViewController) {
-                      _controller.complete(webViewController);
-                    },
-                    onPageStarted: (url) {
-                      setState(() {
-                        loadingPercentage = 0;
-                      });
-                    },
-                    onProgress: (progress) {
-                      setState(() {
-                        loadingPercentage = progress;
-                      });
-                    },
-                    onPageFinished: (url) {
-                      setState(() {
-                        loadingPercentage = 100;
-                      });
-                    },
-                  ),
+            child: WebView(
+              initialUrl: widgetUrl,
+              zoomEnabled: true,
+              onWebResourceError: (error) {
+                debugPrint('UpgradeScreen error $error');
+              },
+              onWebViewCreated: (webViewController) {
+                _controller.complete(webViewController);
+              },
+              onPageStarted: (url) {
+                setState(() {
+                  loadingPercentage = 0;
+                });
+              },
+              onProgress: (progress) {
+                setState(() {
+                  loadingPercentage = progress;
+                });
+              },
+              onPageFinished: (url) {
+                setState(() {
+                  loadingPercentage = 100;
+                });
+              },
+            ),
           ),
           widget.allowUpgrade
               ? Container(
