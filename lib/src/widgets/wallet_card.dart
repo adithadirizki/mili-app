@@ -22,15 +22,19 @@ class WalletCard extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          Align(
+          const Align(
             alignment: Alignment.topCenter,
-            child: Text(
-              'Saldo MyFinPay',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(color: Colors.white),
+            child: Image(
+              image: AppImages.logoWallet,
+              height: 35,
             ),
+            // child: Text(
+            //   'Saldo MyFinPay',
+            //   style: Theme.of(context)
+            //       .textTheme
+            //       .titleLarge!
+            //       .copyWith(color: Colors.white),
+            // ),
           ),
           Container(
             alignment: const Alignment(-1, 0),

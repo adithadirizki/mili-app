@@ -12,6 +12,7 @@ class UserBalanceState extends ChangeNotifier {
   bool isLoading = false;
   bool walletActive = false;
   double walletBalance = 0;
+  bool walletPremium = false;
   double balance = 0;
   double balanceCredit = 0;
   int level = 0;
@@ -110,6 +111,7 @@ class UserBalanceState extends ChangeNotifier {
       if (bodyMap['status'] == 1) {
         walletBalance = ((bodyMap['data'] as num?)?.toDouble()) ?? 0;
         walletActive = true;
+        walletPremium = bodyMap['type'] != 'BASIC';
         notifyListeners();
       }
       return response;

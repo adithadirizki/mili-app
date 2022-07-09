@@ -44,6 +44,11 @@ class AppLabel {
   static const registrationSubmit = "Daftar";
 
   // Upgrade
+  static const upgradeInputKK = "Nomor KK";
+  static const upgradeInputMotherName = "Nama Ibu Kandung";
+  static const upgradeInputNationality = "Kewarganegaraan";
+  static const upgradeInputEmail = "Email";
+  static const upgradeInputSelfie = "Foto Selfie";
   static const upgradeInputIdCard = "Nomor KTP";
   static const upgradeInputProvince = "Provinsi";
   static const upgradeInputCity = "Kab / Kota";
@@ -56,4 +61,5 @@ class AppLabel {
   static const topup = "Topup";
   static const transfer = "Transfer";
   static const history = "Riwayat";
+  static const upgrade = "Upgrade";
 }

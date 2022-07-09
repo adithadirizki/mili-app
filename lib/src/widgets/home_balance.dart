@@ -5,7 +5,7 @@ import 'package:miliv2/src/screens/profile_wallet.dart';
 import 'package:miliv2/src/screens/topup.dart';
 import 'package:miliv2/src/screens/topup_wallet.dart';
 import 'package:miliv2/src/screens/transfer.dart';
-import 'package:miliv2/src/screens/transfer_wallet.dart';
+import 'package:miliv2/src/screens/upgrade_wallet.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -33,7 +33,13 @@ class _HomeBalanceState extends State<HomeBalance> {
   }
 
   void transferWalletScreen() {
-    pushScreen(context, (_) => const TransferWalletScreen());
+    pushScreen(
+        context, (_) => const ProfileWalletScreen(title: 'Transfer Saldo'));
+  }
+
+  void upgradeWalletScreen() {
+    pushScreen(
+        context, (_) => const UpgradeWalletScreen(title: 'Upgrade Finpay'));
   }
 
   void topupScreen() {
@@ -50,7 +56,7 @@ class _HomeBalanceState extends State<HomeBalance> {
 
   @override
   Widget build(BuildContext context) {
-    print('Build HomeBalance');
+    debugPrint('Build HomeBalance');
     bool walletActive = UserBalanceScope.of(context).walletActive;
     return Container(
       height: 120,
@@ -93,13 +99,11 @@ class _HomeBalanceState extends State<HomeBalance> {
                             ),
                             const Spacer(),
                             GestureDetector(
-                              child:
-                                const Icon(
-                                  Icons.info,
-                                  color: AppColors.blue6,
-                                  size: 20,
-                                )
-                              ,
+                              child: const Icon(
+                                Icons.info,
+                                color: AppColors.blue6,
+                                size: 20,
+                              ),
                               onTap: profileWalletScreen,
                             ),
                           ],
@@ -228,26 +232,47 @@ class _HomeBalanceState extends State<HomeBalance> {
                     ),
                   ],
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: transferWalletScreen,
-                      child: const Image(
-                        image: AppImages.transfer,
-                        height: 32,
+                userBalanceState.walletPremium
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: transferWalletScreen,
+                            child: const Image(
+                              image: AppImages.transfer,
+                              height: 32,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            AppLabel.transfer,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(color: Colors.white),
+                          ),
+                        ],
+                      )
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: upgradeWalletScreen,
+                            child: const Image(
+                              image: AppImages.transfer,
+                              height: 32,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            AppLabel.upgrade,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(color: Colors.white),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      AppLabel.transfer,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(color: Colors.white),
-                    ),
-                  ],
-                ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

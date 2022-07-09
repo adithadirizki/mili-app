@@ -552,8 +552,9 @@ class Api {
       'transaction_id': trxId,
       'product_code': productCode,
       'transaction_number': destination,
-      'payment_type':
-          method == PaymentMethod.wallet ? 'wallet' : (method == PaymentMethod.creditBalance ? 'credit' : 'balance')
+      'payment_type': method == PaymentMethod.wallet
+          ? 'wallet'
+          : (method == PaymentMethod.creditBalance ? 'credit' : 'balance')
     };
     debugPrint('purchaseProduct $body');
     return http
@@ -1177,6 +1178,36 @@ class Api {
         )
         .then(_parseResponse)
         .catchError(_parseException);
+  }
+
+  static Future<http.StreamedResponse> walletUpgrade({
+    required String noKK,
+    required String motherName,
+    required String email,
+    required String nationality,
+    required List<int> idCard,
+    required List<int> selfie,
+  }) async {
+    var request = http.MultipartRequest(
+        'POST', Uri.parse(AppConfig.baseUrl + '/wallet/upgrade'));
+
+    var headers = getRequestHeaders();
+    request.headers.addAll(headers!);
+
+    request.files
+        .add(http.MultipartFile.fromBytes('idCard', idCard, filename: noKK));
+    request.files
+        .add(http.MultipartFile.fromBytes('selfie', selfie, filename: noKK));
+
+    request.fields.addAll(<String, String>{
+      // 'agenid': userId,
+      'noKK': noKK,
+      'motherName': motherName,
+      'email': email,
+      'nationality': nationality,
+    });
+
+    return request.send();
   }
 }
 

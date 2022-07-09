@@ -90,11 +90,8 @@ class _HomepageState extends State<Homepage>
     activeBannerState.fetchData();
     await userBalanceState.fetchData().catchError(_handleError);
     // Get Wallet Balance
-    await userBalanceState.fetchWallet().then((response) {
-      Map<String, dynamic> bodyMap =
-          json.decode(response.body) as Map<String, dynamic>;
-      debugPrint('Homepage fetchWallet $bodyMap');
-      if (bodyMap['status'] == 1) {
+    await userBalanceState.fetchWallet().then((_) {
+      if (userBalanceState.walletActive) {
         // Start timer
         beginTimer();
       } else {
@@ -104,7 +101,7 @@ class _HomepageState extends State<Homepage>
     }).catchError(_handleError);
   }
 
-  // Begin FinPay related function
+  // Begin Finpay related function
   void openWalletOtp() {
     pushScreen(
       context,
@@ -112,7 +109,7 @@ class _HomepageState extends State<Homepage>
         key: walletOTPState,
         otpLength: 6,
         secured: false,
-        title: 'Aktivasi FinPay',
+        title: 'Aktivasi Finpay',
         subTitle: 'Masukkan Kode OTP',
         invalidMessage: 'Kode OTP tidak sesuai',
         validateOtp: (otp) async {
@@ -146,10 +143,10 @@ class _HomepageState extends State<Homepage>
 
   void walletActivation() {
     confirmDialog(context,
-        title: 'Aktivasi FinPay',
+        title: 'Aktivasi Finpay',
         msg:
-            'Untuk melanjutkan transaksi Anda diwajibkan untuk mengaktifkan fitur saldo FinPay, '
-            'dimana saldo Anda saat ini akan dipindahkan menjadi Saldo FinPay. \n\nDengan menggunakan Saldo FinPay Anda dapat melakukan semua pembayaran yang terdaftar dalam QRIS '
+            'Untuk melanjutkan transaksi Anda diwajibkan untuk mengaktifkan fitur saldo Finpay, '
+            'dimana saldo Anda saat ini akan dipindahkan menjadi Saldo Finpay. \n\nDengan menggunakan Saldo Finpay Anda dapat melakukan semua pembayaran yang terdaftar dalam QRIS '
             'dan mendapatkan berbagai keuntungan lainnya. ', confirmAction: () {
       Api.walletActivation().then((response) {
         openWalletOtp();
@@ -157,7 +154,7 @@ class _HomepageState extends State<Homepage>
     });
   }
 
-  // End FinPay function
+  // End Finpay function
 
   void initialize() async {
     var closeLoader = showLoaderDialog(context, message: 'Memperbarui...');

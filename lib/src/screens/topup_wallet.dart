@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/api/api.dart';
-import 'package:miliv2/src/config/config.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -14,7 +13,7 @@ class TopupWalletScreen extends StatefulWidget {
 
   const TopupWalletScreen({
     Key? key,
-    this.title = 'Topup MyFinPay',
+    this.title = 'Topup Finpay',
   }) : super(key: key);
 
   @override
@@ -72,36 +71,32 @@ class _TopupWalletScreenState extends State<TopupWalletScreen> {
               value: loadingPercentage / 100.0,
             ),
           Expanded(
-            child: AppConfig.devMode && false
-                ? Container(
-                    color: Colors.grey,
-                  )
-                : WebView(
-                    initialUrl: widgetUrl,
-                    zoomEnabled: true,
-                    javascriptMode: JavascriptMode.unrestricted,
-                    onWebResourceError: (error) {
-                      debugPrint('TopupWallet error $error');
-                    },
-                    onWebViewCreated: (webViewController) {
-                      _controller.complete(webViewController);
-                    },
-                    onPageStarted: (url) {
-                      setState(() {
-                        loadingPercentage = 0;
-                      });
-                    },
-                    onProgress: (progress) {
-                      setState(() {
-                        loadingPercentage = progress;
-                      });
-                    },
-                    onPageFinished: (url) {
-                      setState(() {
-                        loadingPercentage = 100;
-                      });
-                    },
-                  ),
+            child: WebView(
+              initialUrl: widgetUrl,
+              zoomEnabled: true,
+              javascriptMode: JavascriptMode.unrestricted,
+              onWebResourceError: (error) {
+                debugPrint('TopupWallet error $error');
+              },
+              onWebViewCreated: (webViewController) {
+                _controller.complete(webViewController);
+              },
+              onPageStarted: (url) {
+                setState(() {
+                  loadingPercentage = 0;
+                });
+              },
+              onProgress: (progress) {
+                setState(() {
+                  loadingPercentage = progress;
+                });
+              },
+              onPageFinished: (url) {
+                setState(() {
+                  loadingPercentage = 100;
+                });
+              },
+            ),
           ),
         ],
       ),
