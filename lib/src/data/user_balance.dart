@@ -38,6 +38,11 @@ class UserBalanceState extends ChangeNotifier {
       return UserBalanceState(0, 0, false);
     }
     try {
+      // Wallet
+      var wallet = AppStorage.getWallet(); // Cache
+      Map<String, dynamic> walletCache =
+          json.decode(wallet) as Map<String, dynamic>;
+      //
       Map<String, dynamic> bodyMap = json.decode(body) as Map<String, dynamic>;
       var profile =
           ProfileResponse.fromJson(bodyMap['data'] as Map<String, dynamic>);
@@ -55,7 +60,11 @@ class UserBalanceState extends ChangeNotifier {
         ..address = profile.address
         ..outletType = profile.outletType
         ..markup = profile.markup ?? 0
-        ..groupName = profile.groupName;
+        ..groupName = profile.groupName
+        // Wallet
+        ..walletBalance = ((walletCache['data'] as num?)?.toDouble()) ?? 0
+        ..walletActive = true
+        ..walletPremium = walletCache['type'] != 'BASIC';
     } catch (e) {
       return UserBalanceState(0, 0, false);
     }
@@ -106,6 +115,7 @@ class UserBalanceState extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     return Api.walletBalance().then((response) {
+      AppStorage.setWallet(response.body); // Cache
       Map<String, dynamic> bodyMap =
           json.decode(response.body) as Map<String, dynamic>;
       if (bodyMap['status'] == 1) {
