@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/data/user_balance.dart';
+import 'package:miliv2/src/screens/activation_wallet.dart';
 import 'package:miliv2/src/screens/customer_service.dart';
 import 'package:miliv2/src/screens/mutation.dart';
 import 'package:miliv2/src/screens/notification.dart';
@@ -145,6 +146,10 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
           child: FloatingActionButton(
             isExtended: false,
             onPressed: () async {
+              if (!userBalanceState.walletActive) {
+                pushScreen(context, (_) => const ActivationWalletScreen());
+                return;
+              }
               var code = await pushScreenWithCallback<String>(
                 context,
                 (_) => const QrisScannerScreen(),

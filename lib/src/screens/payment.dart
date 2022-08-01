@@ -43,13 +43,16 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  PaymentMethod selectedPayment = PaymentMethod.wallet;
+  late PaymentMethod selectedPayment;
   bool isLoading = false;
   String trxId = '';
 
   @override
   void initState() {
     super.initState();
+    selectedPayment = !userBalanceState.walletActive
+        ? PaymentMethod.mainBalance
+        : PaymentMethod.wallet;
     trxId = DateTime.now().millisecondsSinceEpoch.toString();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       if (userBalanceState.isGuest()) {

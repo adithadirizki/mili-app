@@ -24,9 +24,10 @@ class SignUpVerified {
   final String username;
   final String deviceId;
   final String token;
+  final String name;
 
-  SignUpVerified(
-      this.signedIn, this.verified, this.username, this.deviceId, this.token);
+  SignUpVerified(this.signedIn, this.verified, this.username, this.deviceId,
+      this.token, this.name);
 }
 
 class SignUpScreen extends StatefulWidget {
@@ -232,12 +233,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         debugPrint("Register Response >> $loginResp");
 
         widget.onVerified(SignUpVerified(
-          true,
-          false,
-          phoneNumber,
-          deviceId,
-          loginResp.token,
-        ));
+            true, false, phoneNumber, deviceId, loginResp.token, name));
       }).catchError(_handleError);
     }
   }

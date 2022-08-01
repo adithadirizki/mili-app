@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -7,6 +6,7 @@ import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/active_banner.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
+import 'package:miliv2/src/screens/activation_wallet.dart';
 import 'package:miliv2/src/screens/home_screen.dart';
 import 'package:miliv2/src/screens/otp_verification.dart';
 import 'package:miliv2/src/services/analytics.dart';
@@ -50,7 +50,7 @@ class _HomepageState extends State<Homepage>
   final confirmPinState = GlobalKey<PINVerificationState>();
   final verifyPinState = GlobalKey<PINVerificationState>();
 
-  final walletOTPState = GlobalKey<PINVerificationState>();
+  // final walletOTPState = GlobalKey<PINVerificationState>();
 
   @override
   void initState() {
@@ -79,8 +79,12 @@ class _HomepageState extends State<Homepage>
   void beginTimer() {
     debugPrint('Register timer');
     _timer = Timer.periodic(const Duration(seconds: 60), (timer) async {
-      await userBalanceState.fetchData().catchError(_handleError);
-      await userBalanceState.fetchWallet().catchError(_handleError);
+      // Update wallet
+      if (userBalanceState.walletActive) {
+        await userBalanceState.fetchWallet().catchError(_handleError);
+      } else {
+        await userBalanceState.fetchData().catchError(_handleError);
+      }
     });
   }
 
@@ -91,67 +95,70 @@ class _HomepageState extends State<Homepage>
     await userBalanceState.fetchData().catchError(_handleError);
     // Get Wallet Balance
     await userBalanceState.fetchWallet().then((_) {
-      if (userBalanceState.walletActive) {
-        // Start timer
-        beginTimer();
-      } else {
+      if (!userBalanceState.walletActive) {
         // Activation wallet
         walletActivation();
       }
     }).catchError(_handleError);
+    // Start timer
+    beginTimer();
   }
-
-  // Begin Finpay related function
-  void openWalletOtp() {
-    pushScreen(
-      context,
-      (_) => PINVerification.withGradientBackground(
-        key: walletOTPState,
-        otpLength: 6,
-        secured: false,
-        title: 'Aktivasi Finpay',
-        subTitle: 'Masukkan Kode OTP',
-        invalidMessage: 'Kode OTP tidak sesuai',
-        validateOtp: (otp) async {
-          return Api.walletConfirmation(otp).then((response) {
-            return true;
-          }).catchError((Object e) {
-            _handleError(e);
-            return false;
-          });
-        },
-        onValidateSuccess: (ctx) {
-          walletOTPState.currentState!.clearOtp();
-          popScreen(context);
-          // Start timer
-          beginTimer();
-        },
-        onInvalid: (_) {
-          walletOTPState.currentState!.clearOtp();
-        },
-        topColor: const Color.fromRGBO(0, 255, 193, 1),
-        bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
-        themeColor: Colors.white,
-        titleColor: Colors.white,
-        // icon: Image.asset(
-        //   'images/phone_logo.png',
-        //   fit: BoxFit.fill,
-        // ),
-      ),
-    );
-  }
+  //
+  // // Begin Finpay related function
+  // void openWalletOtp() {
+  //   pushScreen(
+  //     context,
+  //     (_) => PINVerification.withGradientBackground(
+  //       key: walletOTPState,
+  //       otpLength: 6,
+  //       secured: false,
+  //       title: 'Aktivasi Finpay',
+  //       subTitle: 'Masukkan Kode OTP',
+  //       invalidMessage: 'Kode OTP tidak sesuai',
+  //       validateOtp: (otp) async {
+  //         return Api.walletConfirmation(otp).then((response) {
+  //           return true;
+  //         }).catchError((Object e) {
+  //           _handleError(e);
+  //           return false;
+  //         });
+  //       },
+  //       onValidateSuccess: (ctx) {
+  //         walletOTPState.currentState!.clearOtp();
+  //         popScreen(context);
+  //         // Start timer
+  //         beginTimer();
+  //       },
+  //       onInvalid: (_) {
+  //         walletOTPState.currentState!.clearOtp();
+  //       },
+  //       topColor: const Color.fromRGBO(0, 255, 193, 1),
+  //       bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
+  //       themeColor: Colors.white,
+  //       titleColor: Colors.white,
+  //       // icon: Image.asset(
+  //       //   'images/phone_logo.png',
+  //       //   fit: BoxFit.fill,
+  //       // ),
+  //     ),
+  //   );
+  // }
 
   void walletActivation() {
-    confirmDialog(context,
-        title: 'Aktivasi Finpay',
-        msg:
-            'Untuk melanjutkan transaksi Anda diwajibkan untuk mengaktifkan fitur saldo Finpay, '
-            'dimana saldo Anda saat ini akan dipindahkan menjadi Saldo Finpay. \n\nDengan menggunakan Saldo Finpay Anda dapat melakukan semua pembayaran yang terdaftar dalam QRIS '
-            'dan mendapatkan berbagai keuntungan lainnya. ', confirmAction: () {
-      Api.walletActivation().then((response) {
-        openWalletOtp();
-      }).catchError(_handleError);
-    });
+    pushScreen(
+      context,
+      (_) => const ActivationWalletScreen(),
+    );
+    // confirmDialog(context,
+    //     title: 'Aktivasi Finpay',
+    //     msg:
+    //         'Untuk melanjutkan transaksi Anda diwajibkan untuk mengaktifkan fitur saldo Finpay, '
+    //         'dimana saldo Anda saat ini akan dipindahkan menjadi Saldo Finpay. \n\nDengan menggunakan Saldo Finpay Anda dapat melakukan semua pembayaran yang terdaftar dalam QRIS '
+    //         'dan mendapatkan berbagai keuntungan lainnya. ', confirmAction: () {
+    //   // Api.walletActivation().then((response) {
+    //   //   openWalletOtp();
+    //   // }).catchError(_handleError);
+    // });
   }
 
   // End Finpay function

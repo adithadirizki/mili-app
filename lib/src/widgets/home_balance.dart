@@ -216,7 +216,9 @@ class _HomeBalanceState extends State<HomeBalance> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: topupWalletScreen,
+                      onTap: !userBalanceState.walletActive
+                          ? topupScreen
+                          : topupWalletScreen,
                       child: const Image(
                         image: AppImages.topup,
                         height: 32,
@@ -232,12 +234,12 @@ class _HomeBalanceState extends State<HomeBalance> {
                     ),
                   ],
                 ),
-                userBalanceState.walletPremium
+                !userBalanceState.walletActive
                     ? Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           GestureDetector(
-                            onTap: transferWalletScreen,
+                            onTap: transferScreen,
                             child: const Image(
                               image: AppImages.transfer,
                               height: 32,
@@ -253,26 +255,47 @@ class _HomeBalanceState extends State<HomeBalance> {
                           ),
                         ],
                       )
-                    : Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          GestureDetector(
-                            onTap: upgradeWalletScreen,
-                            child: const Image(
-                              image: AppImages.transfer,
-                              height: 32,
-                            ),
+                    : userBalanceState.walletPremium
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                onTap: transferWalletScreen,
+                                child: const Image(
+                                  image: AppImages.transfer,
+                                  height: 32,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                AppLabel.transfer,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(color: Colors.white),
+                              ),
+                            ],
+                          )
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                onTap: upgradeWalletScreen,
+                                child: const Image(
+                                  image: AppImages.transfer,
+                                  height: 32,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                AppLabel.upgrade,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(color: Colors.white),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 10),
-                          Text(
-                            AppLabel.upgrade,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: Colors.white),
-                          ),
-                        ],
-                      ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

@@ -63,7 +63,7 @@ class UserBalanceState extends ChangeNotifier {
         ..groupName = profile.groupName
         // Wallet
         ..walletBalance = ((walletCache['data'] as num?)?.toDouble()) ?? 0
-        ..walletActive = true
+        ..walletActive = walletCache['status'] == 1
         ..walletPremium = walletCache['type'] != 'BASIC';
     } catch (e) {
       return UserBalanceState(0, 0, false);

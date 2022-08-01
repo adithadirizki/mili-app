@@ -77,48 +77,52 @@ class _MutationScreenState extends State<MutationScreen> {
       isLoading = true;
     });
 
-    await Api.walletHistory(dateRange.start, dateRange.end).then((resp) {
-      debugPrint('Wallet history ${resp.body}');
-      Map<String, dynamic> bodyMap =
-          json.decode(resp.body) as Map<String, dynamic>;
-      walletHistory = (bodyMap['data'] as List<dynamic>)
-          .map((dynamic data) => _WalletMutation()
-            ..id = (data['id'] as int)
-            ..transactionDate =
-                DateTime.parse(data['transactionDate'] as String)
-            ..type = (data['type'] as String)
-            ..code = (data['code'] as String)
-            ..desc = (data['desc'] as String)
-            ..credit = (data['credit'] as int).toDouble()
-            ..debit = (data['debit'] as int).toDouble()
-            ..source = (data['source'] as String)
-            ..sourceName = (data['sourceName'] as String))
-          .toList();
-      walletHistory.sort((a, b) {
-        return (a.transactionDate.isBefore(b.transactionDate) ? 1 : -1);
-      });
-      setState(() {});
-    }).catchError(_handleError);
-    await AppDB.syncBalanceMutation();
-    await AppDB.syncCreditMutation();
+    if (!userBalanceState.walletActive) {
+      {
+        await AppDB.syncBalanceMutation();
+        Condition<BalanceMutation> filterDate = BalanceMutation_.mutationDate
+            .greaterOrEqual(dateRange.start.millisecondsSinceEpoch)
+            .and(BalanceMutation_.mutationDate.lessOrEqual(dateRange.end
+                .add(const Duration(hours: 24))
+                .millisecondsSinceEpoch));
 
-    {
-      Condition<BalanceMutation> filterDate = BalanceMutation_.mutationDate
-          .greaterOrEqual(dateRange.start.millisecondsSinceEpoch)
-          .and(BalanceMutation_.mutationDate.lessOrEqual(dateRange.end
-              .add(const Duration(hours: 24))
-              .millisecondsSinceEpoch));
+        Condition<BalanceMutation> filterUser =
+            BalanceMutation_.userId.equals(userBalanceState.userId);
 
-      Condition<BalanceMutation> filterUser =
-          BalanceMutation_.userId.equals(userBalanceState.userId);
-
-      final db = AppDB.balanceMutationDB;
-      QueryBuilder<BalanceMutation> query = db.query(filterDate.and(filterUser))
-        ..order(BalanceMutation_.mutationDate, flags: 1);
-      balanceHistory = query.build().find();
+        final db = AppDB.balanceMutationDB;
+        QueryBuilder<BalanceMutation> query = db
+            .query(filterDate.and(filterUser))
+          ..order(BalanceMutation_.mutationDate, flags: 1);
+        balanceHistory = query.build().find();
+        debugPrint('InitDB BalanceMutation ${balanceHistory.length}');
+      }
+    } else {
+      await Api.walletHistory(dateRange.start, dateRange.end).then((resp) {
+        debugPrint('Wallet history ${resp.body}');
+        Map<String, dynamic> bodyMap =
+            json.decode(resp.body) as Map<String, dynamic>;
+        walletHistory = (bodyMap['data'] as List<dynamic>)
+            .map((dynamic data) => _WalletMutation()
+              ..id = (data['id'] as int)
+              ..transactionDate =
+                  DateTime.parse(data['transactionDate'] as String)
+              ..type = (data['type'] as String)
+              ..code = (data['code'] as String)
+              ..desc = (data['desc'] as String)
+              ..credit = (data['credit'] as int).toDouble()
+              ..debit = (data['debit'] as int).toDouble()
+              ..source = (data['source'] as String)
+              ..sourceName = (data['sourceName'] as String))
+            .toList();
+        // walletHistory.sort((a, b) {
+        //   return (a.transactionDate.isBefore(b.transactionDate) ? 1 : -1);
+        // });
+        setState(() {});
+      }).catchError(_handleError);
     }
 
     {
+      await AppDB.syncCreditMutation();
       Condition<CreditMutation> filterDate = CreditMutation_.mutationDate
           .greaterOrEqual(dateRange.start.millisecondsSinceEpoch)
           .and(CreditMutation_.mutationDate.lessOrEqual(dateRange.end
@@ -132,10 +136,8 @@ class _MutationScreenState extends State<MutationScreen> {
       QueryBuilder<CreditMutation> query = db.query(filterDate.and(filterUser))
         ..order(CreditMutation_.mutationDate, flags: 1);
       creditHistory = query.build().find();
+      debugPrint('InitDB CreditMutation ${creditHistory.length}');
     }
-
-    debugPrint('InitDB BalanceMutation ${balanceHistory.length}');
-    debugPrint('InitDB CreditMutation ${creditHistory.length}');
 
     setState(() {
       isLoading = false;
@@ -174,19 +176,19 @@ class _MutationScreenState extends State<MutationScreen> {
         },
         key: const ValueKey('pagemode'),
         children: [
-          // Disable main balance for now
-          // Container(
-          //   margin: const EdgeInsets.only(right: 10),
-          //   width: double.infinity,
-          //   // color: Colors.red,
-          //   child: const BalanceCard(),
-          // ),
-          Container(
-            margin: const EdgeInsets.only(right: 10),
-            width: double.infinity,
-            // color: Colors.red,
-            child: const WalletCard(),
-          ),
+          !userBalanceState.walletActive
+              ? Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  width: double.infinity,
+                  // color: Colors.red,
+                  child: const BalanceCard(),
+                )
+              : Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  width: double.infinity,
+                  // color: Colors.red,
+                  child: const WalletCard(),
+                ),
           Container(
             margin: const EdgeInsets.only(left: 10),
             width: double.infinity,
@@ -351,16 +353,13 @@ class _MutationScreenState extends State<MutationScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Flexible(
-                child: Text(
-                  data.type.toUpperCase() +
-                      '\n' +
-                      description
-                      // '\n' +
-                      // data.source +
-                      // ' - ' +
-                      // data.sourceName,
-                  // style: Theme.of(context).textTheme.bodySmall,
-                ),
+                child: Text(data.type.toUpperCase() + '\n' + description
+                    // '\n' +
+                    // data.source +
+                    // ' - ' +
+                    // data.sourceName,
+                    // style: Theme.of(context).textTheme.bodySmall,
+                    ),
               ),
             ],
           ),
@@ -390,29 +389,29 @@ class _MutationScreenState extends State<MutationScreen> {
           pc.jumpToPage(page);
         },
         children: [
-          // Disable main balance for now
-          // balanceHistory.isEmpty
-          //     ? const Center(
-          //         child: Text('Tidak ada data'),
-          //       )
-          //     : ListView.builder(
-          //         key: const PageStorageKey<String>('listMutation'),
-          //         itemCount: balanceHistory.length,
-          //         itemBuilder: (context, index) {
-          //           return balanceItem(balanceHistory[index]);
-          //         },
-          //       ),
-          walletHistory.isEmpty
-              ? const Center(
-                  child: Text('Tidak ada data'),
-                )
-              : ListView.builder(
-                  key: const PageStorageKey<String>('listMutationWallet'),
-                  itemCount: walletHistory.length,
-                  itemBuilder: (context, index) {
-                    return walletItem(walletHistory[index]);
-                  },
-                ),
+          !userBalanceState.walletActive
+              ? (balanceHistory.isEmpty
+                  ? const Center(
+                      child: Text('Tidak ada data'),
+                    )
+                  : ListView.builder(
+                      key: const PageStorageKey<String>('listMutation'),
+                      itemCount: balanceHistory.length,
+                      itemBuilder: (context, index) {
+                        return balanceItem(balanceHistory[index]);
+                      },
+                    ))
+              : (walletHistory.isEmpty
+                  ? const Center(
+                      child: Text('Tidak ada data'),
+                    )
+                  : ListView.builder(
+                      key: const PageStorageKey<String>('listMutationWallet'),
+                      itemCount: walletHistory.length,
+                      itemBuilder: (context, index) {
+                        return walletItem(walletHistory[index]);
+                      },
+                    )),
           creditHistory.isEmpty
               ? const Center(
                   child: Text('Tidak ada data'),

@@ -104,6 +104,8 @@ class AppAuth extends ChangeNotifier {
     AppStorage.setUsername(null);
     AppStorage.setDeviceId(null);
     AppStorage.setToken(null);
+    AppStorage.seUserProfile(null);
+    AppStorage.setWallet(null);
 
     _signedIn = false;
     _verified = false;

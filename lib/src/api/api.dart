@@ -1078,11 +1078,15 @@ class Api {
 
   /// WALLET API
 
-  static Future<http.Response> walletActivation() {
+  static Future<http.Response> walletActivation(String fullname) {
+    Map<String, dynamic> body = <String, Object?>{
+      'fullname': fullname,
+    };
     return http
         .post(
           Uri.parse(AppConfig.baseUrl + '/wallet/activation'),
           headers: getRequestHeaders(),
+          body: json.encode(body),
         )
         .then(_parseResponse)
         .catchError(_parseException);
