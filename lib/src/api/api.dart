@@ -309,25 +309,25 @@ class Api {
     return request.send();
   }
 
-  static Future<http.StreamedResponse> upgrade(
-      {required String idCardNumber,
-      required int province,
-      required int city,
-      required int district,
-      required int village,
-      required String postCode,
-      required String address,
-      required List<int>? photo}) async {
+  static Future<http.StreamedResponse> upgrade({
+    required String idCardNumber,
+    required int province,
+    required int city,
+    required int district,
+    required int village,
+    required String postCode,
+    required String address,
+    required List<int> photo,
+    required String photoName,
+  }) async {
     var request = http.MultipartRequest(
         'POST', Uri.parse(AppConfig.baseUrl + '/profile/upgrade'));
 
     var headers = getRequestHeaders();
     request.headers.addAll(headers!);
 
-    if (photo != null) {
-      request.files.add(http.MultipartFile.fromBytes('id_card_photo', photo,
-          filename: idCardNumber));
-    }
+    request.files.add(http.MultipartFile.fromBytes('id_card_photo', photo,
+        filename: photoName));
 
     request.fields.addAll(<String, String>{
       // 'agenid': userId,
@@ -1190,7 +1190,9 @@ class Api {
     required String email,
     required String nationality,
     required List<int> idCard,
+    required String idCardName,
     required List<int> selfie,
+    required String selfieName,
   }) async {
     var request = http.MultipartRequest(
         'POST', Uri.parse(AppConfig.baseUrl + '/wallet/upgrade'));
@@ -1198,10 +1200,10 @@ class Api {
     var headers = getRequestHeaders();
     request.headers.addAll(headers!);
 
-    request.files
-        .add(http.MultipartFile.fromBytes('idCard', idCard, filename: noKK));
-    request.files
-        .add(http.MultipartFile.fromBytes('selfie', selfie, filename: noKK));
+    request.files.add(
+        http.MultipartFile.fromBytes('idCard', idCard, filename: idCardName));
+    request.files.add(
+        http.MultipartFile.fromBytes('selfie', selfie, filename: selfieName));
 
     request.fields.addAll(<String, String>{
       // 'agenid': userId,

@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/location.dart';
 import 'package:miliv2/src/data/user_balance.dart';
+import 'package:miliv2/src/services/image_picker.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
@@ -58,8 +59,9 @@ class _UpgradeWalletScreenState extends State<UpgradeWalletScreen> {
   List<VillageResponse> villages = [];
 
   Uint8List? idCardByte;
+  String? idCardName;
   Uint8List? selfieByte;
-  String? filename;
+  String? selfieName;
   int? province;
   int? city;
   int? district;
@@ -159,7 +161,9 @@ class _UpgradeWalletScreenState extends State<UpgradeWalletScreen> {
         email: email,
         nationality: nationality,
         idCard: idCardByte!,
+        idCardName: idCardName!,
         selfie: selfieByte!,
+        selfieName: selfieName!,
       ).then((response) async {
         final respStr = await response.stream.bytesToString();
         final body = json.decode(respStr) as Map<String, dynamic>;
@@ -172,7 +176,7 @@ class _UpgradeWalletScreenState extends State<UpgradeWalletScreen> {
           await userBalanceState.fetchData();
           await closeLoader();
           await closeLoader();
-          snackBarDialog(context, 'Pendaftaran Akun Premium berhasil');
+          snackBarDialog(context, 'Pendaftaran Akun Premium akan diproses');
           await popScreen(context);
         } else {
           await closeLoader();
@@ -194,46 +198,42 @@ class _UpgradeWalletScreenState extends State<UpgradeWalletScreen> {
       confirmDialog(context,
           title: 'Upgrade Finpay',
           msg:
-              'Proses verifikasi data membutuhkan waktu kurang lebih 7x24 jam. Lanjutkan upgrade akun Finpay ?',
+              'Proses verifikasi data membutuhkan waktu kurang lebih 3x24 jam. Lanjutkan upgrade akun Finpay ?',
           confirmAction: submit,
           confirmText: 'Ya, lanjutkan',
           cancelText: 'Batal');
     }
   }
 
-  Future<Uint8List?> pickImage(
-      ImageSource source, List<CropAspectRatioPreset> aspectRatio) async {
-    final result = await ImagePicker().pickImage(
-      imageQuality: 70,
-      maxHeight: 1024,
-      maxWidth: 1024,
-      source: source,
-    );
-
-    if (result != null) {
-      File? croppedFile = await ImageCropper.cropImage(
-          sourcePath: result.path,
-          aspectRatioPresets: aspectRatio,
-          androidUiSettings: const AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            toolbarColor: Colors.lightBlueAccent,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.square,
-            lockAspectRatio: true,
-          ),
-          iosUiSettings: const IOSUiSettings(
-            minimumAspectRatio: 1.0,
-          ));
-
-      return await croppedFile?.readAsBytes();
-      if (croppedFile != null) {
-        idCardByte = await croppedFile.readAsBytes();
-        setState(() {});
-      }
-    }
-
-    return null;
-  }
+  // Future<Uint8List?> pickImage(
+  //     ImageSource source, List<CropAspectRatioPreset> aspectRatio) async {
+  //   final result = await ImagePicker().pickImage(
+  //     imageQuality: 70,
+  //     maxHeight: 1024,
+  //     maxWidth: 1024,
+  //     source: source,
+  //   );
+  //
+  //   if (result != null) {
+  //     File? croppedFile = await ImageCropper.cropImage(
+  //         sourcePath: result.path,
+  //         aspectRatioPresets: aspectRatio,
+  //         androidUiSettings: const AndroidUiSettings(
+  //           toolbarTitle: 'Cropper',
+  //           toolbarColor: Colors.lightBlueAccent,
+  //           toolbarWidgetColor: Colors.white,
+  //           initAspectRatio: CropAspectRatioPreset.square,
+  //           lockAspectRatio: false,
+  //         ),
+  //         iosUiSettings: const IOSUiSettings(
+  //           minimumAspectRatio: 1.0,
+  //         ));
+  //
+  //     return await croppedFile?.readAsBytes();
+  //   }
+  //
+  //   return null;
+  // }
 
   VoidCallback onSelectIDCard(BuildContext context) {
     return () async {
@@ -265,19 +265,29 @@ class _UpgradeWalletScreenState extends State<UpgradeWalletScreen> {
         return;
       }
 
-      idCardByte = await pickImage(source, [
+      PickResult? result = await pickImage(source, aspectRatio: [
         CropAspectRatioPreset.ratio3x2,
         CropAspectRatioPreset.ratio4x3,
         CropAspectRatioPreset.ratio16x9
       ]);
-      setState(() {});
+
+      if (result != null) {
+        idCardByte = result.bytes;
+        idCardName = result.filename;
+        setState(() {});
+      }
     };
   }
 
   VoidCallback onSelfie(BuildContext context) {
     return () async {
-      selfieByte = await pickImage(ImageSource.camera, []);
-      setState(() {});
+      PickResult? result = await pickImage(ImageSource.camera);
+
+      if (result != null) {
+        selfieByte = result.bytes;
+        selfieName = result.filename;
+        setState(() {});
+      }
     };
   }
 
@@ -352,7 +362,7 @@ class _UpgradeWalletScreenState extends State<UpgradeWalletScreen> {
                     TextFormField(
                       controller: _kkController,
                       textInputAction: TextInputAction.next,
-                      maxLength: 20,
+                      maxLength: 16,
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
