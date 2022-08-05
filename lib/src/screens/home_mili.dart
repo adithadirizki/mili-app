@@ -231,7 +231,7 @@ class _HomepageScreenState extends State<Homepage> {
           gradient: LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: [Color(0xff0196DD), Color(0xff01C9D0)])),
+              colors: [Color(0xFF802405), Color(0xFFD3A65B)),
       child: Row(
         mainAxisAlignment:
             MainAxisAlignment.start, //Center Row contents horizontally,
