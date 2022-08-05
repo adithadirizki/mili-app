@@ -120,7 +120,7 @@ android {
             def versionCode = variant.versionCode
             def date = new Date()
             def formattedDate = date.format('yyyyMMdd')
-            outputFileName = "MILI-v${versionName}-${formattedDate}.apk"
+            outputFileName = "MMCASH-v${versionName}-${formattedDate}.apk"
         }
     }
 }
