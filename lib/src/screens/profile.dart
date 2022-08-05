@@ -159,7 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void playStore() async {
     const url =
-        'https://play.google.com/store/apps/details?id=com.sridata.mili';
+        'https://play.google.com/store/apps/details?id=com.mmcash.mili';
     if (await canLaunch(url)) {
       await launch(url);
     } else {

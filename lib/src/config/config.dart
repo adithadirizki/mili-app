@@ -7,7 +7,7 @@ class AppConfig {
 
   static String get baseUrl {
     if (kReleaseMode) {
-      return 'https://thanos.sridata.net';
+      return 'https://mmcapi.miliapps.sridata.net';
       // return 'http://api.mili-dev.sridata.net';
     }
     return 'http://api.mili-dev.sridata.net';

@@ -99,7 +99,7 @@ class AppMessaging {
     ).then((response) {
       debugPrint('subscribeMessaging ${response.body}');
       // TODO Handle update notification
-      // {"memberDevices":{"iddevice":184270,"agenid":"DLI0007","imei":"d1230b28487633f6","datereg":"2022-02-10 10:11:27","merk":"samsung","type":"SM-N976N","OS":"null | REL | 5.1.1 | 22","notification_token":"dKTZhbHPSjaLiGU2VzMcsC:APA91bFfAzqkXLxZbHDJrKgMy7Ty5JIHfI7GwOjQfcftau7SrsLy_AeIczJ0SCLCO0JcRoOC-wzF9AEdChlHh3ycqPN5BOuJNpDvwZNBZzwRqNaYt9KWgtfEhdGOls4U7mxq7tmalJKC","lat":null,"lon":null},"versioning":{"version":"SM-N976N","last_version":"175","update_available":false,"update_required":false,"info":null,"link":"https:\/\/play.google.com\/store\/apps\/details?id=com.sridata.mili"}}
+      // {"memberDevices":{"iddevice":184270,"agenid":"DLI0007","imei":"d1230b28487633f6","datereg":"2022-02-10 10:11:27","merk":"samsung","type":"SM-N976N","OS":"null | REL | 5.1.1 | 22","notification_token":"dKTZhbHPSjaLiGU2VzMcsC:APA91bFfAzqkXLxZbHDJrKgMy7Ty5JIHfI7GwOjQfcftau7SrsLy_AeIczJ0SCLCO0JcRoOC-wzF9AEdChlHh3ycqPN5BOuJNpDvwZNBZzwRqNaYt9KWgtfEhdGOls4U7mxq7tmalJKC","lat":null,"lon":null},"versioning":{"version":"SM-N976N","last_version":"175","update_available":false,"update_required":false,"info":null,"link":"https:\/\/play.google.com\/store\/apps\/details?id=com.mmcash.mili"}}
     });
   }
 

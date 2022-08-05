@@ -57,13 +57,13 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.sridata.mili"
+        applicationId "com.mmcash.app"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
-        resValue "string", "app_name", "Mili v2"
+        resValue "string", "app_name", "MMCash"
     }
 
     signingConfigs {
@@ -88,7 +88,7 @@ android {
        debug {
            applicationIdSuffix ".debug"
            versionNameSuffix "-DEBUG"
-           resValue "string", "app_name", "Mili v2 Debug"
+           resValue "string", "app_name", "MMCash Debug"
        }
        release {
            signingConfig signingConfigs.release
