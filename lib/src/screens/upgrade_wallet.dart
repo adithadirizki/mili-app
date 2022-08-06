@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -148,7 +149,7 @@ class _UpgradeWalletScreenState extends State<UpgradeWalletScreen> {
   }
 
   void submit() async {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate() && selfieByte != null) {
       var identityNo = _idCardController.value.text;
       var noKK = _kkController.value.text;
       var motherName = _motherController.value.text;
@@ -196,14 +197,16 @@ class _UpgradeWalletScreenState extends State<UpgradeWalletScreen> {
   }
 
   void confirmation() {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate() && selfieByte != null) {
       confirmDialog(context,
           title: 'Upgrade Finpay',
           msg:
-              'Proses verifikasi data membutuhkan waktu kurang lebih 3x24 jam. Lanjutkan upgrade akun Finpay ?',
+              'Proses verifikasi data membutuhkan waktu kurang lebih 5x24 jam. Lanjutkan upgrade akun Finpay ?',
           confirmAction: submit,
           confirmText: 'Ya, lanjutkan',
           cancelText: 'Batal');
+    } else {
+      snackBarDialog(context, 'Periksa kembali data');
     }
   }
 
@@ -301,7 +304,7 @@ class _UpgradeWalletScreenState extends State<UpgradeWalletScreen> {
           key: _formKey,
           child: Column(
             children: [
-              const SizedBox(height: 50),
+              const SizedBox(height: 10),
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
@@ -435,6 +438,7 @@ class _UpgradeWalletScreenState extends State<UpgradeWalletScreen> {
                         padding: const EdgeInsets.all(10),
                         width: double.infinity,
                         height: 200,
+                        alignment: Alignment.center,
                         decoration: BoxDecoration(
                             border:
                                 Border.all(width: 0.5, color: Colors.black12),
@@ -445,7 +449,20 @@ class _UpgradeWalletScreenState extends State<UpgradeWalletScreen> {
                                 selfieByte!,
                                 isAntiAlias: true,
                               )
-                            : const Icon(Icons.photo_camera),
+                            : Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: const [
+                                  Icon(
+                                    Icons.photo_camera,
+                                    color: Colors.black45,
+                                    size: 40,
+                                  ),
+                                  Text(
+                                    'Foto selfie + KTP, pastikan wajah dan KTP terlihat dan jelas',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
                       ),
                     ),
 

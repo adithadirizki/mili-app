@@ -2,13 +2,19 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:miliv2/src/api/api.dart';
+import 'package:miliv2/src/api/login.dart';
 import 'package:miliv2/src/screens/homepage.dart';
 import 'package:miliv2/src/screens/otp_verification.dart';
 import 'package:miliv2/src/screens/sign_up.dart';
 import 'package:miliv2/src/screens/splash.dart';
 import 'package:miliv2/src/utils/device.dart';
 import 'package:miliv2/src/utils/dialog.dart';
+import 'package:miliv2/src/widgets/pin_verification.dart';
 
 import '../routing.dart';
 import '../services/auth.dart';
@@ -39,6 +45,7 @@ class _AppNavigatorState extends State<AppNavigator> {
   final _scaffoldKey = const ValueKey<String>('App scaffold');
   final _bookDetailsKey = const ValueKey<String>('Book details screen');
   final _authorDetailsKey = const ValueKey<String>('Author details screen');
+  final walletOTPState = GlobalKey<PINVerificationState>();
 
   Future<void> onSignIn(Credentials credentials) async {
     // final routeState = RouteStateScope.of(context); // get route state
@@ -64,12 +71,24 @@ class _AppNavigatorState extends State<AppNavigator> {
 
   Future<void> onSignUp(SignUpVerified credentials) async {
     final authState = AppAuthScope.of(context); // get auth state
-    await authState.setAuth(credentials.signedIn, credentials.verified,
-        credentials.username, credentials.deviceId, credentials.token);
+    await authState.setAuth(
+      credentials.signedIn,
+      credentials.verified,
+      credentials.username,
+      credentials.deviceId,
+      credentials.token,
+      credentials.activationWallet,
+    );
+  }
+
+  FutureOr<void> _handleError(Object e) {
+    setState(() {});
+    snackBarDialog(context, e.toString());
   }
 
   @override
   Widget build(BuildContext context) {
+    final authState = AppAuthScope.of(context);
     final routeState = RouteStateScope.of(context); // get route state
     final pathTemplate = routeState.route.pathTemplate;
 
@@ -122,6 +141,51 @@ class _AppNavigatorState extends State<AppNavigator> {
           FadeTransitionPage<void>(
             key: _forgotKey,
             child: const ForgotPasswordScreen(),
+          )
+        else if (routeState.route.pathTemplate == '/otp' &&
+            authState.activationWallet)
+          FadeTransitionPage<void>(
+            key: _otpKey,
+            child: PINVerification.withGradientBackground(
+              key: walletOTPState,
+              otpLength: 6,
+              secured: false,
+              title: 'Verifikasi Akun',
+              subTitle: 'Masukkan Kode OTP',
+              invalidMessage: 'Kode OTP tidak sesuai',
+              validateOtp: (otp) async {
+                return Api.verifyOTP(otp,
+                        activationWallet: authState.activationWallet)
+                    .then((response) {
+                  debugPrint("OTP Response >> ${response.body}");
+
+                  Map<String, dynamic>? bodyMap =
+                      json.decode(response.body) as Map<String, dynamic>?;
+                  var loginResp = AuthResponse.fromJson(bodyMap!);
+
+                  onVerified(OTPVerified(true, loginResp.token));
+                  return true;
+                }).catchError((Object e) {
+                  _handleError(e);
+                  return false;
+                });
+              },
+              onValidateSuccess: (ctx) async {
+                walletOTPState.currentState!.clearOtp();
+                await popScreen(context);
+              },
+              onInvalid: (_) {
+                walletOTPState.currentState!.clearOtp();
+              },
+              topColor: const Color.fromRGBO(0, 255, 193, 1),
+              bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
+              themeColor: Colors.white,
+              titleColor: Colors.white,
+              // icon: Image.asset(
+              //   'images/phone_logo.png',
+              //   fit: BoxFit.fill,
+              // ),
+            ),
           )
         else if (routeState.route.pathTemplate == '/otp')
           FadeTransitionPage<void>(

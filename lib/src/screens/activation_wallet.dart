@@ -77,11 +77,11 @@ class _ActivationWalletScreenState extends State<ActivationWalletScreen> {
             return false;
           });
         },
-        onValidateSuccess: (ctx) {
+        onValidateSuccess: (ctx) async {
           walletOTPState.currentState!.clearOtp();
           userBalanceState.fetchData();
           snackBarDialog(context, 'Akun Finpay berhasil diaktivasi');
-          popScreen(context);
+          await popScreen(context);
         },
         onInvalid: (_) {
           walletOTPState.currentState!.clearOtp();

@@ -153,3 +153,7 @@ in the [main Flutter repo](https://github.com/flutter/flutter/issues).
 
 ## Nox Player
 - Run ```adb connect 127.0.0.1:62001``` to open connection to emulator
+
+## Script
+- ```flutter pub run build_runner build```
+- ```flutter pub run build_runner watch```

@@ -14,6 +14,7 @@ import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/device.dart';
 import 'package:miliv2/src/utils/dialog.dart';
+import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:miliv2/src/widgets/button.dart';
 
 import '../theme.dart';
@@ -25,9 +26,10 @@ class SignUpVerified {
   final String deviceId;
   final String token;
   final String name;
+  final bool activationWallet;
 
   SignUpVerified(this.signedIn, this.verified, this.username, this.deviceId,
-      this.token, this.name);
+      this.token, this.name, this.activationWallet);
 }
 
 class SignUpScreen extends StatefulWidget {
@@ -206,6 +208,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       var postCode = _postalCodeController.value.text;
 
       var packageName = await getPackageName();
+      var activationWallet = true;
 
       Map<String, Object> body = <String, Object>{
         'name': name,
@@ -222,7 +225,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         'address': address,
         'postCode': postCode,
         'imei': deviceId,
-        'guestId': userBalanceState.userId
+        'guestId': userBalanceState.userId,
+        'activationWallet': activationWallet
       };
       debugPrint("Register Request >> ${json.encode(body)}");
       Api.register(body).then((response) {
@@ -232,8 +236,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         var loginResp = AuthResponse.fromJson(bodyMap!);
         debugPrint("Register Response >> $loginResp");
 
-        widget.onVerified(SignUpVerified(
-            true, false, phoneNumber, deviceId, loginResp.token, name));
+        widget.onVerified(SignUpVerified(true, false, phoneNumber, deviceId,
+            loginResp.token, name, loginResp.activationWallet ?? false));
       }).catchError(_handleError);
     }
   }
@@ -689,26 +693,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          AppLabel.registrationTitle,
-          style: TextStyle(color: Colors.blueAccent),
-        ),
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_rounded,
-            color: Colors.blueAccent,
-          ),
-          tooltip: AppLabel.backNavigation,
-          onPressed: () {
-            // Navigator.maybePop(context);
-            // authState.signOut();
-            // routeState.go('/signin');
-            widget.onBack();
-          },
-        ),
-        elevation: 0,
+      appBar: const SimpleAppBar2(
+        title: AppLabel.registrationTitle,
       ),
       body: _hasReferral && _referral.isEmpty
           ? buildReferralForm(context)

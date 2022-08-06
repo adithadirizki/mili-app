@@ -39,7 +39,10 @@ class AuthResponse {
   @JsonKey(name: 'user')
   final ProfileResponse user;
 
-  AuthResponse(this.token, this.user);
+  @JsonKey(name: 'activationWallet')
+  final bool? activationWallet;
+
+  AuthResponse(this.token, this.user, this.activationWallet);
 
   factory AuthResponse.fromJson(Map<String, dynamic> json) =>
       _$AuthResponseFromJson(json);

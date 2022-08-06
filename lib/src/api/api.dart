@@ -160,10 +160,12 @@ class Api {
         .catchError(_parseException);
   }
 
-  static Future<http.Response> verifyOTP(String otp) {
+  static Future<http.Response> verifyOTP(String otp,
+      {bool activationWallet = false}) {
     Map<String, Object> body = <String, Object>{
       'imei': _deviceId,
       'otp': otp,
+      'activationWallet': activationWallet
     };
     return http
         .post(

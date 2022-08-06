@@ -31,7 +31,7 @@ class AppLabel {
   static const registrationReferralHeader = "Masukkan Kode Referal";
   static const registrationInputReferral = "Kode Referal";
   static const registrationHeader = "Lengkapi Data Anda";
-  static const registrationInputName = "Nama Lengkap";
+  static const registrationInputName = "Nama Lengkap (Sesuai KTP)";
   static const registrationInputPhone = "Nomor Ponsel";
   static const registrationInputEmail = "Email";
   static const registrationInputMarkup = "Markup";
