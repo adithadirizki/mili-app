@@ -9,6 +9,7 @@ import 'package:miliv2/src/api/purchase.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/user_config.dart';
 import 'package:miliv2/src/services/printer.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:miliv2/src/widgets/screen.dart';
@@ -338,12 +339,12 @@ class _PrinterScreenState extends State<PrinterScreen> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.print),
-            color: Colors.blueAccent,
+            color: AppColors.gold3,
             onPressed: connected ? printTest : null,
           ),
           IconButton(
             icon: const Icon(Icons.settings),
-            color: Colors.blueAccent,
+            color: AppColors.gold3,
             onPressed: openPrintConfig,
           ),
         ],

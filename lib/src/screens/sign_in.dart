@@ -55,8 +55,8 @@ class _SignInScreenState extends State<SignInScreen> {
               begin: Alignment(-5, -1),
               end: Alignment(0, 2),
               colors: [
-                AppColors.blue4,
-                AppColors.blue3
+                AppColors.gold4,
+                AppColors.gold3
               ]),
         ),
         child: Column(

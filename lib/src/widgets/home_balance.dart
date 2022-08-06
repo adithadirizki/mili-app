@@ -45,7 +45,7 @@ class _HomeBalanceState extends State<HomeBalance> {
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: [AppColors.blue3, AppColors.blue4],
+          colors: [AppColors.gold3, AppColors.gold4],
         ),
       ),
       child: Row(
@@ -127,7 +127,7 @@ class _HomeBalanceState extends State<HomeBalance> {
                         style: Theme.of(context)
                             .textTheme
                             .titleMedium
-                            ?.copyWith(color: AppColors.blue4),
+                            ?.copyWith(color: AppColors.gold4),
                         // style: TextStyle(
                         //   color: Color(0xFF00C2FF),
                         //   fontFamily: 'Montserrat',
@@ -143,7 +143,7 @@ class _HomeBalanceState extends State<HomeBalance> {
                         formatNumber(
                             UserBalanceScope.of(context).balanceCredit),
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: AppColors.blue4,
+                            color: AppColors.gold4,
                             fontWeight: FontWeight.bold),
                         // style: const TextStyle(
                         //   color: Color(0xFF00C2FF),

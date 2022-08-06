@@ -53,7 +53,7 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: [AppColors.blue3, AppColors.blue4],
+          colors: [AppColors.gold3, AppColors.gold4],
         ),
       ),
       child: Row(
@@ -144,19 +144,19 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
             onPressed: () {
               gotoPage(0);
             },
-            backgroundColor: AppColors.blue5,
+            backgroundColor: AppColors.white1,
             tooltip: "Home",
             child: Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
-                // color: AppColors.blue5,
-                border: Border.all(color: Colors.white, width: 2.5),
+                border: Border.all(color: AppColors.gold3, width: 2.5),
                 borderRadius: const BorderRadius.all(Radius.circular(40)),
               ),
               clipBehavior: Clip.antiAlias,
               child: const Image(
                 image: AppImages.logonavbar,
                 width: 80,
+                height: 80,
               ),
             ),
             elevation: 2.0,

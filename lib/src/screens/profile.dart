@@ -223,7 +223,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget buildHeader(BuildContext context) {
     return Container(
-      color: AppColors.blue5,
+      color: AppColors.gold5,
       alignment: Alignment.center,
       child: Stack(
         // fit: StackFit.expand,
@@ -289,7 +289,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         width: 22,
                         height: 22,
                         padding: const EdgeInsets.all(4),
-                        color: AppColors.yellow1,
+                        color: AppColors.brown1,
                         child: const Image(
                           image: AppImages.edit,
                           width: 10,
@@ -314,7 +314,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: Theme.of(context)
                   .textTheme
                   .titleLarge
-                  ?.copyWith(color: AppColors.yellow1),
+                  ?.copyWith(color: AppColors.brown1),
               // style: const TextStyle(
               //     color: Color.fromRGBO(255, 199, 0, 1),
               //     fontFamily: 'Montserrat',
@@ -482,7 +482,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         onPressed: premium,
                         style: ElevatedButton.styleFrom(
-                          primary: AppColors.yellow1,
+                          primary: AppColors.brown1,
                           minimumSize: const Size(200, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
@@ -511,7 +511,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         onPressed: about,
                         style: ElevatedButton.styleFrom(
-                          primary: AppColors.blue5,
+                          primary: AppColors.gold5,
                           minimumSize: const Size(200, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
@@ -540,7 +540,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         onPressed: privacy,
                         style: ElevatedButton.styleFrom(
-                          primary: AppColors.blue5,
+                          primary: AppColors.gold5,
                           minimumSize: const Size(200, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
@@ -571,7 +571,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         onPressed: playStore,
                         style: ElevatedButton.styleFrom(
-                          primary: AppColors.blue5,
+                          primary: AppColors.gold5,
                           minimumSize: const Size(200, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),

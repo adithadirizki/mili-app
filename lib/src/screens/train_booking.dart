@@ -146,7 +146,7 @@ class _TrainBookingScreenState extends State<TrainBookingScreen> {
                           'Rp. ${formatNumber(schedule.detail.adultPrice)}',
                           style:
                               Theme.of(context).textTheme.titleLarge!.copyWith(
-                                    color: AppColors.blue4,
+                                    color: AppColors.gold4,
                                     fontWeight: FontWeight.bold,
                                   ),
                         ),

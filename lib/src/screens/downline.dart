@@ -434,7 +434,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
                   decoration: generateInputDecoration(
                     hint: 'Cari Downline',
                     suffixIcon: IconButton(
-                      color: AppColors.blue6,
+                      color: AppColors.gold6,
                       icon: const Icon(Icons.close),
                       onPressed: toggleSearch,
                     ),
@@ -460,7 +460,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
                 ),
                 IconButton(
                   onPressed: toggleSearch,
-                  icon: const Icon(Icons.search, size: 32),
+                  icon: const Icon(Icons.search, color: AppColors.gold3, size: 32),
                 ),
               ],
       ),

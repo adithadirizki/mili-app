@@ -11,6 +11,7 @@ import 'package:miliv2/src/api/location.dart';
 import 'package:miliv2/src/api/login.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/services/auth.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/device.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -263,7 +264,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           AppLabel.registrationReferralHeader,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Color.fromRGBO(1, 132, 225, 1),
+            color: AppColors.gold2,
             fontFamily: 'Montserrat',
             fontSize: 24,
             letterSpacing:
@@ -283,10 +284,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 controller: _referralController,
                 textInputAction: TextInputAction.next,
                 maxLength: 10,
-                cursorColor: Colors.blueAccent,
+                cursorColor: AppColors.gold3,
                 decoration: generateInputDecoration(
                   label: AppLabel.registrationInputReferral,
-                  color: Colors.blueAccent,
+                  color: AppColors.gold3,
                   errorMsg: !_valid ? AppLabel.errorRequired : null,
                 ),
                 onChanged: (value) => {
@@ -333,7 +334,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 AppLabel.registrationHeader,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Color.fromRGBO(1, 132, 225, 1),
+                  color: AppColors.gold2,
                   fontFamily: 'Montserrat',
                   fontSize: 24,
                   letterSpacing:
@@ -355,10 +356,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       controller: _nameController,
                       textInputAction: TextInputAction.next,
                       maxLength: 50,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputName,
-                        color: Colors.blueAccent,
+                        color: AppColors.gold3,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -379,10 +380,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
                       ],
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputPhone,
-                        color: Colors.blueAccent,
+                        color: AppColors.gold3,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -400,10 +401,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       maxLength: 100,
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.emailAddress,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputEmail,
-                        color: Colors.blueAccent,
+                        color: AppColors.gold3,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -421,10 +422,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       textInputAction: TextInputAction.next,
                       maxLength: 50,
                       obscureText: true,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputPassword,
-                        color: Colors.blueAccent,
+                        color: AppColors.gold3,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -442,10 +443,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       textInputAction: TextInputAction.next,
                       maxLength: 50,
                       obscureText: true,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputConfirmPassword,
-                        color: Colors.blueAccent,
+                        color: AppColors.gold3,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -461,7 +462,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     DropdownButtonFormField<String>(
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputMerchantType,
-                        color: Colors.blueAccent,
+                        color: AppColors.gold3,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       isExpanded: true,
@@ -490,7 +491,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     DropdownButtonFormField<int>(
                       decoration: generateInputDecoration(
                         label: AppLabel.upgradeInputProvince,
-                        color: Colors.blueAccent,
+                        color: AppColors.gold3,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       isExpanded: true,
@@ -527,7 +528,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     DropdownButtonFormField<int>(
                       decoration: generateInputDecoration(
                         label: AppLabel.upgradeInputCity,
-                        color: Colors.blueAccent,
+                        color: AppColors.gold3,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       isExpanded: true,
@@ -564,7 +565,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     DropdownButtonFormField<int>(
                       decoration: generateInputDecoration(
                         label: AppLabel.upgradeInputDistrict,
-                        color: Colors.blueAccent,
+                        color: AppColors.gold3,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       isExpanded: true,
@@ -601,7 +602,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     DropdownButtonFormField<int>(
                       decoration: generateInputDecoration(
                         label: AppLabel.upgradeInputVillage,
-                        color: Colors.blueAccent,
+                        color: AppColors.gold3,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       isExpanded: true,
@@ -633,10 +634,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       textInputAction: TextInputAction.next,
                       maxLength: 200,
                       maxLines: 2,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputAddress,
-                        color: Colors.blueAccent,
+                        color: AppColors.gold3,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
                       ),
                       validator: (value) {
@@ -657,10 +658,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         FilteringTextInputFormatter.digitsOnly,
                       ],
                       maxLength: 5,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.upgradeInputPostalCode,
-                        color: Colors.blueAccent,
+                        color: AppColors.gold3,
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -696,13 +697,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
       appBar: AppBar(
         title: const Text(
           AppLabel.registrationTitle,
-          style: TextStyle(color: Colors.blueAccent),
+          style: TextStyle(color: AppColors.gold3),
         ),
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_rounded,
-            color: Colors.blueAccent,
+            color: AppColors.gold3,
           ),
           tooltip: AppLabel.backNavigation,
           onPressed: () {

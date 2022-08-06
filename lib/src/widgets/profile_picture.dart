@@ -124,7 +124,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
       onTap: userBalanceState.isGuest() ? null : onPhotoTap(context),
       child: Container(
         decoration: BoxDecoration(
-          // color: AppColors.blue5,
+          // color: AppColors.gold5,
           border: Border.all(color: Colors.black38, width: 0.1),
           borderRadius: const BorderRadius.all(Radius.circular(40)),
         ),

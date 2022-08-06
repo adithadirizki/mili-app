@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/screens/otp_verification.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/device.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -84,11 +85,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             keyboardType: TextInputType.phone,
             textInputAction: TextInputAction.next,
             maxLength: 50,
-            style: const TextStyle(color: Colors.blueAccent),
-            cursorColor: Colors.blueAccent,
+            style: const TextStyle(color: AppColors.gold3),
+            cursorColor: AppColors.gold3,
             decoration: generateInputDecoration(
               label: AppLabel.userId,
-              color: Colors.blueAccent,
+              color: AppColors.gold3,
               errorMsg: !valid ? AppLabel.errorRequired : null,
             ),
             onChanged: (value) => {
@@ -199,13 +200,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         elevation: 0,
         title: const Text(
           AppLabel.forgotPasswordTitle,
-          style: TextStyle(color: Colors.blueAccent),
+          style: TextStyle(color: AppColors.gold2),
         ),
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_rounded,
-            color: Colors.blueAccent,
+            color: AppColors.gold2,
           ),
           tooltip: AppLabel.backNavigation,
           onPressed: () {
@@ -220,7 +221,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             AppLabel.forgotPasswordHeader,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Color.fromRGBO(1, 132, 225, 1),
+              color: AppColors.gold2,
               fontFamily: 'Montserrat',
               fontSize: 24,
               letterSpacing:

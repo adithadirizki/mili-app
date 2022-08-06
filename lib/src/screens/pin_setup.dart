@@ -5,6 +5,7 @@ import 'package:miliv2/src/screens/otp_verification.dart';
 import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/services/biometry.dart';
 import 'package:miliv2/src/services/storage.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:miliv2/src/widgets/pin_verification.dart';
@@ -98,8 +99,8 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
         onInvalid: (_) {
           confirmPinState.currentState!.clearOtp();
         },
-        topColor: const Color.fromRGBO(0, 255, 193, 1),
-        bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
+        topColor: AppColors.gold4,
+        bottomColor: AppColors.gold2,
         themeColor: Colors.white,
         titleColor: Colors.white,
         // icon: Image.asset(
@@ -123,8 +124,8 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
         validateOtp: setNewPIN,
         onValidateSuccess: confirmNewPIN,
         onInvalid: (_) {},
-        topColor: const Color.fromRGBO(0, 255, 193, 1),
-        bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
+        topColor: AppColors.gold4,
+        bottomColor: AppColors.gold2,
         themeColor: Colors.white,
         titleColor: Colors.white,
         // icon: Image.asset(
@@ -150,8 +151,8 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
         onInvalid: (_) {
           verifyPinState.currentState!.clearOtp();
         },
-        topColor: const Color.fromRGBO(0, 255, 193, 1),
-        bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
+        topColor: AppColors.gold4,
+        bottomColor: AppColors.gold2,
         themeColor: Colors.white,
         titleColor: Colors.white,
         // icon: Image.asset(
@@ -178,8 +179,8 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
           onInvalid: (_) {
             confirmPinState.currentState!.clearOtp();
           },
-          topColor: const Color.fromRGBO(0, 255, 193, 1),
-          bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
+          topColor: AppColors.gold4,
+          bottomColor: AppColors.gold2,
           themeColor: Colors.white,
           titleColor: Colors.white,
           // icon: Image.asset(
@@ -203,8 +204,8 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
           validateOtp: setNewPIN,
           onValidateSuccess: step2,
           onInvalid: (_) {},
-          topColor: const Color.fromRGBO(0, 255, 193, 1),
-          bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
+          topColor: AppColors.gold4,
+          bottomColor: AppColors.gold2,
           themeColor: Colors.white,
           titleColor: Colors.white,
           // icon: Image.asset(
@@ -229,8 +230,8 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
         onInvalid: (_) {
           verifyPinState.currentState!.clearOtp();
         },
-        topColor: const Color.fromRGBO(0, 255, 193, 1),
-        bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
+        topColor: AppColors.gold4,
+        bottomColor: AppColors.gold2,
         themeColor: Colors.white,
         titleColor: Colors.white,
         // icon: Image.asset(
@@ -319,8 +320,8 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
           onInvalid: (_) {
             confirmPinState.currentState!.clearOtp();
           },
-          topColor: const Color.fromRGBO(0, 255, 193, 1),
-          bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
+          topColor: AppColors.gold4,
+          bottomColor: AppColors.gold2,
           themeColor: Colors.white,
           titleColor: Colors.white,
           // icon: Image.asset(
@@ -344,8 +345,8 @@ class _PINSetupScreenState extends State<PINSetupScreen> {
           validateOtp: setNewPIN,
           onValidateSuccess: step2,
           onInvalid: (_) {},
-          topColor: const Color.fromRGBO(0, 255, 193, 1),
-          bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
+          topColor: AppColors.gold4,
+          bottomColor: AppColors.gold2,
           themeColor: Colors.white,
           titleColor: Colors.white,
           // icon: Image.asset(
