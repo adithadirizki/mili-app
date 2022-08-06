@@ -149,6 +149,7 @@ class _UpgradeWalletScreenState extends State<UpgradeWalletScreen> {
 
   void submit() async {
     if (_formKey.currentState!.validate()) {
+      var identityNo = _idCardController.value.text;
       var noKK = _kkController.value.text;
       var motherName = _motherController.value.text;
       var email = _emailController.value.text;
@@ -156,6 +157,7 @@ class _UpgradeWalletScreenState extends State<UpgradeWalletScreen> {
 
       var closeLoader = showLoaderDialog(context);
       Api.walletUpgrade(
+        identityNo: identityNo,
         noKK: noKK,
         motherName: motherName,
         email: email,

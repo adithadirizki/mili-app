@@ -1185,6 +1185,7 @@ class Api {
   }
 
   static Future<http.StreamedResponse> walletUpgrade({
+    required String identityNo,
     required String noKK,
     required String motherName,
     required String email,
@@ -1207,6 +1208,7 @@ class Api {
 
     request.fields.addAll(<String, String>{
       // 'agenid': userId,
+      'identityNo': identityNo,
       'noKK': noKK,
       'motherName': motherName,
       'email': email,
