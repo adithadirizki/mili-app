@@ -480,7 +480,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
       floatingActionButton: FloatingActionButton(
         isExtended: false,
         onPressed: onRegisterDownline,
-        backgroundColor: const Color(0xffFFCC40),
+        backgroundColor: AppColors.gold2,
         child: Container(
           margin: const EdgeInsets.all(1.0),
           padding: const EdgeInsets.all(12),

@@ -6,6 +6,7 @@ import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/downline.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/services/auth.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
@@ -119,7 +120,7 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
                       controller: _nameController,
                       textInputAction: TextInputAction.next,
                       maxLength: 50,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputName,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
@@ -137,7 +138,7 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
                       controller: _phoneController,
                       maxLength: 50,
                       textInputAction: TextInputAction.next,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputPhone,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
@@ -155,7 +156,7 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
                       controller: _emailController,
                       maxLength: 50,
                       textInputAction: TextInputAction.next,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputEmail,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
@@ -172,7 +173,7 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
                       controller: _markupController,
                       maxLength: 50,
                       textInputAction: TextInputAction.next,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputMarkup,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
@@ -195,7 +196,7 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
                       controller: _outletTypeController,
                       maxLength: 50,
                       textInputAction: TextInputAction.next,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputMerchantType,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
@@ -214,7 +215,7 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
                       textInputAction: TextInputAction.next,
                       maxLength: 200,
                       maxLines: 2,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputAddress,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,

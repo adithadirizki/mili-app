@@ -340,7 +340,7 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
           theme: DefaultChatTheme(
             backgroundColor: Theme.of(context).backgroundColor,
             primaryColor: AppColors.red1,
-            secondaryColor: AppColors.brown1,
+            secondaryColor: AppColors.gold6,
             inputBackgroundColor: Colors.grey,
             attachmentButtonIcon: const Icon(
               Icons.camera_alt_outlined,

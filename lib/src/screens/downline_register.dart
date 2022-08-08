@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/services/auth.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
@@ -137,7 +138,7 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                       controller: _nameController,
                       textInputAction: TextInputAction.next,
                       maxLength: 50,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputName,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
@@ -160,7 +161,7 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
                       ],
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputPhone,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
@@ -180,7 +181,7 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                       maxLength: 100,
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.emailAddress,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputEmail,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
@@ -203,7 +204,7 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
                       ],
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputMarkup,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
@@ -253,7 +254,7 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                       textInputAction: TextInputAction.next,
                       maxLength: 200,
                       maxLines: 2,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.gold3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputAddress,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,

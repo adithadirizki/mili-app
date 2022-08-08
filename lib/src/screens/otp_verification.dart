@@ -189,24 +189,24 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                     errorMsg: !_valid ? AppLabel.errorRequired : null,
                   ),
                   // style: Theme.of(context).textTheme.button,
-                  // cursorColor: Colors.blueAccent,
+                  // cursorColor: AppColors.gold3,
                   // decoration: InputDecoration(
                   //   labelText: AppLabel.otpInput,
                   //   errorText: !_valid ? AppLabel.errorRequired : null,
                   //   counterText: "",
                   //   enabledBorder: const UnderlineInputBorder(
-                  //     borderSide: BorderSide(color: Colors.blueAccent),
+                  //     borderSide: BorderSide(color: AppColors.gold3),
                   //   ),
                   //   focusedBorder: const UnderlineInputBorder(
-                  //     borderSide: BorderSide(color: Colors.blueAccent),
+                  //     borderSide: BorderSide(color: AppColors.gold3),
                   //   ),
                   //   border: const UnderlineInputBorder(
-                  //     borderSide: BorderSide(color: Colors.blueAccent),
+                  //     borderSide: BorderSide(color: AppColors.gold3),
                   //   ),
                   //   labelStyle: const TextStyle(
-                  //       color: Colors.blueAccent, fontFamily: 'Montserrat'),
+                  //       color: AppColors.gold3, fontFamily: 'Montserrat'),
                   //   hintStyle: const TextStyle(
-                  //       color: Colors.blueAccent, fontFamily: 'Montserrat'),
+                  //       color: AppColors.gold3, fontFamily: 'Montserrat'),
                   //   //hintText: _hintLogin,
                   // ),
                   onChanged: (value) => {

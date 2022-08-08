@@ -248,10 +248,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           Positioned(
             top: 40,
-            left: MediaQuery.of(context).size.width / 2 - 40,
+            left: MediaQuery.of(context).size.width / 2 - 50,
             child: const Image(
               image: AppImages.logoWhite,
-              width: 80,
+              width: 110,
             ),
           ),
           Positioned(

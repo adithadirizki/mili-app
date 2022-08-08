@@ -144,14 +144,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         children: [
           TextFormField(
             maxLength: 50,
-            cursorColor: Colors.blueAccent,
+            cursorColor: AppColors.gold3,
             obscureText: isObscure,
             decoration: generateInputDecoration(
-              color: Colors.blueAccent,
+              color: AppColors.gold3,
               label: 'Password Baru',
               hint: '',
               suffixIcon: IconButton(
-                color: Colors.blueAccent,
+                color: AppColors.gold3,
                 icon: Icon(isObscure ? Icons.visibility : Icons.visibility_off),
                 onPressed: () {
                   setState(() {
@@ -168,10 +168,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           ),
           TextFormField(
             maxLength: 50,
-            cursorColor: Colors.blueAccent,
+            cursorColor: AppColors.gold3,
             obscureText: isObscure,
             decoration: generateInputDecoration(
-              color: Colors.blueAccent,
+              color: AppColors.gold3,
               label: 'Konfirmasi Password',
               hint: '',
             ),
