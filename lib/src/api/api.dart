@@ -395,10 +395,10 @@ class Api {
         .catchError(_parseException);
   }
 
-  static Future<http.Response> getActiveBanner() {
+  static Future<http.Response> getActiveBanner(String partnerId) {
     return http
         .get(
-          Uri.parse(AppConfig.baseUrl + '/active-banners'),
+          Uri.parse(AppConfig.baseUrl + '/active-banners?partner_id=' + partnerId),
           headers: getRequestHeaders(),
         )
         .then(_parseResponse)

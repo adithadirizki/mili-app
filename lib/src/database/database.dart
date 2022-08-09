@@ -629,6 +629,7 @@ class AppDB {
 
   static Future<void> syncCustomerService() async {
     const apiCode = 'customer-service';
+    const partnerId = '12';
 
     if (_lockedSyncronize(apiCode)) {
       return;
@@ -642,7 +643,8 @@ class AppDB {
     Map<String, String> params = {
       'limit': limit.toString(),
       'sort': json.encode({'tanggal': 'asc'}),
-      'filter': json.encode({'tanggal': '>|$timestamp'})
+      'filter': json.encode({'tanggal': '>|$timestamp'}),
+      'partner_id': partnerId
     };
 
     debugPrint('syncCustomerService with params $params');
