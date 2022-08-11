@@ -37,7 +37,7 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
   final _markupController = TextEditingController();
 
   List<String> outletTypes = [];
-  String? outletType;
+  String? outletType = 'Lainnya';
 
   // bool _valid = true;
   late AppAuth authState; // get auth state
@@ -222,32 +222,32 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                       onChanged: onMarkupChange,
                     ),
                     // Jenis Toko
-                    DropdownButtonFormField<String>(
-                      decoration: generateInputDecoration(
-                        label: AppLabel.registrationInputMerchantType,
-                        // errorMsg: !_valid ? AppLabel.errorRequired : null,
-                      ),
-                      isExpanded: true,
-                      value: outletType,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Pilih Jenis Toko';
-                        }
-                        return null;
-                      },
-                      onChanged: (newValue) =>
-                          setState(() => outletType = newValue),
-                      items: outletTypes.map<DropdownMenuItem<String>>((value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      // add extra sugar..
-                      icon: const Icon(Icons.arrow_drop_down),
-                      iconSize: 36,
-                      // underline: SizedBox(),
-                    ),
+                    // DropdownButtonFormField<String>(
+                    //   decoration: generateInputDecoration(
+                    //     label: AppLabel.registrationInputMerchantType,
+                    //     // errorMsg: !_valid ? AppLabel.errorRequired : null,
+                    //   ),
+                    //   isExpanded: true,
+                    //   value: outletType,
+                    //   validator: (value) {
+                    //     if (value == null || value.isEmpty) {
+                    //       return 'Pilih Jenis Toko';
+                    //     }
+                    //     return null;
+                    //   },
+                    //   onChanged: (newValue) =>
+                    //       setState(() => outletType = newValue),
+                    //   items: outletTypes.map<DropdownMenuItem<String>>((value) {
+                    //     return DropdownMenuItem<String>(
+                    //       value: value,
+                    //       child: Text(value),
+                    //     );
+                    //   }).toList(),
+                    //   // add extra sugar..
+                    //   icon: const Icon(Icons.arrow_drop_down),
+                    //   iconSize: 36,
+                    //   // underline: SizedBox(),
+                    // ),
                     // Address
                     TextFormField(
                       controller: _addressController,

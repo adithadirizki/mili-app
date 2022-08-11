@@ -60,7 +60,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _postalCodeController = TextEditingController();
 
   List<String> outletTypes = [];
-  String? outletType;
+  String? outletType = 'Lainnya';
 
   List<ProvinceResponse> provinces = [];
   List<CityResponse> cities = [];
@@ -459,33 +459,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       },
                     ),
                     // Jenis Toko
-                    DropdownButtonFormField<String>(
-                      decoration: generateInputDecoration(
-                        label: AppLabel.registrationInputMerchantType,
-                        color: AppColors.gold3,
-                        // errorMsg: !_valid ? AppLabel.errorRequired : null,
-                      ),
-                      isExpanded: true,
-                      value: outletType,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Pilih Jenis Toko';
-                        }
-                        return null;
-                      },
-                      onChanged: (newValue) =>
-                          setState(() => outletType = newValue),
-                      items: outletTypes.map<DropdownMenuItem<String>>((value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      // add extra sugar..
-                      icon: const Icon(Icons.arrow_drop_down),
-                      iconSize: 36,
-                      // underline: SizedBox(),
-                    ),
+                    // DropdownButtonFormField<String>(
+                    //   decoration: generateInputDecoration(
+                    //     label: AppLabel.registrationInputMerchantType,
+                    //     color: AppColors.gold3,
+                    //     // errorMsg: !_valid ? AppLabel.errorRequired : null,
+                    //   ),
+                    //   isExpanded: true,
+                    //   value: outletType,
+                    //   validator: (value) {
+                    //     if (value == null || value.isEmpty) {
+                    //       return 'Pilih Jenis Toko';
+                    //     }
+                    //     return null;
+                    //   },
+                    //   onChanged: (newValue) =>
+                    //       setState(() => outletType = newValue),
+                    //   items: outletTypes.map<DropdownMenuItem<String>>((value) {
+                    //     return DropdownMenuItem<String>(
+                    //       value: value,
+                    //       child: Text(value),
+                    //     );
+                    //   }).toList(),
+                    //   // add extra sugar..
+                    //   icon: const Icon(Icons.arrow_drop_down),
+                    //   iconSize: 36,
+                    //   // underline: SizedBox(),
+                    // ),
 
                     // Provinsi
                     DropdownButtonFormField<int>(

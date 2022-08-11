@@ -35,7 +35,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
   final _addressController = TextEditingController();
 
   List<String> outletTypes = [];
-  String? outletType;
+  String? outletType = 'Lainnya';
   bool isLoading = false;
 
   @override
@@ -182,31 +182,31 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                       },
                     ),
                     // Jenis Toko
-                    DropdownButtonFormField<String>(
-                      decoration: generateInputDecoration(
-                        label: AppLabel.registrationInputMerchantType,
-                      ),
-                      isExpanded: true,
-                      value: outletType,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Pilih Jenis Toko';
-                        }
-                        return null;
-                      },
-                      onChanged: (newValue) =>
-                          setState(() => outletType = newValue),
-                      items: outletTypes.map<DropdownMenuItem<String>>((value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      // add extra sugar..
-                      icon: const Icon(Icons.arrow_drop_down),
-                      iconSize: 36,
-                      // underline: SizedBox(),
-                    ),
+                    // DropdownButtonFormField<String>(
+                    //   decoration: generateInputDecoration(
+                    //     label: AppLabel.registrationInputMerchantType,
+                    //   ),
+                    //   isExpanded: true,
+                    //   value: outletType,
+                    //   validator: (value) {
+                    //     if (value == null || value.isEmpty) {
+                    //       return 'Pilih Jenis Toko';
+                    //     }
+                    //     return null;
+                    //   },
+                    //   onChanged: (newValue) =>
+                    //       setState(() => outletType = newValue),
+                    //   items: outletTypes.map<DropdownMenuItem<String>>((value) {
+                    //     return DropdownMenuItem<String>(
+                    //       value: value,
+                    //       child: Text(value),
+                    //     );
+                    //   }).toList(),
+                    //   // add extra sugar..
+                    //   icon: const Icon(Icons.arrow_drop_down),
+                    //   iconSize: 36,
+                    //   // underline: SizedBox(),
+                    // ),
                     // Address
                     TextFormField(
                       controller: _addressController,

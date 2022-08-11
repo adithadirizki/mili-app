@@ -191,23 +191,23 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
                       onChanged: onMarkupChange,
                     ),
                     // Jenis Toko
-                    TextFormField(
-                      readOnly: true,
-                      controller: _outletTypeController,
-                      maxLength: 50,
-                      textInputAction: TextInputAction.next,
-                      cursorColor: AppColors.gold3,
-                      decoration: generateInputDecoration(
-                        label: AppLabel.registrationInputMerchantType,
-                        errorMsg: !_valid ? AppLabel.errorRequired : null,
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Masukkan Email';
-                        }
-                        return null;
-                      },
-                    ),
+                    // TextFormField(
+                    //   readOnly: true,
+                    //   controller: _outletTypeController,
+                    //   maxLength: 50,
+                    //   textInputAction: TextInputAction.next,
+                    //   cursorColor: AppColors.gold3,
+                    //   decoration: generateInputDecoration(
+                    //     label: AppLabel.registrationInputMerchantType,
+                    //     errorMsg: !_valid ? AppLabel.errorRequired : null,
+                    //   ),
+                    //   validator: (value) {
+                    //     if (value == null || value.isEmpty) {
+                    //       return 'Masukkan Email';
+                    //     }
+                    //     return null;
+                    //   },
+                    // ),
                     // Address
                     TextFormField(
                       readOnly: true,
