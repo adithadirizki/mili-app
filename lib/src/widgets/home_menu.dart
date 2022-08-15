@@ -10,6 +10,7 @@ import 'package:miliv2/src/screens/purchase_pulsa.dart';
 import 'package:miliv2/src/screens/train_home.dart';
 import 'package:miliv2/src/screens/vendor.dart';
 import 'package:miliv2/src/theme.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 
 class HomeMenu extends StatefulWidget {
@@ -29,7 +30,7 @@ class _HomeMenuState extends State<HomeMenu> {
   @override
   void initState() {
     super.initState();
-    menuList.add(AppMenu(AppImages.menuPulsa, 'Pulsa', () {
+    menuList.add(AppMenu(AppImages.menuPulsa, 'Pulsa & Data', () {
       pushScreen(context, (_) => const PurchasePulsaScreen());
     }));
     menuList.add(AppMenu(AppImages.menuListrik, 'Listrik', () {
