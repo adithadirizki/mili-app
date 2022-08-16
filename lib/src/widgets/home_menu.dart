@@ -10,7 +10,6 @@ import 'package:miliv2/src/screens/purchase_pulsa.dart';
 import 'package:miliv2/src/screens/train_home.dart';
 import 'package:miliv2/src/screens/vendor.dart';
 import 'package:miliv2/src/theme.dart';
-import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 
 class HomeMenu extends StatefulWidget {
@@ -134,6 +133,9 @@ class _HomeMenuState extends State<HomeMenu> {
         ),
       );
     }));
+    menuList.add(AppMenu(AppImages.menuPesawat, 'Tiket Pesawat', () {
+      snackBarDialog(context, 'Coming Soon');
+    }));
     // menuList.add(AppMenu(AppImages.menuMore, 'More', () {
     //   // // TODO Show reordering menu page
     //   // showSnackBar(context, 'Will coming soon');
@@ -172,7 +174,7 @@ class _HomeMenuState extends State<HomeMenu> {
               image: menu.icon,
             ),
           ),
-          const SizedBox(height: 6.0),
+          const SizedBox(height: 5.0),
           Flexible(
             child: Text(
               menu.label,

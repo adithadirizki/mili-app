@@ -34,6 +34,7 @@ class AppImages {
   static const menuGame = AssetImage('assets/images/game.png');
   static const menuTV = AssetImage('assets/images/tv_kabel.png');
   static const menuKAI = AssetImage('assets/images/kai.png');
+  static const menuPesawat = AssetImage('assets/images/plane/plane.png');
   static const menuMore = AssetImage('assets/images/more.png');
   static const promoPlaceholder = AssetImage('assets/images/promo/promo_1.jpg');
   static const home = AssetImage('assets/images/home.png');
