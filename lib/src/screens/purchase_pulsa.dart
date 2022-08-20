@@ -6,6 +6,7 @@ import 'package:miliv2/src/api/purchase.dart';
 import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/models/product.dart';
+import 'package:miliv2/src/screens/contacts.dart';
 import 'package:miliv2/src/screens/payment.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -137,8 +138,18 @@ class _PurchasePulsaScreenState extends State<PurchasePulsaScreen> {
     openPayment();
   }
 
+  String parsingDestination(String destination) {
+    destination = destination.trim();
+    destination = destination.replaceAll('+62 ', '0');
+    destination = destination.replaceAll(RegExp(r'[^0-9]'), '');
+
+    return destination;
+  }
+
   void onDestinationChange(String value) {
-    value = value.trim();
+    value = parsingDestination(value);
+    textController.text = value;
+
     if (postpaidKey.currentState != null) {
       postpaidKey.currentState!.reset();
     }
@@ -324,6 +335,18 @@ class _PurchasePulsaScreenState extends State<PurchasePulsaScreen> {
                           onDestinationChange('');
                         }
                       : null,
+                  suffixIcon: IconButton(
+                      icon: const Icon(Icons.contact_phone),
+                      onPressed: () async {
+                        final String? phone = await Navigator.push<String>(
+                          context,
+                          MaterialPageRoute<String>(builder: (BuildContext context) {
+                            return FlutterContactsExample();
+                          })
+                        );
+                        onDestinationChange(phone!);
+                      },
+                  ),
                 ),
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.done,
