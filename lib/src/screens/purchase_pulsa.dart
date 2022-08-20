@@ -282,7 +282,7 @@ class _PurchasePulsaScreenState extends State<PurchasePulsaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const SimpleAppBar(title: 'Pulsa'),
+      appBar: const SimpleAppBar(title: 'Pulsa & Data'),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Form(
