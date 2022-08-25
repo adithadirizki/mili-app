@@ -355,7 +355,7 @@ class _PricePulsaScreenState extends State<PricePulsaScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const SimpleAppBar2(
-        title: 'Harga Pulsa',
+        title: 'Harga Pulsa & Data',
       ),
       body: Column(
         children: [

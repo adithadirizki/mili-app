@@ -1,16 +1,21 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/data/transaction.dart';
 import 'package:miliv2/src/data/user_balance.dart';
+import 'package:miliv2/src/database/database.dart';
+import 'package:miliv2/src/models/mutation.dart';
 import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:miliv2/src/widgets/button.dart';
 import 'package:miliv2/src/widgets/screen.dart';
+import 'package:objectbox/objectbox.dart';
 
 @immutable
 class SummaryItems {
@@ -55,8 +60,38 @@ class _PaymentScreenState extends State<PaymentScreen> {
       if (userBalanceState.isGuest()) {
         confirmSignin(context);
       }
+
+      setDefaultPaymentMethod();
     });
   }
+
+  void setDefaultPaymentMethod() async {
+    await AppDB.syncBalanceMutation();
+    await AppDB.syncCreditMutation();
+
+    final mainBalanceDB = AppDB.balanceMutationDB;
+    QueryBuilder<BalanceMutation> queryMainBalanceMutation = mainBalanceDB.query();
+    List<BalanceMutation> mainBalanceList = queryMainBalanceMutation.build().find();
+
+    final creditBalanceDB = AppDB.creditMutationDB;
+    QueryBuilder<CreditMutation> queryCreditBalanceMutation = creditBalanceDB.query();
+    List<CreditMutation> creditBalanceList = queryCreditBalanceMutation.build().find();
+
+    if (mainBalanceList.isNotEmpty && creditBalanceList.isNotEmpty) {
+      if (mainBalanceList.last.mutationDate.isAfter(creditBalanceList.last.mutationDate)) {
+        selectedPayment = PaymentMethod.mainBalance;
+      } else {
+        selectedPayment = PaymentMethod.creditBalance;
+      }
+    } else if (mainBalanceList.isEmpty) {
+      selectedPayment = PaymentMethod.creditBalance;
+    } else if (creditBalanceList.isEmpty) {
+      selectedPayment = PaymentMethod.mainBalance;
+    }
+
+    setState(() {});
+  }
+
 
   void confirmPayment() {
     if (AppAuth.pinTransactionRequired()) {

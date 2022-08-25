@@ -19,7 +19,7 @@ class _PriceSettingScreenState extends State<PriceSettingScreen> {
   @override
   void initState() {
     super.initState();
-    menuList.add(_AppMenu(AppImages.menuPulsa, 'Pulsa', () {
+    menuList.add(_AppMenu(AppImages.menuPulsa, 'Pulsa & Data', () {
       pushScreen(context, (_) => const PricePulsaScreen());
     }));
     menuList.add(_AppMenu(AppImages.menuListrik, 'Listrik', () {
