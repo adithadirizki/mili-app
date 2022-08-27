@@ -168,9 +168,11 @@ class _ProductPulsaState extends State<ProductPulsa>
 
       if (firstIndex == index) {
         return Container(
-          padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+          padding:
+              const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
           alignment: Alignment.centerLeft,
-          child: Text(product.groupName, style: Theme.of(context).textTheme.bodyMedium),
+          child: Text(product.groupName,
+              style: Theme.of(context).textTheme.bodyMedium),
         );
       } else {
         return Container();
@@ -207,9 +209,11 @@ class _ProductPulsaState extends State<ProductPulsa>
 
       if (firstIndex == index) {
         return Container(
-          padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+          padding:
+              const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
           alignment: Alignment.centerLeft,
-          child: Text(product.groupName, style: Theme.of(context).textTheme.bodyMedium),
+          child: Text(product.groupName,
+              style: Theme.of(context).textTheme.bodyMedium),
         );
       } else {
         return Container();

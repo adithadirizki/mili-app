@@ -1,3 +1,4 @@
+import 'package:miliv2/src/consts/consts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppStorage {
@@ -14,6 +15,7 @@ class AppStorage {
   static const String _biometricEnable = "_biometricEnable";
   static const String _transactionPIN = "_transactionPIN";
   static const String _printerAddress = "_printerAddress";
+  static const String _paymentMethod = "_paymentMethod";
 
   static late final SharedPreferences _engine;
 
@@ -151,5 +153,20 @@ class AppStorage {
 
   static String? getPrinterAddress() {
     return _engine.getString(_printerAddress);
+  }
+
+  static void setPaymentMethod(PaymentMethod? value) {
+    if (null != value) {
+      _engine.setString(_paymentMethod, value.name);
+    } else {
+      _engine.remove(_paymentMethod);
+    }
+  }
+
+  static PaymentMethod? getPaymentMethod() {
+    String? selected = _engine.getString(_paymentMethod);
+    return null != selected
+        ? PaymentMethod.values.firstWhere((method) => method.name == selected)
+        : null;
   }
 }
