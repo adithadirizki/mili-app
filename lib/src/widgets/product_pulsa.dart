@@ -33,6 +33,9 @@ class _ProductPulsaState extends State<ProductPulsa>
   List<Product> productPulsa = [];
   List<Product> productData = [];
 
+  List<String> operatorPulsa = [];
+  List<String> operatorData = [];
+
   late final int userLevel;
   late final double userMarkup;
 
@@ -78,6 +81,9 @@ class _ProductPulsaState extends State<ProductPulsa>
       ..order(Product_.nominal)
       ..order(Product_.productName);
     productData = queryData.build().find();
+
+    operatorPulsa = productPulsa.map((e) => e.groupName).toList();
+    operatorData = productData.map((e) => e.groupName).toList();
 
     isLoading = false;
     setState(() {});
@@ -153,7 +159,25 @@ class _ProductPulsaState extends State<ProductPulsa>
   }
 
   Widget buildPulsaProduct() {
-    var filteredProduct = filterByPrefix(productPulsa);
+    final filteredProduct = filterByPrefix(productPulsa);
+    final groups = filteredProduct.map((e) => e.groupName).toList();
+
+    Widget groupContainer(int index) {
+      var product = filteredProduct.elementAt(index);
+      final firstIndex = groups.indexOf(product.groupName);
+
+      if (firstIndex == index) {
+        return Container(
+          padding:
+              const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+          alignment: Alignment.centerLeft,
+          child: Text(product.groupName,
+              style: Theme.of(context).textTheme.bodyMedium),
+        );
+      } else {
+        return Container();
+      }
+    }
 
     if (filteredProduct.isEmpty) {
       return const Center(
@@ -165,13 +189,36 @@ class _ProductPulsaState extends State<ProductPulsa>
       physics: const ClampingScrollPhysics(),
       itemCount: filteredProduct.length,
       itemBuilder: (context, index) {
-        return itemBuilder(filteredProduct.elementAt(index));
+        return Column(
+          children: [
+            groupContainer(index),
+            itemBuilder(filteredProduct.elementAt(index))
+          ],
+        );
       },
     );
   }
 
   Widget buildDataProduct() {
-    var filteredProduct = filterByPrefix(productData);
+    final filteredProduct = filterByPrefix(productData);
+    final groups = filteredProduct.map((e) => e.groupName).toList();
+
+    Widget groupContainer(int index) {
+      var product = filteredProduct.elementAt(index);
+      final firstIndex = groups.indexOf(product.groupName);
+
+      if (firstIndex == index) {
+        return Container(
+          padding:
+              const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+          alignment: Alignment.centerLeft,
+          child: Text(product.groupName,
+              style: Theme.of(context).textTheme.bodyMedium),
+        );
+      } else {
+        return Container();
+      }
+    }
 
     if (filteredProduct.isEmpty) {
       return const Center(
@@ -183,7 +230,12 @@ class _ProductPulsaState extends State<ProductPulsa>
       physics: const ClampingScrollPhysics(),
       itemCount: filteredProduct.length,
       itemBuilder: (context, index) {
-        return itemBuilder(filteredProduct.elementAt(index));
+        return Column(
+          children: [
+            groupContainer(index),
+            itemBuilder(filteredProduct.elementAt(index))
+          ],
+        );
       },
     );
   }

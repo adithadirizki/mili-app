@@ -1,7 +1,7 @@
 name: miliv2
 description: MILI V2
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 2.0.3+2000013
+version: 2.1.0+2001000
 environment:
   sdk: ">=2.12.0 <3.0.0"
 dependencies:
@@ -57,6 +57,7 @@ dependencies:
   share_plus: ^4.0.4
   qr_flutter: ^4.0.0
   mobile_scanner: ^1.1.2
+  flutter_contacts: ^1.1.5
 dev_dependencies:
   flutter_lints: ^1.0.0
   flutter_test:
@@ -81,6 +82,7 @@ flutter:
     - assets/images/promo/
     - assets/images/pulsa/
     - assets/images/train/
+    - assets/images/plane/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

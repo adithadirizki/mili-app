@@ -29,7 +29,7 @@ class _HomeMenuState extends State<HomeMenu> {
   @override
   void initState() {
     super.initState();
-    menuList.add(AppMenu(AppImages.menuPulsa, 'Pulsa', () {
+    menuList.add(AppMenu(AppImages.menuPulsa, 'Pulsa & Data', () {
       pushScreen(context, (_) => const PurchasePulsaScreen());
     }));
     menuList.add(AppMenu(AppImages.menuListrik, 'Listrik', () {
@@ -133,6 +133,9 @@ class _HomeMenuState extends State<HomeMenu> {
         ),
       );
     }));
+    menuList.add(AppMenu(AppImages.menuPesawat, 'Tiket Pesawat', () {
+      snackBarDialog(context, 'Coming Soon');
+    }));
     // menuList.add(AppMenu(AppImages.menuMore, 'More', () {
     //   // // TODO Show reordering menu page
     //   // showSnackBar(context, 'Will coming soon');
@@ -171,7 +174,7 @@ class _HomeMenuState extends State<HomeMenu> {
               image: menu.icon,
             ),
           ),
-          const SizedBox(height: 6.0),
+          const SizedBox(height: 5.0),
           Flexible(
             child: Text(
               menu.label,

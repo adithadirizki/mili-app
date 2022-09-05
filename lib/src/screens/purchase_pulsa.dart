@@ -6,7 +6,9 @@ import 'package:miliv2/src/api/purchase.dart';
 import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/models/product.dart';
+import 'package:miliv2/src/screens/contacts.dart';
 import 'package:miliv2/src/screens/payment.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
@@ -271,7 +273,7 @@ class _PurchasePulsaScreenState extends State<PurchasePulsaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const SimpleAppBar(title: 'Pulsa'),
+      appBar: const SimpleAppBar(title: 'Pulsa & Data'),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Form(
@@ -324,6 +326,23 @@ class _PurchasePulsaScreenState extends State<PurchasePulsaScreen> {
                           onDestinationChange('');
                         }
                       : null,
+                  suffixIcon: IconButton(
+                    icon: const Icon(
+                      Icons.contact_phone,
+                      color: AppColors.black1,
+                    ),
+                    onPressed: () async {
+                      final String? contactNumber =
+                          await pushScreenWithCallback<String>(
+                        context,
+                        (_) => ContactScreen(),
+                      );
+                      if (contactNumber != null) {
+                        textController.text = contactNumber;
+                        onDestinationChange(contactNumber);
+                      }
+                    },
+                  ),
                 ),
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.done,

@@ -6,6 +6,7 @@ import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/data/transaction.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/services/auth.dart';
+import 'package:miliv2/src/services/storage.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
@@ -43,7 +44,8 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  late PaymentMethod selectedPayment;
+  PaymentMethod selectedPayment =
+      AppStorage.getPaymentMethod() ?? PaymentMethod.mainBalance;
   bool isLoading = false;
   String trxId = '';
 
@@ -57,6 +59,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       if (userBalanceState.isGuest()) {
         confirmSignin(context);
+        return;
       }
     });
   }
@@ -105,6 +108,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       await popScreen(context);
       userBalanceState.fetchData();
       transactionState.updateState();
+      AppStorage.setPaymentMethod(selectedPayment);
       widget.onPaymentConfirmed();
     }).catchError(_handleError);
   }

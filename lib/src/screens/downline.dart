@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/downline.dart';
@@ -33,8 +36,11 @@ class _DownlineScreenState extends State<DownlineScreen> {
 
   late DateTime firstDate;
   late DateTimeRange dateRange;
+  // true = asc, false = desc
+  var sort = ['balance', 'desc'];
 
   bool openSearch = false;
+  bool openSort = false;
   Timer? delayed;
 
   @override
@@ -55,9 +61,12 @@ class _DownlineScreenState extends State<DownlineScreen> {
     });
 
     Map<String, String> params = {
-      'sort': json.encode({'last_active': 'desc'}),
+      'sort': json.encode({sort[0]: sort[1]}),
       'limit': '1000'
     };
+
+    debugPrint('getDownline ${json.encode(params)}');
+
     await Api.getDownline(params: params)
         .then(handleDownlineList)
         .catchError(handleError);
@@ -87,13 +96,33 @@ class _DownlineScreenState extends State<DownlineScreen> {
     });
 
     Map<String, String> params = {
-      'sort': json.encode({'last_active': 'desc'}),
+      'sort': json.encode({sort[0]: sort[1]}),
       'limit': '1000'
     };
 
     if (value.isNotEmpty) {
       params['filter'] = json.encode(<String, dynamic>{'nama': 'like|$value%'});
     }
+
+    await Api.getDownline(params: params)
+        .then(handleDownlineList)
+        .catchError(handleError);
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> onSort(String field, String direction) async {
+    setState(() {
+      isLoading = true;
+      sort = [field, direction];
+    });
+
+    Map<String, String> params = {
+      'sort': json.encode({sort[0]: sort[1]}),
+      'limit': '1000'
+    };
 
     await Api.getDownline(params: params)
         .then(handleDownlineList)
@@ -186,6 +215,123 @@ class _DownlineScreenState extends State<DownlineScreen> {
     openSearch = !openSearch;
     if (!openSearch) onRefresh();
     setState(() {});
+  }
+
+  void openFilterSort() async {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 230,
+          padding: EdgeInsets.all(10),
+          color: AppColors.white1,
+          child: Column(
+            children: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  primary: Colors.blue,
+                  textStyle: const TextStyle(fontSize: 15, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),
+                ),
+                onPressed: () {
+                  const field = 'balance';
+                  var direction = 'desc';
+                  if (sort[0] == field) {
+                    direction = sort[1] == 'asc' ? 'desc' : 'asc';
+                  }
+                  onSort(field, direction);
+                  Navigator.of(context).pop();
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Saldo Utama'),
+                    Transform.scale(
+                      scaleY: (sort[0] == 'balance' ? (sort[1] == 'asc' ? -1 : 1) : 0),
+                      child: Icon(Icons.sort),
+                    )
+                  ],
+                ),
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  primary: Colors.blue,
+                  textStyle: const TextStyle(fontSize: 15, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),
+                ),
+                onPressed: () {
+                  const field = 'balance_credit';
+                  var direction = 'desc';
+                  if (sort[0] == field) {
+                    direction = sort[1] == 'asc' ? 'desc' : 'asc';
+                  }
+                  onSort(field, direction);
+                  Navigator.of(context).pop();
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Saldo Kredit'),
+                    Transform.scale(
+                      scaleY: (sort[0] == 'balance_credit' ? (sort[1] == 'asc' ? -1 : 1) : 0),
+                      child: Icon(Icons.sort),
+                    )
+                  ],
+                ),
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  primary: Colors.blue,
+                  textStyle: const TextStyle(fontSize: 15, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),
+                ),
+                onPressed: () {
+                  const field = 'hit';
+                  var direction = 'desc';
+                  if (sort[0] == field) {
+                    direction = sort[1] == 'asc' ? 'desc' : 'asc';
+                  }
+                  onSort(field, direction);
+                  Navigator.of(context).pop();
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Hit'),
+                    Transform.scale(
+                      scaleY: (sort[0] == 'hit' ? (sort[1] == 'asc' ? -1 : 1) : 0),
+                      child: Icon(Icons.sort),
+                    )
+                  ],
+                ),
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  primary: Colors.blue,
+                  textStyle: const TextStyle(fontSize: 15, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),
+                ),
+                onPressed: () {
+                  const field = 'last_active';
+                  var direction = 'desc';
+                  if (sort[0] == field) {
+                    direction = sort[1] == 'asc' ? 'desc' : 'asc';
+                  }
+                  onSort(field, direction);
+                  Navigator.of(context).pop();
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Terakhir Aktif'),
+                    Transform.scale(
+                      scaleY: (sort[0] == 'last_active' ? (sort[1] == 'asc' ? -1 : 1) : 0),
+                      child: Icon(Icons.sort),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          )
+        );
+      },
+    );
   }
 
   Widget buildDownlineItem(DownlineResponse downline) {
@@ -461,6 +607,10 @@ class _DownlineScreenState extends State<DownlineScreen> {
                 IconButton(
                   onPressed: toggleSearch,
                   icon: const Icon(Icons.search, size: 32),
+                ),
+                IconButton(
+                  onPressed: openFilterSort,
+                  icon: const Icon(Icons.sort, size: 32),
                 ),
               ],
       ),
