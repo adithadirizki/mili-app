@@ -26,7 +26,7 @@ class UpgradeWalletScreen extends StatefulWidget {
 
   const UpgradeWalletScreen({
     Key? key,
-    required this.title,
+    this.title = 'Upgrade Akun',
     this.allowUpgrade = true,
   }) : super(key: key);
 

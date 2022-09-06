@@ -13,7 +13,7 @@ class TopupWalletScreen extends StatefulWidget {
 
   const TopupWalletScreen({
     Key? key,
-    this.title = 'Topup Finpay',
+    this.title = 'Topup Saldo',
   }) : super(key: key);
 
   @override

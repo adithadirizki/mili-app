@@ -58,8 +58,9 @@ class AppLabel {
   static const upgradeInputAddress = "Alamat";
 
   // Homepage
-  static const topup = "Topup";
-  static const transfer = "Transfer";
+  static const topup = "Topup Saldo";
+  static const transfer = "Kirim Saldo";
   static const history = "Riwayat";
   static const upgrade = "Upgrade";
+  static const mutation = "Mutasi Saldo";
 }

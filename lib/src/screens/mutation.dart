@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:miliv2/objectbox.g.dart';
-import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/mutation.dart';
@@ -13,7 +11,6 @@ import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:miliv2/src/widgets/balance_card.dart';
 import 'package:miliv2/src/widgets/balance_credit_card.dart';
-import 'package:miliv2/src/widgets/wallet_card.dart';
 
 enum historyAction {
   toggleFavorite,
@@ -77,48 +74,22 @@ class _MutationScreenState extends State<MutationScreen> {
       isLoading = true;
     });
 
-    if (!userBalanceState.walletActive) {
-      {
-        await AppDB.syncBalanceMutation();
-        Condition<BalanceMutation> filterDate = BalanceMutation_.mutationDate
-            .greaterOrEqual(dateRange.start.millisecondsSinceEpoch)
-            .and(BalanceMutation_.mutationDate.lessOrEqual(dateRange.end
-                .add(const Duration(hours: 24))
-                .millisecondsSinceEpoch));
+    {
+      await AppDB.syncBalanceMutation();
+      Condition<BalanceMutation> filterDate = BalanceMutation_.mutationDate
+          .greaterOrEqual(dateRange.start.millisecondsSinceEpoch)
+          .and(BalanceMutation_.mutationDate.lessOrEqual(dateRange.end
+              .add(const Duration(hours: 24))
+              .millisecondsSinceEpoch));
 
-        Condition<BalanceMutation> filterUser =
-            BalanceMutation_.userId.equals(userBalanceState.userId);
+      Condition<BalanceMutation> filterUser =
+          BalanceMutation_.userId.equals(userBalanceState.userId);
 
-        final db = AppDB.balanceMutationDB;
-        QueryBuilder<BalanceMutation> query = db
-            .query(filterDate.and(filterUser))
-          ..order(BalanceMutation_.mutationDate, flags: 1);
-        balanceHistory = query.build().find();
-        debugPrint('InitDB BalanceMutation ${balanceHistory.length}');
-      }
-    } else {
-      await Api.walletHistory(dateRange.start, dateRange.end).then((resp) {
-        debugPrint('Wallet history ${resp.body}');
-        Map<String, dynamic> bodyMap =
-            json.decode(resp.body) as Map<String, dynamic>;
-        walletHistory = (bodyMap['data'] as List<dynamic>)
-            .map((dynamic data) => _WalletMutation()
-              ..id = (data['id'] as int)
-              ..transactionDate =
-                  DateTime.parse(data['transactionDate'] as String)
-              ..type = (data['type'] as String)
-              ..code = (data['code'] as String)
-              ..desc = (data['desc'] as String)
-              ..credit = (data['credit'] as int).toDouble()
-              ..debit = (data['debit'] as int).toDouble()
-              ..source = (data['source'] as String)
-              ..sourceName = (data['sourceName'] as String))
-            .toList();
-        // walletHistory.sort((a, b) {
-        //   return (a.transactionDate.isBefore(b.transactionDate) ? 1 : -1);
-        // });
-        setState(() {});
-      }).catchError(_handleError);
+      final db = AppDB.balanceMutationDB;
+      QueryBuilder<BalanceMutation> query = db.query(filterDate.and(filterUser))
+        ..order(BalanceMutation_.mutationDate, flags: 1);
+      balanceHistory = query.build().find();
+      debugPrint('InitDB BalanceMutation ${balanceHistory.length}');
     }
 
     {
@@ -176,19 +147,12 @@ class _MutationScreenState extends State<MutationScreen> {
         },
         key: const ValueKey('pagemode'),
         children: [
-          !userBalanceState.walletActive
-              ? Container(
-                  margin: const EdgeInsets.only(right: 10),
-                  width: double.infinity,
-                  // color: Colors.red,
-                  child: const BalanceCard(),
-                )
-              : Container(
-                  margin: const EdgeInsets.only(right: 10),
-                  width: double.infinity,
-                  // color: Colors.red,
-                  child: const WalletCard(),
-                ),
+          Container(
+            margin: const EdgeInsets.only(right: 10),
+            width: double.infinity,
+            // color: Colors.red,
+            child: const BalanceCard(),
+          ),
           Container(
             margin: const EdgeInsets.only(left: 10),
             width: double.infinity,
@@ -389,29 +353,17 @@ class _MutationScreenState extends State<MutationScreen> {
           pc.jumpToPage(page);
         },
         children: [
-          !userBalanceState.walletActive
-              ? (balanceHistory.isEmpty
-                  ? const Center(
-                      child: Text('Tidak ada data'),
-                    )
-                  : ListView.builder(
-                      key: const PageStorageKey<String>('listMutation'),
-                      itemCount: balanceHistory.length,
-                      itemBuilder: (context, index) {
-                        return balanceItem(balanceHistory[index]);
-                      },
-                    ))
-              : (walletHistory.isEmpty
-                  ? const Center(
-                      child: Text('Tidak ada data'),
-                    )
-                  : ListView.builder(
-                      key: const PageStorageKey<String>('listMutationWallet'),
-                      itemCount: walletHistory.length,
-                      itemBuilder: (context, index) {
-                        return walletItem(walletHistory[index]);
-                      },
-                    )),
+          balanceHistory.isEmpty
+              ? const Center(
+                  child: Text('Tidak ada data'),
+                )
+              : ListView.builder(
+                  key: const PageStorageKey<String>('listMutation'),
+                  itemCount: balanceHistory.length,
+                  itemBuilder: (context, index) {
+                    return balanceItem(balanceHistory[index]);
+                  },
+                ),
           creditHistory.isEmpty
               ? const Center(
                   child: Text('Tidak ada data'),

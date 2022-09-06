@@ -1,12 +1,15 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/active_banner.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/screens/activation_wallet.dart';
+import 'package:miliv2/src/screens/coin_mili.dart';
 import 'package:miliv2/src/screens/home_screen.dart';
 import 'package:miliv2/src/screens/otp_verification.dart';
 import 'package:miliv2/src/services/analytics.dart';
@@ -14,8 +17,10 @@ import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/services/biometry.dart';
 import 'package:miliv2/src/services/messaging.dart';
 import 'package:miliv2/src/services/storage.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/images.dart';
 import 'package:miliv2/src/utils/dialog.dart';
+import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/home_bottom_bar.dart';
 import 'package:miliv2/src/widgets/pin_verification.dart';
 
@@ -338,6 +343,14 @@ class _HomepageState extends State<Homepage>
     return true;
   }
 
+  void coinScreen() {
+    pushScreen(
+        context,
+        (_) => const CoinMiliScreen(
+              title: 'Koin MILI & Kredit',
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -386,18 +399,70 @@ class _HomepageState extends State<Homepage>
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70.0),
         child: AppBar(
-          // backgroundColor: Colors.white,
-          elevation: 0,
-          toolbarHeight: 70,
-          title: Container(
-            alignment: Alignment.center,
-            child: const Image(
-              image: AppImages.logoColor,
-              height: 40,
-              fit: BoxFit.fill,
-            ),
-          ),
-        ),
+            // backgroundColor: Colors.white,
+            elevation: 0,
+            toolbarHeight: 70,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Image(
+                  image: AppImages.logoColor,
+                  height: 40,
+                  fit: BoxFit.fill,
+                ),
+                Container(
+                  decoration: const BoxDecoration(
+                    color: AppColors.yellow1,
+                    borderRadius: BorderRadius.horizontal(
+                        left: Radius.circular(20.0),
+                        right: Radius.circular(20.0)),
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 120,
+                  ),
+                  padding: const EdgeInsets.only(
+                    left: 7,
+                    right: 7,
+                    top: 5,
+                    bottom: 5,
+                  ),
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: const [
+                          Image(
+                            image: AppImages.coinWhite,
+                            height: 20,
+                            fit: BoxFit.fill,
+                          ),
+                          SizedBox(width: 10)
+                        ],
+                      ),
+                      withBalanceProvider(
+                        context,
+                        GestureDetector(
+                          onTap: coinScreen,
+                          child: Text(
+                            '${formatNumber(userBalanceState.balance)} Koin',
+                            softWrap: false,
+                            maxLines: 1,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                    color: AppColors.white1,
+                                    fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )),
       ),
       bottomNavigationBar: isShowBottomBar
           ? HomeBottomBar(
@@ -407,6 +472,7 @@ class _HomepageState extends State<Homepage>
           : null,
       body: Container(
         padding: const EdgeInsets.only(top: 0, bottom: 0),
+        color: Colors.white,
         child: TabBarView(
           key: const PageStorageKey<String>("homepage"),
           controller: tabController,
@@ -433,6 +499,14 @@ class _HomepageState extends State<Homepage>
         notifier: activeBannerState,
         child: child,
       ),
+    );
+  }
+
+  // @override
+  Widget withBalanceProvider(BuildContext context, Widget child) {
+    return UserBalanceScope(
+      notifier: userBalanceState,
+      child: child,
     );
   }
 

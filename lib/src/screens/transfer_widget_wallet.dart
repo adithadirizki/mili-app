@@ -8,19 +8,21 @@ import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class ProfileWalletScreen extends StatefulWidget {
+class TransferWidgetWalletScreen extends StatefulWidget {
   final String title;
 
-  const ProfileWalletScreen({
+  const TransferWidgetWalletScreen({
     Key? key,
-    this.title = 'Profil Akun',
+    this.title = 'Transfer',
   }) : super(key: key);
 
   @override
-  _ProfileWalletScreenState createState() => _ProfileWalletScreenState();
+  _TransferWidgetWalletScreenState createState() =>
+      _TransferWidgetWalletScreenState();
 }
 
-class _ProfileWalletScreenState extends State<ProfileWalletScreen> {
+class _TransferWidgetWalletScreenState
+    extends State<TransferWidgetWalletScreen> {
   var loadingPercentage = 0;
   var termAccepted = false;
   var step = 1;
@@ -46,7 +48,7 @@ class _ProfileWalletScreenState extends State<ProfileWalletScreen> {
   }
 
   void getWidgetUrl() {
-    Api.walletProfile().then((response) {
+    Api.walletTransferWidget().then((response) {
       Map<String, dynamic> bodyMap =
           json.decode(response.body) as Map<String, dynamic>;
       debugPrint('getWidgetUrl $bodyMap');
@@ -76,7 +78,7 @@ class _ProfileWalletScreenState extends State<ProfileWalletScreen> {
               zoomEnabled: true,
               javascriptMode: JavascriptMode.unrestricted,
               onWebResourceError: (error) {
-                debugPrint('TopupWallet error $error');
+                debugPrint('TransferWidget error $error');
               },
               onWebViewCreated: (webViewController) {
                 _controller.complete(webViewController);

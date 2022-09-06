@@ -6,9 +6,11 @@ import 'package:miliv2/src/theme/colors.dart';
 
 class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
+  final Widget? widget;
   final List<Widget>? actions;
 
-  const SimpleAppBar({Key? key, this.title, this.actions}) : super(key: key);
+  const SimpleAppBar({Key? key, this.title, this.actions, this.widget})
+      : super(key: key);
 
   @override
   Size get preferredSize => const Size.fromHeight(60.0);
@@ -21,31 +23,32 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
       toolbarHeight: 100,
       primary: true,
       // title: title != null ? Text(title!, style: const TextStyle(color: AppColors.blue1),) : null,
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const SizedBox(height: 5),
-          GestureDetector(
-            // icon: const Icon(Icons.backspace_outlined),
-            child: Text(
-              'Kembali',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: AppColors.blue2),
-            ),
-            onTap: () {
-              Navigator.maybePop(context);
-            },
+      title: widget ??
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const SizedBox(height: 5),
+              GestureDetector(
+                // icon: const Icon(Icons.backspace_outlined),
+                child: Text(
+                  'Kembali',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(color: AppColors.blue2),
+                ),
+                onTap: () {
+                  Navigator.maybePop(context);
+                },
+              ),
+              const SizedBox(height: 5),
+              // Text((title != null ? title! : ''), style: const TextStyle(color: Color(0xff505050), fontSize: 22))
+              Text(
+                (title != null ? title! : ''),
+                style: Theme.of(context).textTheme.titleMedium,
+              )
+            ],
           ),
-          const SizedBox(height: 5),
-          // Text((title != null ? title! : ''), style: const TextStyle(color: Color(0xff505050), fontSize: 22))
-          Text(
-            (title != null ? title! : ''),
-            style: Theme.of(context).textTheme.titleMedium,
-          )
-        ],
-      ),
       actions: actions,
       leadingWidth: 100,
       automaticallyImplyLeading: false,
@@ -81,7 +84,10 @@ class SimpleAppBar2 extends StatelessWidget implements PreferredSizeWidget {
           Text(
             title ?? '',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge!
+                .copyWith(fontWeight: FontWeight.bold),
           ),
       actions: actions,
       centerTitle: true,
@@ -89,6 +95,7 @@ class SimpleAppBar2 extends StatelessWidget implements PreferredSizeWidget {
       leading: IconButton(
         icon: const Image(
           image: AppImages.back,
+          width: 34,
         ),
         // tooltip: AppLabel.backNavigation,
         onPressed: () {

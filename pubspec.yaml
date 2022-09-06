@@ -109,6 +109,13 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
   fonts:
+    - family: MavenPro
+      fonts:
+          - asset: assets/fonts/MavenPro-Regular.ttf
+#          - asset: assets/fonts/MavenPro-Black.ttf
+          - asset: assets/fonts/MavenPro-Medium.ttf
+          - asset: assets/fonts/MavenPro-Bold.ttf
+            weight: 700
     - family: Montserrat
       fonts:
           - asset: assets/fonts/Montserrat-Regular.ttf

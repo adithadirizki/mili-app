@@ -7,9 +7,9 @@ enum OTPType {
 enum PaymentMethod { mainBalance, creditBalance, wallet }
 
 const Map<PaymentMethod, String> paymentMethodLabel = {
-  PaymentMethod.mainBalance: 'Saldo Utama',
+  PaymentMethod.mainBalance: 'Koin MILI',
   PaymentMethod.creditBalance: 'Saldo Kredit',
-  PaymentMethod.wallet: 'Saldo Finpay',
+  PaymentMethod.wallet: 'Saldo MILI',
 };
 
 // const List<String> outletTypes = [
@@ -51,3 +51,4 @@ const menuGroupGame = 'GAME';
 const menuGroupBank = 'BANK';
 const menuGroupAct = 'ACT';
 const menuGroupStreaming = 'VOUCHER_TV';
+const menuGroupPajak = 'PAJAK';

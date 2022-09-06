@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -222,114 +221,133 @@ class _DownlineScreenState extends State<DownlineScreen> {
       context: context,
       builder: (BuildContext context) {
         return Container(
-          height: 230,
-          padding: EdgeInsets.all(10),
-          color: AppColors.white1,
-          child: Column(
-            children: [
-              TextButton(
-                style: TextButton.styleFrom(
-                  primary: Colors.blue,
-                  textStyle: const TextStyle(fontSize: 15, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),
+            height: 230,
+            padding: EdgeInsets.all(10),
+            color: AppColors.white1,
+            child: Column(
+              children: [
+                TextButton(
+                  style: TextButton.styleFrom(
+                    primary: Colors.blue,
+                    textStyle: const TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold),
+                  ),
+                  onPressed: () {
+                    const field = 'balance';
+                    var direction = 'desc';
+                    if (sort[0] == field) {
+                      direction = sort[1] == 'asc' ? 'desc' : 'asc';
+                    }
+                    onSort(field, direction);
+                    Navigator.of(context).pop();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Saldo Utama'),
+                      Transform.scale(
+                        scaleY: (sort[0] == 'balance'
+                            ? (sort[1] == 'asc' ? -1 : 1)
+                            : 0),
+                        child: Icon(Icons.sort),
+                      )
+                    ],
+                  ),
                 ),
-                onPressed: () {
-                  const field = 'balance';
-                  var direction = 'desc';
-                  if (sort[0] == field) {
-                    direction = sort[1] == 'asc' ? 'desc' : 'asc';
-                  }
-                  onSort(field, direction);
-                  Navigator.of(context).pop();
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Saldo Utama'),
-                    Transform.scale(
-                      scaleY: (sort[0] == 'balance' ? (sort[1] == 'asc' ? -1 : 1) : 0),
-                      child: Icon(Icons.sort),
-                    )
-                  ],
+                TextButton(
+                  style: TextButton.styleFrom(
+                    primary: Colors.blue,
+                    textStyle: const TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold),
+                  ),
+                  onPressed: () {
+                    const field = 'balance_credit';
+                    var direction = 'desc';
+                    if (sort[0] == field) {
+                      direction = sort[1] == 'asc' ? 'desc' : 'asc';
+                    }
+                    onSort(field, direction);
+                    Navigator.of(context).pop();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Saldo Kredit'),
+                      Transform.scale(
+                        scaleY: (sort[0] == 'balance_credit'
+                            ? (sort[1] == 'asc' ? -1 : 1)
+                            : 0),
+                        child: Icon(Icons.sort),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  primary: Colors.blue,
-                  textStyle: const TextStyle(fontSize: 15, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    primary: Colors.blue,
+                    textStyle: const TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold),
+                  ),
+                  onPressed: () {
+                    const field = 'hit';
+                    var direction = 'desc';
+                    if (sort[0] == field) {
+                      direction = sort[1] == 'asc' ? 'desc' : 'asc';
+                    }
+                    onSort(field, direction);
+                    Navigator.of(context).pop();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Hit'),
+                      Transform.scale(
+                        scaleY: (sort[0] == 'hit'
+                            ? (sort[1] == 'asc' ? -1 : 1)
+                            : 0),
+                        child: Icon(Icons.sort),
+                      )
+                    ],
+                  ),
                 ),
-                onPressed: () {
-                  const field = 'balance_credit';
-                  var direction = 'desc';
-                  if (sort[0] == field) {
-                    direction = sort[1] == 'asc' ? 'desc' : 'asc';
-                  }
-                  onSort(field, direction);
-                  Navigator.of(context).pop();
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Saldo Kredit'),
-                    Transform.scale(
-                      scaleY: (sort[0] == 'balance_credit' ? (sort[1] == 'asc' ? -1 : 1) : 0),
-                      child: Icon(Icons.sort),
-                    )
-                  ],
+                TextButton(
+                  style: TextButton.styleFrom(
+                    primary: Colors.blue,
+                    textStyle: const TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold),
+                  ),
+                  onPressed: () {
+                    const field = 'last_active';
+                    var direction = 'desc';
+                    if (sort[0] == field) {
+                      direction = sort[1] == 'asc' ? 'desc' : 'asc';
+                    }
+                    onSort(field, direction);
+                    Navigator.of(context).pop();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Terakhir Aktif'),
+                      Transform.scale(
+                        scaleY: (sort[0] == 'last_active'
+                            ? (sort[1] == 'asc' ? -1 : 1)
+                            : 0),
+                        child: Icon(Icons.sort),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  primary: Colors.blue,
-                  textStyle: const TextStyle(fontSize: 15, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),
-                ),
-                onPressed: () {
-                  const field = 'hit';
-                  var direction = 'desc';
-                  if (sort[0] == field) {
-                    direction = sort[1] == 'asc' ? 'desc' : 'asc';
-                  }
-                  onSort(field, direction);
-                  Navigator.of(context).pop();
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Hit'),
-                    Transform.scale(
-                      scaleY: (sort[0] == 'hit' ? (sort[1] == 'asc' ? -1 : 1) : 0),
-                      child: Icon(Icons.sort),
-                    )
-                  ],
-                ),
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  primary: Colors.blue,
-                  textStyle: const TextStyle(fontSize: 15, fontFamily: 'Montserrat', fontWeight: FontWeight.bold),
-                ),
-                onPressed: () {
-                  const field = 'last_active';
-                  var direction = 'desc';
-                  if (sort[0] == field) {
-                    direction = sort[1] == 'asc' ? 'desc' : 'asc';
-                  }
-                  onSort(field, direction);
-                  Navigator.of(context).pop();
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Terakhir Aktif'),
-                    Transform.scale(
-                      scaleY: (sort[0] == 'last_active' ? (sort[1] == 'asc' ? -1 : 1) : 0),
-                      child: Icon(Icons.sort),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          )
-        );
+              ],
+            ));
       },
     );
   }
@@ -564,7 +582,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SimpleAppBar2(
+      appBar: SimpleAppBar(
         title: 'Downline',
         widget: openSearch
             ? Container(

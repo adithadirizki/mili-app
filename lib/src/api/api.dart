@@ -1118,6 +1118,16 @@ class Api {
         .catchError(_parseException);
   }
 
+  static Future<http.Response> walletTransferWidget() {
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/transferWidget'),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
   static Future<http.Response> walletTopup() {
     return http
         .post(
