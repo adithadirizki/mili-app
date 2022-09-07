@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:miliv2/src/api/api.dart';
@@ -18,6 +19,7 @@ import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:miliv2/src/widgets/button.dart';
+import 'package:miliv2/src/widgets/screen.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class UpgradeWalletScreen extends StatefulWidget {
@@ -26,7 +28,7 @@ class UpgradeWalletScreen extends StatefulWidget {
 
   const UpgradeWalletScreen({
     Key? key,
-    this.title = 'Upgrade Akun',
+    this.title = 'Upgrade',
     this.allowUpgrade = true,
   }) : super(key: key);
 
@@ -297,366 +299,398 @@ class _UpgradeWalletScreenState extends State<UpgradeWalletScreen> {
   }
 
   Widget buildForm(BuildContext context) {
-    return ListView(
-      scrollDirection: Axis.vertical,
-      children: [
-        Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // ID Card
-                    TextFormField(
-                      controller: _idCardController,
-                      textInputAction: TextInputAction.next,
-                      maxLength: 16,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      decoration: generateInputDecoration(
-                        label: AppLabel.upgradeInputIdCard,
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.attach_file_rounded),
-                          onPressed: onSelectIDCard(context),
+    return Container(
+      width: double.infinity,
+      color: AppColors.white1,
+      padding: EdgeInsets.all(10),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Icon(Icons.info, color: AppColors.blue5),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Lengkapi data diri Anda sesuai data yang sebenarnya',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          FlexBoxGray(
+            padding:
+                const EdgeInsets.only(top: 10, bottom: 10, left: 30, right: 30),
+            margin: const EdgeInsets.only(left: 10, right: 10),
+            child: ListView(
+              scrollDirection: Axis.vertical,
+              children: [
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      Container(
+                        // padding: const EdgeInsets.symmetric(
+                        //     horizontal: 50, vertical: 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // ID Card
+                            TextFormField(
+                              controller: _idCardController,
+                              textInputAction: TextInputAction.next,
+                              maxLength: 16,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              decoration: generateInputDecoration(
+                                label: AppLabel.upgradeInputIdCard,
+                                suffixIcon: IconButton(
+                                  icon: const Icon(Icons.attach_file_rounded),
+                                  onPressed: onSelectIDCard(context),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return '${AppLabel.upgradeInputIdCard} tidak boleh kosong';
+                                } else if (value.length != 16) {
+                                  return '${AppLabel.upgradeInputIdCard} tidak sesuai';
+                                } else if (idCardByte == null) {
+                                  return 'Upload foto KTP';
+                                }
+                                return null;
+                              },
+                            ),
+                            idCardByte != null
+                                ? Container(
+                                    margin: const EdgeInsets.only(top: 10),
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 0.5, color: Colors.black12),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.elliptical(5, 5))),
+                                    child: Image.memory(
+                                      idCardByte!,
+                                      isAntiAlias: true,
+                                    ),
+                                  )
+                                : const SizedBox(),
+                            // Row(
+                            //   children: [
+                            //     // IconButton(
+                            //     //   icon: const Icon(Icons.attach_file_rounded),
+                            //     //   onPressed: () {},
+                            //     // )
+                            //   ],
+                            // ),
+
+                            // Kartu Keluarga
+                            TextFormField(
+                              controller: _kkController,
+                              textInputAction: TextInputAction.next,
+                              maxLength: 16,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              decoration: generateInputDecoration(
+                                label: AppLabel.upgradeInputKK,
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return '${AppLabel.upgradeInputKK} tidak boleh kosong';
+                                }
+                                return null;
+                              },
+                            ),
+
+                            // Ibu Kandung
+                            TextFormField(
+                              controller: _motherController,
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.text,
+                              decoration: generateInputDecoration(
+                                label: AppLabel.upgradeInputMotherName,
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return '${AppLabel.upgradeInputMotherName} tidak boleh kosong';
+                                }
+                                return null;
+                              },
+                            ),
+
+                            // Kewarganegaraan
+                            TextFormField(
+                              controller: _nationalityController,
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.text,
+                              decoration: generateInputDecoration(
+                                label: AppLabel.upgradeInputNationality,
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return '${AppLabel.upgradeInputNationality} tidak boleh kosong';
+                                }
+                                return null;
+                              },
+                            ),
+
+                            // Email
+                            TextFormField(
+                              controller: _emailController,
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: generateInputDecoration(
+                                label: AppLabel.upgradeInputEmail,
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return '${AppLabel.upgradeInputEmail} tidak boleh kosong';
+                                }
+                                return null;
+                              },
+                            ),
+
+                            GestureDetector(
+                              onTap: onSelfie(context),
+                              child: Container(
+                                margin: const EdgeInsets.only(top: 10),
+                                padding: const EdgeInsets.all(10),
+                                width: double.infinity,
+                                height: 200,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        width: 0.5, color: Colors.black12),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.elliptical(5, 5))),
+                                child: selfieByte != null
+                                    ? Image.memory(
+                                        selfieByte!,
+                                        isAntiAlias: true,
+                                      )
+                                    : Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: const [
+                                          Icon(
+                                            Icons.photo_camera,
+                                            color: Colors.black45,
+                                            size: 40,
+                                          ),
+                                          Text(
+                                            'Foto selfie + KTP, pastikan wajah dan KTP terlihat dan jelas',
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                              ),
+                            ),
+
+                            // Provinsi
+                            // DropdownButtonFormField<int>(
+                            //   decoration: generateInputDecoration(
+                            //     label: AppLabel.upgradeInputProvince,
+                            //     // errorMsg: !_valid ? AppLabel.errorRequired : null,
+                            //   ),
+                            //   isExpanded: true,
+                            //   value: province,
+                            //   validator: (value) {
+                            //     if (value == null) {
+                            //       return '${AppLabel.upgradeInputProvince} harus dipilih';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onChanged: provinces.isEmpty
+                            //       ? null
+                            //       : (newValue) async {
+                            //           province = newValue;
+                            //           if (province != null) {
+                            //             await getCity();
+                            //           } else {
+                            //             cities = [];
+                            //           }
+                            //           setState(() {});
+                            //         },
+                            //   items: provinces.map<DropdownMenuItem<int>>((province) {
+                            //     return DropdownMenuItem<int>(
+                            //       value: province.serverId,
+                            //       child: Text(province.provinceName),
+                            //     );
+                            //   }).toList(),
+                            //   // add extra sugar..
+                            //   icon: const Icon(Icons.arrow_drop_down),
+                            //   iconSize: 36,
+                            //   // underline: SizedBox(),
+                            // ),
+                            // // Kab Kota
+                            // DropdownButtonFormField<int>(
+                            //   decoration: generateInputDecoration(
+                            //     label: AppLabel.upgradeInputCity,
+                            //     // errorMsg: !_valid ? AppLabel.errorRequired : null,
+                            //   ),
+                            //   isExpanded: true,
+                            //   value: city,
+                            //   validator: (value) {
+                            //     if (value == null) {
+                            //       return '${AppLabel.upgradeInputCity} harus dipilih';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onChanged: cities.isEmpty
+                            //       ? null
+                            //       : (newValue) async {
+                            //           city = newValue;
+                            //           if (city != null) {
+                            //             await getDistrict();
+                            //           } else {
+                            //             cities = [];
+                            //           }
+                            //           setState(() {});
+                            //         },
+                            //   items: cities.map<DropdownMenuItem<int>>((item) {
+                            //     return DropdownMenuItem<int>(
+                            //       value: item.serverId,
+                            //       child: Text(item.cityName),
+                            //     );
+                            //   }).toList(),
+                            //   // add extra sugar..
+                            //   icon: const Icon(Icons.arrow_drop_down),
+                            //   iconSize: 36,
+                            //   // underline: SizedBox(),
+                            // ),
+                            // // Kecamatan
+                            // DropdownButtonFormField<int>(
+                            //   decoration: generateInputDecoration(
+                            //     label: AppLabel.upgradeInputDistrict,
+                            //     // errorMsg: !_valid ? AppLabel.errorRequired : null,
+                            //   ),
+                            //   isExpanded: true,
+                            //   value: district,
+                            //   validator: (value) {
+                            //     if (value == null) {
+                            //       return '${AppLabel.upgradeInputDistrict} harus dipilih';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onChanged: districts.isEmpty
+                            //       ? null
+                            //       : (newValue) async {
+                            //           district = newValue;
+                            //           if (district != null) {
+                            //             await getVillage();
+                            //           } else {
+                            //             cities = [];
+                            //           }
+                            //           setState(() {});
+                            //         },
+                            //   items: districts.map<DropdownMenuItem<int>>((item) {
+                            //     return DropdownMenuItem<int>(
+                            //       value: item.serverId,
+                            //       child: Text(item.districtName),
+                            //     );
+                            //   }).toList(),
+                            //   // add extra sugar..
+                            //   icon: const Icon(Icons.arrow_drop_down),
+                            //   iconSize: 36,
+                            //   // underline: SizedBox(),
+                            // ),
+                            // // Keluarahan
+                            // DropdownButtonFormField<int>(
+                            //   decoration: generateInputDecoration(
+                            //     label: AppLabel.upgradeInputVillage,
+                            //     // errorMsg: !_valid ? AppLabel.errorRequired : null,
+                            //   ),
+                            //   isExpanded: true,
+                            //   value: village,
+                            //   validator: (value) {
+                            //     if (value == null) {
+                            //       return '${AppLabel.upgradeInputVillage} harus dipilih';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onChanged: villages.isEmpty
+                            //       ? null
+                            //       : (newValue) => setState(() => village = newValue),
+                            //   items: villages.map<DropdownMenuItem<int>>((item) {
+                            //     return DropdownMenuItem<int>(
+                            //       value: item.serverId,
+                            //       child: Text(item.villageName),
+                            //     );
+                            //   }).toList(),
+                            //   // add extra sugar..
+                            //   icon: const Icon(Icons.arrow_drop_down),
+                            //   iconSize: 36,
+                            //   // underline: SizedBox(),
+                            // ),
+
+                            // // Address
+                            // TextFormField(
+                            //   controller: _addressController,
+                            //   textInputAction: TextInputAction.next,
+                            //   maxLength: 200,
+                            //   maxLines: 2,
+                            //   decoration: generateInputDecoration(
+                            //     label: AppLabel.upgradeInputAddress,
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value == null || value.isEmpty) {
+                            //       return '${AppLabel.upgradeInputAddress} tidak boleh kosong';
+                            //     } else if (value.length < 10) {
+                            //       return '${AppLabel.upgradeInputAddress} tidak sesuai';
+                            //     }
+                            //     return null;
+                            //   },
+                            // ),
+                            // // Postal Code
+                            // TextFormField(
+                            //   controller: _postalCodeController,
+                            //   textInputAction: TextInputAction.done,
+                            //   keyboardType: TextInputType.number,
+                            //   inputFormatters: [
+                            //     FilteringTextInputFormatter.digitsOnly,
+                            //   ],
+                            //   maxLength: 5,
+                            //   decoration: generateInputDecoration(
+                            //     label: AppLabel.upgradeInputPostalCode,
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value == null || value.isEmpty) {
+                            //       return '${AppLabel.upgradeInputPostalCode} tidak boleh kosong';
+                            //     } else if (value.length != 5) {
+                            //       return '${AppLabel.upgradeInputPostalCode} tidak sesuai';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   onChanged: (value) {
+                            //     setState(() {});
+                            //   },
+                            // ),
+                            // Button
+                            Container(
+                              margin:
+                                  const EdgeInsets.only(bottom: 10, top: 20),
+                              child: AppButton('Upgrade', confirmation),
+                            ),
+                          ],
                         ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '${AppLabel.upgradeInputIdCard} tidak boleh kosong';
-                        } else if (value.length != 16) {
-                          return '${AppLabel.upgradeInputIdCard} tidak sesuai';
-                        } else if (idCardByte == null) {
-                          return 'Upload foto KTP';
-                        }
-                        return null;
-                      },
-                    ),
-                    idCardByte != null
-                        ? Container(
-                            margin: const EdgeInsets.only(top: 10),
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 0.5, color: Colors.black12),
-                                borderRadius: const BorderRadius.all(
-                                    Radius.elliptical(5, 5))),
-                            child: Image.memory(
-                              idCardByte!,
-                              isAntiAlias: true,
-                            ),
-                          )
-                        : const SizedBox(),
-                    // Row(
-                    //   children: [
-                    //     // IconButton(
-                    //     //   icon: const Icon(Icons.attach_file_rounded),
-                    //     //   onPressed: () {},
-                    //     // )
-                    //   ],
-                    // ),
-
-                    // Kartu Keluarga
-                    TextFormField(
-                      controller: _kkController,
-                      textInputAction: TextInputAction.next,
-                      maxLength: 16,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      decoration: generateInputDecoration(
-                        label: AppLabel.upgradeInputKK,
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '${AppLabel.upgradeInputKK} tidak boleh kosong';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    // Ibu Kandung
-                    TextFormField(
-                      controller: _motherController,
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.text,
-                      decoration: generateInputDecoration(
-                        label: AppLabel.upgradeInputMotherName,
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '${AppLabel.upgradeInputMotherName} tidak boleh kosong';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    // Kewarganegaraan
-                    TextFormField(
-                      controller: _nationalityController,
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.text,
-                      decoration: generateInputDecoration(
-                        label: AppLabel.upgradeInputNationality,
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '${AppLabel.upgradeInputNationality} tidak boleh kosong';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    // Email
-                    TextFormField(
-                      controller: _emailController,
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: generateInputDecoration(
-                        label: AppLabel.upgradeInputEmail,
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '${AppLabel.upgradeInputEmail} tidak boleh kosong';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    GestureDetector(
-                      onTap: onSelfie(context),
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 10),
-                        padding: const EdgeInsets.all(10),
-                        width: double.infinity,
-                        height: 200,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            border:
-                                Border.all(width: 0.5, color: Colors.black12),
-                            borderRadius: const BorderRadius.all(
-                                Radius.elliptical(5, 5))),
-                        child: selfieByte != null
-                            ? Image.memory(
-                                selfieByte!,
-                                isAntiAlias: true,
-                              )
-                            : Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: const [
-                                  Icon(
-                                    Icons.photo_camera,
-                                    color: Colors.black45,
-                                    size: 40,
-                                  ),
-                                  Text(
-                                    'Foto selfie + KTP, pastikan wajah dan KTP terlihat dan jelas',
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                      ),
-                    ),
-
-                    // Provinsi
-                    // DropdownButtonFormField<int>(
-                    //   decoration: generateInputDecoration(
-                    //     label: AppLabel.upgradeInputProvince,
-                    //     // errorMsg: !_valid ? AppLabel.errorRequired : null,
-                    //   ),
-                    //   isExpanded: true,
-                    //   value: province,
-                    //   validator: (value) {
-                    //     if (value == null) {
-                    //       return '${AppLabel.upgradeInputProvince} harus dipilih';
-                    //     }
-                    //     return null;
-                    //   },
-                    //   onChanged: provinces.isEmpty
-                    //       ? null
-                    //       : (newValue) async {
-                    //           province = newValue;
-                    //           if (province != null) {
-                    //             await getCity();
-                    //           } else {
-                    //             cities = [];
-                    //           }
-                    //           setState(() {});
-                    //         },
-                    //   items: provinces.map<DropdownMenuItem<int>>((province) {
-                    //     return DropdownMenuItem<int>(
-                    //       value: province.serverId,
-                    //       child: Text(province.provinceName),
-                    //     );
-                    //   }).toList(),
-                    //   // add extra sugar..
-                    //   icon: const Icon(Icons.arrow_drop_down),
-                    //   iconSize: 36,
-                    //   // underline: SizedBox(),
-                    // ),
-                    // // Kab Kota
-                    // DropdownButtonFormField<int>(
-                    //   decoration: generateInputDecoration(
-                    //     label: AppLabel.upgradeInputCity,
-                    //     // errorMsg: !_valid ? AppLabel.errorRequired : null,
-                    //   ),
-                    //   isExpanded: true,
-                    //   value: city,
-                    //   validator: (value) {
-                    //     if (value == null) {
-                    //       return '${AppLabel.upgradeInputCity} harus dipilih';
-                    //     }
-                    //     return null;
-                    //   },
-                    //   onChanged: cities.isEmpty
-                    //       ? null
-                    //       : (newValue) async {
-                    //           city = newValue;
-                    //           if (city != null) {
-                    //             await getDistrict();
-                    //           } else {
-                    //             cities = [];
-                    //           }
-                    //           setState(() {});
-                    //         },
-                    //   items: cities.map<DropdownMenuItem<int>>((item) {
-                    //     return DropdownMenuItem<int>(
-                    //       value: item.serverId,
-                    //       child: Text(item.cityName),
-                    //     );
-                    //   }).toList(),
-                    //   // add extra sugar..
-                    //   icon: const Icon(Icons.arrow_drop_down),
-                    //   iconSize: 36,
-                    //   // underline: SizedBox(),
-                    // ),
-                    // // Kecamatan
-                    // DropdownButtonFormField<int>(
-                    //   decoration: generateInputDecoration(
-                    //     label: AppLabel.upgradeInputDistrict,
-                    //     // errorMsg: !_valid ? AppLabel.errorRequired : null,
-                    //   ),
-                    //   isExpanded: true,
-                    //   value: district,
-                    //   validator: (value) {
-                    //     if (value == null) {
-                    //       return '${AppLabel.upgradeInputDistrict} harus dipilih';
-                    //     }
-                    //     return null;
-                    //   },
-                    //   onChanged: districts.isEmpty
-                    //       ? null
-                    //       : (newValue) async {
-                    //           district = newValue;
-                    //           if (district != null) {
-                    //             await getVillage();
-                    //           } else {
-                    //             cities = [];
-                    //           }
-                    //           setState(() {});
-                    //         },
-                    //   items: districts.map<DropdownMenuItem<int>>((item) {
-                    //     return DropdownMenuItem<int>(
-                    //       value: item.serverId,
-                    //       child: Text(item.districtName),
-                    //     );
-                    //   }).toList(),
-                    //   // add extra sugar..
-                    //   icon: const Icon(Icons.arrow_drop_down),
-                    //   iconSize: 36,
-                    //   // underline: SizedBox(),
-                    // ),
-                    // // Keluarahan
-                    // DropdownButtonFormField<int>(
-                    //   decoration: generateInputDecoration(
-                    //     label: AppLabel.upgradeInputVillage,
-                    //     // errorMsg: !_valid ? AppLabel.errorRequired : null,
-                    //   ),
-                    //   isExpanded: true,
-                    //   value: village,
-                    //   validator: (value) {
-                    //     if (value == null) {
-                    //       return '${AppLabel.upgradeInputVillage} harus dipilih';
-                    //     }
-                    //     return null;
-                    //   },
-                    //   onChanged: villages.isEmpty
-                    //       ? null
-                    //       : (newValue) => setState(() => village = newValue),
-                    //   items: villages.map<DropdownMenuItem<int>>((item) {
-                    //     return DropdownMenuItem<int>(
-                    //       value: item.serverId,
-                    //       child: Text(item.villageName),
-                    //     );
-                    //   }).toList(),
-                    //   // add extra sugar..
-                    //   icon: const Icon(Icons.arrow_drop_down),
-                    //   iconSize: 36,
-                    //   // underline: SizedBox(),
-                    // ),
-
-                    // // Address
-                    // TextFormField(
-                    //   controller: _addressController,
-                    //   textInputAction: TextInputAction.next,
-                    //   maxLength: 200,
-                    //   maxLines: 2,
-                    //   decoration: generateInputDecoration(
-                    //     label: AppLabel.upgradeInputAddress,
-                    //   ),
-                    //   validator: (value) {
-                    //     if (value == null || value.isEmpty) {
-                    //       return '${AppLabel.upgradeInputAddress} tidak boleh kosong';
-                    //     } else if (value.length < 10) {
-                    //       return '${AppLabel.upgradeInputAddress} tidak sesuai';
-                    //     }
-                    //     return null;
-                    //   },
-                    // ),
-                    // // Postal Code
-                    // TextFormField(
-                    //   controller: _postalCodeController,
-                    //   textInputAction: TextInputAction.done,
-                    //   keyboardType: TextInputType.number,
-                    //   inputFormatters: [
-                    //     FilteringTextInputFormatter.digitsOnly,
-                    //   ],
-                    //   maxLength: 5,
-                    //   decoration: generateInputDecoration(
-                    //     label: AppLabel.upgradeInputPostalCode,
-                    //   ),
-                    //   validator: (value) {
-                    //     if (value == null || value.isEmpty) {
-                    //       return '${AppLabel.upgradeInputPostalCode} tidak boleh kosong';
-                    //     } else if (value.length != 5) {
-                    //       return '${AppLabel.upgradeInputPostalCode} tidak sesuai';
-                    //     }
-                    //     return null;
-                    //   },
-                    //   onChanged: (value) {
-                    //     setState(() {});
-                    //   },
-                    // ),
-                    // Button
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 10, top: 20),
-                      child: AppButton('Upgrade', confirmation),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

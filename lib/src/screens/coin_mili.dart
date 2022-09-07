@@ -173,7 +173,9 @@ class _CoinMiliScreenState extends State<CoinMiliScreen> {
             children: [
               Flexible(
                 child: Text(
-                  history.bank,
+                  history.isSuccess
+                      ? history.notes
+                      : (history.isFailed ? 'Gagal' : 'Pending'),
                   // style: Theme.of(context).textTheme.caption,
                 ),
               ),

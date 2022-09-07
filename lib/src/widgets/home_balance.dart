@@ -47,7 +47,8 @@ class _HomeBalanceState extends State<HomeBalance> {
       pushScreen(context, (_) => const ActivationWalletScreen());
       return;
     } else if (!userBalanceState.walletPremium) {
-      pushScreen(context, (_) => const UpgradeWalletScreen());
+      pushScreen(context,
+          (_) => const UpgradeWalletScreen(title: 'Upgrade Saldo MILI'));
       return;
     }
     pushScreen(

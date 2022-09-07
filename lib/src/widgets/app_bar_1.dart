@@ -6,10 +6,11 @@ import 'package:miliv2/src/theme/colors.dart';
 
 class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
+  final double? elevation;
   final Widget? widget;
   final List<Widget>? actions;
 
-  const SimpleAppBar({Key? key, this.title, this.actions, this.widget})
+  const SimpleAppBar({Key? key, this.title, this.actions, this.widget, this.elevation})
       : super(key: key);
 
   @override
@@ -19,7 +20,7 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       // backgroundColor: Colors.white,
-      elevation: 0,
+      elevation: elevation??0,
       toolbarHeight: 100,
       primary: true,
       // title: title != null ? Text(title!, style: const TextStyle(color: AppColors.blue1),) : null,
@@ -68,10 +69,11 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 class SimpleAppBar2 extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
+  final double? elevation;
   final Widget? widget;
   final List<Widget>? actions;
 
-  const SimpleAppBar2({Key? key, this.title, this.actions, this.widget})
+  const SimpleAppBar2({Key? key, this.title, this.actions, this.widget, this.elevation})
       : super(key: key);
 
   @override
@@ -106,7 +108,7 @@ class SimpleAppBar2 extends StatelessWidget implements PreferredSizeWidget {
           Navigator.maybePop(context);
         },
       ),
-      elevation: 0.5,
+      elevation: elevation??0.5,
     );
   }
 }
