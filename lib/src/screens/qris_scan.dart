@@ -7,6 +7,7 @@ import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
+import 'package:miliv2/src/widgets/scanning_widget.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class QrisScannerScreen extends StatefulWidget {
@@ -19,8 +20,30 @@ class QrisScannerScreen extends StatefulWidget {
   State<QrisScannerScreen> createState() => _QrisScannerScreenState();
 }
 
-class _QrisScannerScreenState extends State<QrisScannerScreen> {
+class _QrisScannerScreenState extends State<QrisScannerScreen>
+    with SingleTickerProviderStateMixin {
   bool isLoading = false;
+
+  late AnimationController _animationController;
+  bool _animationStopped = false;
+
+  @override
+  void initState() {
+    _animationController =
+        AnimationController(duration: const Duration(seconds: 2), vsync: this);
+
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        animateScanAnimation(true);
+      } else if (status == AnimationStatus.dismissed) {
+        animateScanAnimation(false);
+      }
+    });
+
+    animateScanAnimation(true);
+
+    super.initState();
+  }
 
   FutureOr<void> handleError(Object e) {
     setState(() {
@@ -30,7 +53,7 @@ class _QrisScannerScreenState extends State<QrisScannerScreen> {
     popScreen(context);
   }
 
-  void fetchWidget(String paymentCode) {
+  void paymentWidget(String paymentCode) {
     replaceScreen(
       context,
       (_) => QrisPaymentScreen(
@@ -114,32 +137,60 @@ class _QrisScannerScreenState extends State<QrisScannerScreen> {
                 maxHeight: 400,
               ),
               clipBehavior: Clip.antiAlias,
-              child: MobileScanner(
-                fit: BoxFit.cover,
-                allowDuplicates: false,
-                controller: cameraController,
-                onDetect: (barcode, args) {
-                  if (barcode.rawValue == null) {
-                    // debugPrint('Failed to scan Barcode');
-                  } else {
-                    final String code = barcode.rawValue!;
-                    confirmDialog(context,
-                        msg: 'Kode Pembayaran berhasil terbaca, lanjutkan ?',
-                        confirmAction: () {
-                      Timer(const Duration(milliseconds: 200), () {
-                        // popScreenWithCallback<String>(context, code);
-                        fetchWidget(code);
-                      });
-                    }, cancelAction: () {
-                      popScreen(context);
-                    });
-                  }
-                },
+              child: Stack(
+                // fit: StackFit.expand,
+                children: [
+                  MobileScanner(
+                    fit: BoxFit.fill,
+                    allowDuplicates: false,
+                    controller: cameraController,
+                    onDetect: (barcode, args) {
+                      if (barcode.rawValue == null) {
+                        // debugPrint('Failed to scan Barcode');
+                      } else {
+                        setState(() {
+                          _animationStopped = true;
+                        });
+                        final String code = barcode.rawValue!;
+                        confirmDialog(context,
+                            msg:
+                                'Kode Pembayaran berhasil terbaca, lanjutkan ?',
+                            confirmAction: () {
+                          Timer(const Duration(milliseconds: 200), () {
+                            // popScreenWithCallback<String>(context, code);
+                            paymentWidget(code);
+                          });
+                        }, cancelAction: () {
+                          popScreen(context);
+                        });
+                      }
+                    },
+                  ),
+                  ScannerAnimation(
+                    _animationStopped,
+                    400,
+                    animation: _animationController,
+                  ),
+                ],
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  void animateScanAnimation(bool reverse) {
+    if (reverse) {
+      _animationController.reverse(from: 1.0);
+    } else {
+      _animationController.forward(from: 0.0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 }
