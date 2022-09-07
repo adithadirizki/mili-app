@@ -17,10 +17,9 @@ import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/services/biometry.dart';
 import 'package:miliv2/src/services/messaging.dart';
 import 'package:miliv2/src/services/storage.dart';
-import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/images.dart';
 import 'package:miliv2/src/utils/dialog.dart';
-import 'package:miliv2/src/utils/formatter.dart';
+import 'package:miliv2/src/widgets/coin_chip.dart';
 import 'package:miliv2/src/widgets/home_bottom_bar.dart';
 import 'package:miliv2/src/widgets/pin_verification.dart';
 
@@ -87,9 +86,8 @@ class _HomepageState extends State<Homepage>
       // Update wallet
       if (userBalanceState.walletActive) {
         await userBalanceState.fetchWallet().catchError(_handleError);
-      } else {
-        await userBalanceState.fetchData().catchError(_handleError);
       }
+      await userBalanceState.fetchData().catchError(_handleError);
     });
   }
 
@@ -343,7 +341,8 @@ class _HomepageState extends State<Homepage>
     return true;
   }
 
-  void coinScreen() {
+  void coinScreen() async {
+    await userBalanceState.fetchData();
     pushScreen(
         context,
         (_) => const CoinMiliScreen(
@@ -410,57 +409,7 @@ class _HomepageState extends State<Homepage>
                   height: 40,
                   fit: BoxFit.fill,
                 ),
-                Container(
-                  decoration: const BoxDecoration(
-                    color: AppColors.yellow1,
-                    borderRadius: BorderRadius.horizontal(
-                        left: Radius.circular(20.0),
-                        right: Radius.circular(20.0)),
-                  ),
-                  constraints: const BoxConstraints(
-                    minWidth: 120,
-                  ),
-                  padding: const EdgeInsets.only(
-                    left: 7,
-                    right: 7,
-                    top: 5,
-                    bottom: 5,
-                  ),
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: const [
-                          Image(
-                            image: AppImages.coinWhite,
-                            height: 20,
-                            fit: BoxFit.fill,
-                          ),
-                          SizedBox(width: 10)
-                        ],
-                      ),
-                      withBalanceProvider(
-                        context,
-                        GestureDetector(
-                          onTap: coinScreen,
-                          child: Text(
-                            '${formatNumber(userBalanceState.balance)} Koin',
-                            softWrap: false,
-                            maxLines: 1,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(
-                                    color: AppColors.white1,
-                                    fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                withBalanceProvider(CoinChip(onTap: coinScreen)),
               ],
             )),
       ),
@@ -503,7 +452,7 @@ class _HomepageState extends State<Homepage>
   }
 
   // @override
-  Widget withBalanceProvider(BuildContext context, Widget child) {
+  Widget withBalanceProvider(Widget child) {
     return UserBalanceScope(
       notifier: userBalanceState,
       child: child,

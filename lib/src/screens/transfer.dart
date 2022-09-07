@@ -16,9 +16,11 @@ import 'package:miliv2/src/widgets/button.dart';
 import 'package:miliv2/src/widgets/screen.dart';
 
 class TransferScreen extends StatefulWidget {
+  final String title;
   final String? userId;
 
-  const TransferScreen({Key? key, this.userId}) : super(key: key);
+  const TransferScreen({Key? key, this.userId, this.title = 'Transfer'})
+      : super(key: key);
 
   @override
   _TransferScreenState createState() => _TransferScreenState();
@@ -119,7 +121,7 @@ class _TransferScreenState extends State<TransferScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const SimpleAppBar(title: 'Transfer'),
+      appBar: SimpleAppBar(title: widget.title),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Column(

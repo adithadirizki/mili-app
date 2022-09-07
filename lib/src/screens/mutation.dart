@@ -32,7 +32,9 @@ class _WalletMutation {
 }
 
 class MutationScreen extends StatefulWidget {
-  const MutationScreen({Key? key}) : super(key: key);
+  final String title;
+
+  const MutationScreen({Key? key, this.title = 'Mutasi'}) : super(key: key);
 
   @override
   _MutationScreenState createState() => _MutationScreenState();
@@ -384,7 +386,7 @@ class _MutationScreenState extends State<MutationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SimpleAppBar(
-        title: 'Mutasi Saldo',
+        title: widget.title,
         actions: <Widget>[
           TextButton(
             child: Text(

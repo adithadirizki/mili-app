@@ -17,15 +17,16 @@ class CoinCard extends StatelessWidget {
   const CoinCard({Key? key}) : super(key: key);
 
   void topupScreen(BuildContext context) {
-    pushScreen(context, (_) => const TopupScreen());
+    pushScreen(context, (_) => const TopupScreen(title: 'Beli Koin'));
   }
 
   void transferScreen(BuildContext context) {
-    pushScreen(context, (_) => const TransferScreen());
+    pushScreen(context, (_) => const TransferScreen(title: 'Transfer Koin'));
   }
 
   void mutasiScreen(BuildContext context) {
-    pushScreen(context, (_) => const MutationScreen());
+    pushScreen(context,
+        (_) => const MutationScreen(title: 'Mutasi Koin MILI & Kredit'));
   }
 
   Widget buildMainBalance(BuildContext context) {
