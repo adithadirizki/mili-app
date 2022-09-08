@@ -19,7 +19,7 @@ class BalanceCreditCard extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: [Color(0xff0196DD), Color(0xff01C9D0)],
+          colors: [AppColors.gradientBlue1, AppColors.gradientBlue2],
         ),
       ),
       child: Stack(

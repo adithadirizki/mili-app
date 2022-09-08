@@ -178,7 +178,7 @@ class CoinCard extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: [Color(0xff00D1FF), Color(0xff00ADD2)],
+          colors: [AppColors.gradientBlue3, AppColors.gradientBlue4],
         ),
       ),
       child: Column(

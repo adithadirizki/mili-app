@@ -16,7 +16,7 @@ class ActivationWalletScreen extends StatefulWidget {
   final String title;
   const ActivationWalletScreen({
     Key? key,
-    this.title = 'Aktivasi Finpay',
+    this.title = 'Aktivasi Saldo MILI',
   }) : super(key: key);
 
   @override
@@ -42,14 +42,14 @@ class _ActivationWalletScreenState extends State<ActivationWalletScreen> {
 
   void initialize() {
     confirmDialog(context,
-        title: 'Aktivasi Finpay',
+        title: 'Aktivasi Saldo MILI',
         msg:
             'Finpay adalah dompet digital yang sudah terdaftar OJK, dengan menggunakan Finpay Anda dapat melakukan semua pembayaran digital dan semua pembayaran QRIS. Kemudahan topup saldo menggunakan Virtual Account dan kelebihan lainnya.\n\n'
-            'Saldo Mili saat ini akan diubah kedalam saldo Finpay. Pastikan data yang dimasukkan adalah data yang sesuai dengan identitas pribadi.\n\n'
+            'Saldo MILI saat ini akan diubah kedalam saldo Finpay. Pastikan data yang dimasukkan adalah data yang sesuai dengan identitas pribadi.\n\n'
             'Dengan melanjutkan Anda memahami dan menjamin data yang dimasukkan adalah yang sesungguhnya. Lanjutkan ?',
         cancelAction: () {
       popScreen(context);
-    }, confirmText: 'Lanjutkan', confirmAction: () {});
+    }, confirmText: 'Lanjutkan', cancelText: 'Batal', confirmAction: () {});
   }
 
   FutureOr<void> _handleError(Object e) {
@@ -66,7 +66,7 @@ class _ActivationWalletScreenState extends State<ActivationWalletScreen> {
         key: walletOTPState,
         otpLength: 6,
         secured: false,
-        title: 'Aktivasi Finpay',
+        title: 'Aktivasi Saldo MILI',
         subTitle: 'Masukkan Kode OTP',
         invalidMessage: 'Kode OTP tidak sesuai',
         validateOtp: (otp) async {
@@ -79,8 +79,9 @@ class _ActivationWalletScreenState extends State<ActivationWalletScreen> {
         },
         onValidateSuccess: (ctx) async {
           walletOTPState.currentState!.clearOtp();
-          userBalanceState.fetchData();
-          snackBarDialog(context, 'Akun Finpay berhasil diaktivasi');
+          await userBalanceState.fetchData();
+          await userBalanceState.fetchWallet();
+          snackBarDialog(context, 'Saldo MILI berhasil diaktivasi');
           await popScreen(context);
         },
         onInvalid: (_) {
@@ -176,7 +177,6 @@ class _ActivationWalletScreenState extends State<ActivationWalletScreen> {
 
   @override
   void dispose() {
-    // stopTimer();
     super.dispose();
   }
 }

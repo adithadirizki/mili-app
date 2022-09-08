@@ -175,7 +175,7 @@ class _CoinMiliScreenState extends State<CoinMiliScreen> {
                 child: Text(
                   history.isSuccess
                       ? history.notes
-                      : (history.isFailed ? 'Gagal' : 'Pending'),
+                      : (history.isFailed ? 'Dibatalkan' : 'Pending'),
                   // style: Theme.of(context).textTheme.caption,
                 ),
               ),

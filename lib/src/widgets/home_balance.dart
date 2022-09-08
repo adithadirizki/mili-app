@@ -31,6 +31,10 @@ class _HomeBalanceState extends State<HomeBalance> {
   }
 
   void profileWalletScreen() {
+    if (!userBalanceState.walletActive) {
+      pushScreen(context, (_) => const ActivationWalletScreen());
+      return;
+    }
     pushScreen(context, (_) => const ProfileWalletScreen());
   }
 
@@ -79,6 +83,85 @@ class _HomeBalanceState extends State<HomeBalance> {
     pushScreen(context, (_) => const MutationWalletScreen());
   }
 
+  Widget buildBalanceCard() {
+    return GestureDetector(
+      // onTap: userBalanceState.fetchData,
+      onTap: profileWalletScreen,
+      child: Container(
+        width: 160,
+        // margin: EdgeInsets.all(15),
+        padding: const EdgeInsets.only(left: 15, top: 5, right: 10, bottom: 5),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.elliptical(18, 18)),
+          color: Colors.white,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Image(
+                  image: AppImages.iconBalance,
+                  width: 20,
+                ),
+                const SizedBox(width: 5),
+                Flexible(
+                  child: FittedBox(
+                    child: Text(
+                      paymentMethodLabel[PaymentMethod.wallet]!,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 5),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  'Rp',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall!
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(width: 3),
+                Flexible(
+                  child: FittedBox(
+                    child: Text(
+                      formatNumber(UserBalanceScope.of(context).walletBalance),
+                      softWrap: false,
+                      maxLines: 1,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: AppColors.black1, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  'Tap for details',
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: AppColors.black2),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget buildButton(AppMenu menu) {
     return ConstrainedBox(
       constraints: const BoxConstraints(
@@ -118,7 +201,6 @@ class _HomeBalanceState extends State<HomeBalance> {
   @override
   Widget build(BuildContext context) {
     debugPrint('Build HomeBalance');
-    bool walletActive = UserBalanceScope.of(context).walletActive;
     return Container(
       height: 110,
       padding: const EdgeInsets.all(10),
@@ -128,97 +210,13 @@ class _HomeBalanceState extends State<HomeBalance> {
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: [Color(0xff0196DD), Color(0xff01C9D0)],
+          colors: [AppColors.gradientBlue1, AppColors.gradientBlue2],
         ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.max,
-        // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Box Left
-          GestureDetector(
-            // onTap: userBalanceState.fetchData,
-            onTap: profileWalletScreen,
-            child: Container(
-              width: 160,
-              // margin: EdgeInsets.all(15),
-              padding:
-                  const EdgeInsets.only(left: 15, top: 5, right: 10, bottom: 5),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.elliptical(18, 18)),
-                color: Colors.white,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Image(
-                        image: AppImages.iconBalance,
-                        width: 20,
-                      ),
-                      const SizedBox(width: 5),
-                      Flexible(
-                        child: FittedBox(
-                          child: Text(
-                            paymentMethodLabel[PaymentMethod.wallet]!,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Rp',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(width: 3),
-                      Flexible(
-                        child: FittedBox(
-                          child: Text(
-                            formatNumber(
-                                UserBalanceScope.of(context).walletBalance),
-                            softWrap: false,
-                            maxLines: 1,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(
-                                    color: AppColors.black1,
-                                    fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Tap for details',
-                        textAlign: TextAlign.start,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: AppColors.black2),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // Icons
+          buildBalanceCard(),
           const SizedBox(width: 15),
           Flexible(
             fit: FlexFit.tight,

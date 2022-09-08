@@ -289,7 +289,7 @@ class AppDB {
     });
   }
 
-  static Future<void> syncHistory() async {
+  static Future<void> syncHistory({int offset = 0}) async {
     const apiCode = 'purchase-history';
 
     if (_lockedSyncronize(apiCode)) {
@@ -302,6 +302,7 @@ class AppDB {
     String timestamp = lastUpdate == null ? '' : lastUpdate.toIso8601String();
 
     Map<String, String> params = {
+      'offset': offset.toString(),
       'limit': limit.toString(),
       'sort': json.encode({'tanggal': 'asc'}),
       'filter': json.encode({'tglsukses': '>|$timestamp'})
@@ -346,7 +347,13 @@ class AppDB {
       _unlockSyncronize(apiCode);
       // Get next page
       if (pagingResponse.data.length >= limit) {
-        return await syncHistory();
+        DateTime? veryLastUpdate = getLastUpdate(apiCode);
+        if (lastUpdate == veryLastUpdate) {
+          offset += limit;
+        } else {
+          offset = 0;
+        }
+        return await syncHistory(offset: offset);
       }
     }).catchError((dynamic e) {
       _unlockSyncronize(apiCode);
