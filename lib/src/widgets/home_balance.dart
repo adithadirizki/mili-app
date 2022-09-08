@@ -216,11 +216,14 @@ class _HomeBalanceState extends State<HomeBalance> {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          buildBalanceCard(),
-          const SizedBox(width: 15),
-          Flexible(
-            fit: FlexFit.tight,
-            flex: 1,
+          Expanded(
+            flex: 40,
+            child: buildBalanceCard(),
+          ),
+          const SizedBox(width: 5),
+          Expanded(
+            // fit: FlexFit.tight,
+            flex: 60,
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

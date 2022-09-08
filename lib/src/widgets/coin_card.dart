@@ -203,7 +203,7 @@ class CoinCard extends StatelessWidget {
                   width: 2,
                   height: 50,
                   color: AppColors.blue5,
-                  margin: EdgeInsets.only(left: 10, right: 15),
+                  margin: EdgeInsets.only(left: 15, right: 15),
                 ),
                 Expanded(
                   flex: 1,

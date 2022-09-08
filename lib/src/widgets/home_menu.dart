@@ -98,11 +98,11 @@ class _HomeMenuState extends State<HomeMenu> {
         ),
       );
     }));
-    menuList.add(AppMenu(AppImages.menuTV, 'Streaming', () {
+    menuList.add(AppMenu(AppImages.menuTV, 'TV Berbayar', () {
       pushScreen(
         context,
         (_) => const VendorScreen(
-          title: 'Streaming',
+          title: 'TV Berbayar',
           groupName: menuGroupStreaming,
         ),
       );
@@ -197,7 +197,7 @@ class _HomeMenuState extends State<HomeMenu> {
                   ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           // Flexible(
           //   child: Text(
           //     menu.label,
@@ -229,7 +229,7 @@ class _HomeMenuState extends State<HomeMenu> {
           shrinkWrap: true,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
-            mainAxisSpacing: 7,
+            mainAxisSpacing: 15,
           ),
           itemBuilder: itemBuilder,
           clipBehavior: Clip.antiAlias,

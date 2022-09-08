@@ -43,8 +43,8 @@ class _PriceSettingScreenState extends State<PriceSettingScreen> {
     menuList.add(_AppMenu(AppImages.menuGame, 'Game', () {
       openPriceSetting('Harga Game', menuGroupGame, null);
     }));
-    menuList.add(_AppMenu(AppImages.menuTV, 'Streaming', () {
-      openPriceSetting('Harga Streaming', menuGroupStreaming, null);
+    menuList.add(_AppMenu(AppImages.menuTV, 'TV Berbayar', () {
+      openPriceSetting('Harga TV Berbayar', menuGroupStreaming, null);
     }));
     menuList.add(_AppMenu(AppImages.menuEmoney, 'Transfer Bank', () {
       openPriceSetting('Harga Transfer Bank', menuGroupBank, null);
