@@ -222,7 +222,7 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
           child: SizedBox(
             width: 70,
             height: 70,
-            child: Expanded(
+            child: FittedBox(
               child: FloatingActionButton(
                 isExtended: false,
                 onPressed: () async {
