@@ -274,7 +274,26 @@ class _PricePulsaScreenState extends State<PricePulsaScreen>
   }
 
   Widget buildListPulsa() {
-    var filteredProduct = filterByQuery(productPulsa);
+    final filteredProduct = filterByQuery(productPulsa);
+    final groups = filteredProduct.map((e) => e.groupName).toList();
+
+    Widget groupContainer(int index) {
+      var product = filteredProduct.elementAt(index);
+      final firstIndex = groups.indexOf(product.groupName);
+
+      if (firstIndex == index) {
+        return Container(
+          padding:
+          const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+          alignment: Alignment.centerLeft,
+          child: Text(product.groupName,
+              style: Theme.of(context).textTheme.bodyMedium),
+        );
+      } else {
+        return Container();
+      }
+    }
+
     if (filteredProduct.isEmpty) {
       return const Center(
         child: Text('-- produk kosong --'),
@@ -285,13 +304,37 @@ class _PricePulsaScreenState extends State<PricePulsaScreen>
       physics: const ClampingScrollPhysics(),
       itemCount: filteredProduct.length,
       itemBuilder: (context, index) {
-        return itemBuilder(filteredProduct.elementAt(index));
+        return Column(
+          children: [
+            groupContainer(index),
+            itemBuilder(filteredProduct.elementAt(index))
+          ],
+        );
       },
     );
   }
 
   Widget buildListData() {
-    var filteredProduct = filterByQuery(productData);
+    final filteredProduct = filterByQuery(productData);
+    final groups = filteredProduct.map((e) => e.groupName).toList();
+
+    Widget groupContainer(int index) {
+      var product = filteredProduct.elementAt(index);
+      final firstIndex = groups.indexOf(product.groupName);
+
+      if (firstIndex == index) {
+        return Container(
+          padding:
+          const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+          alignment: Alignment.centerLeft,
+          child: Text(product.groupName,
+              style: Theme.of(context).textTheme.bodyMedium),
+        );
+      } else {
+        return Container();
+      }
+    }
+
     if (filteredProduct.isEmpty) {
       return const Center(
         child: Text('-- produk kosong --'),
@@ -301,7 +344,12 @@ class _PricePulsaScreenState extends State<PricePulsaScreen>
       key: const PageStorageKey<String>('listData'),
       itemCount: filteredProduct.length,
       itemBuilder: (context, index) {
-        return itemBuilder(filteredProduct.elementAt(index));
+        return Column(
+          children: [
+            groupContainer(index),
+            itemBuilder(filteredProduct.elementAt(index))
+          ],
+        );
       },
     );
   }
