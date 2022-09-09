@@ -4,13 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 
-class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
+// Alias class for temporary
+class SimpleAppBar extends SimpleAppBar2 {
   final String? title;
   final double? elevation;
   final Widget? widget;
   final List<Widget>? actions;
 
-  const SimpleAppBar({Key? key, this.title, this.actions, this.widget, this.elevation})
+  const SimpleAppBar(
+      {Key? key, this.title, this.actions, this.widget, this.elevation})
+      : super(key: key);
+}
+
+class SimpleAppBar3 extends StatelessWidget implements PreferredSizeWidget {
+  final String? title;
+  final double? elevation;
+  final Widget? widget;
+  final List<Widget>? actions;
+
+  const SimpleAppBar3(
+      {Key? key, this.title, this.actions, this.widget, this.elevation})
       : super(key: key);
 
   @override
@@ -20,7 +33,7 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       // backgroundColor: Colors.white,
-      elevation: elevation??0,
+      elevation: elevation ?? 0,
       toolbarHeight: 100,
       primary: true,
       // title: title != null ? Text(title!, style: const TextStyle(color: AppColors.blue1),) : null,
@@ -73,7 +86,8 @@ class SimpleAppBar2 extends StatelessWidget implements PreferredSizeWidget {
   final Widget? widget;
   final List<Widget>? actions;
 
-  const SimpleAppBar2({Key? key, this.title, this.actions, this.widget, this.elevation})
+  const SimpleAppBar2(
+      {Key? key, this.title, this.actions, this.widget, this.elevation})
       : super(key: key);
 
   @override
@@ -108,7 +122,7 @@ class SimpleAppBar2 extends StatelessWidget implements PreferredSizeWidget {
           Navigator.maybePop(context);
         },
       ),
-      elevation: elevation??0.5,
+      elevation: elevation ?? 0.5,
     );
   }
 }

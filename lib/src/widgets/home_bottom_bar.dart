@@ -217,47 +217,53 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
       children: [
         buildMenuBar(),
         Positioned(
-          top: -25,
-          left: MediaQuery.of(context).size.width / 2 - 25,
-          child: FloatingActionButton(
-            isExtended: false,
-            onPressed: () async {
-              if (!userBalanceState.walletActive) {
-                pushScreen(context, (_) => const ActivationWalletScreen());
-                return;
-              }
-              var code = await pushScreenWithCallback<String>(
-                context,
-                (_) => const QrisScannerScreen(),
-              );
-              // debugPrint('Read code $code');
-              if (code != null) {
-                Timer(const Duration(milliseconds: 200), () {
-                  infoDialog(context, msg: code);
-                });
-              }
-            },
-            backgroundColor: AppColors.red2,
-            splashColor: AppColors.red2,
-            focusColor: AppColors.red2,
-            foregroundColor: AppColors.red2,
-            tooltip: 'Pembayaran QRIS',
-            child: Container(
-              padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                // color: AppColors.blue5,
-                border: Border.all(color: Colors.white, width: 4),
-                borderRadius: const BorderRadius.all(Radius.circular(40)),
-              ),
-              clipBehavior: Clip.antiAlias,
-              alignment: Alignment.center,
-              child: const Image(
-                fit: BoxFit.fitWidth,
-                image: AppImages.logoQris,
-                // width: 100,
+          top: -32,
+          left: MediaQuery.of(context).size.width / 2 - 30,
+          child: SizedBox(
+            width: 70,
+            height: 70,
+            child: Expanded(
+              child: FloatingActionButton(
+                isExtended: false,
+                onPressed: () async {
+                  if (!userBalanceState.walletActive) {
+                    pushScreen(context, (_) => const ActivationWalletScreen());
+                    return;
+                  }
+                  var code = await pushScreenWithCallback<String>(
+                    context,
+                    (_) => const QrisScannerScreen(),
+                  );
+                  // debugPrint('Read code $code');
+                  if (code != null) {
+                    Timer(const Duration(milliseconds: 200), () {
+                      infoDialog(context, msg: code);
+                    });
+                  }
+                },
+                backgroundColor: AppColors.red2,
+                splashColor: AppColors.red2,
+                focusColor: AppColors.red2,
+                foregroundColor: AppColors.red2,
+                tooltip: 'Pembayaran QRIS',
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    // color: AppColors.blue5,
+                    border: Border.all(color: Colors.white, width: 4),
+                    borderRadius: const BorderRadius.all(Radius.circular(40)),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  alignment: Alignment.center,
+                  child: const Image(
+                    fit: BoxFit.fitWidth,
+                    image: AppImages.logoQris,
+                    // width: 100,
+                  ),
+                ),
+                elevation: 2.0,
               ),
             ),
-            elevation: 2.0,
           ),
         ),
       ],
