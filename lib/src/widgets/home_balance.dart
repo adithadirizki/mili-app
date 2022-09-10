@@ -215,13 +215,13 @@ class _HomeBalanceState extends State<HomeBalance> {
                     GestureDetector(
                       onTap: historyScreen,
                       child: const Image(
-                        image: AppImages.history,
+                        image: AppImages.note,
                         height: 32,
                       ),
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      AppLabel.history,
+                      AppLabel.mutation,
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium

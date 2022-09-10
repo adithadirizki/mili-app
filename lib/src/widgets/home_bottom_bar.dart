@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/screens/customer_service.dart';
-import 'package:miliv2/src/screens/mutation.dart';
+import 'package:miliv2/src/screens/history.dart';
 import 'package:miliv2/src/screens/notification.dart';
 import 'package:miliv2/src/screens/profile.dart';
 import 'package:miliv2/src/theme.dart';
@@ -39,7 +39,7 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
 
   Widget buildMenuBar() {
     return Container(
-      height: 60.0,
+      height: 70.0,
       // margin: const EdgeInsets.only(left: 12.0, right: 12.0),
       //color: Theme.of(context).backgroundColor,
       decoration: const BoxDecoration(
@@ -60,67 +60,143 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          IconButton(
-            onPressed: () {
-              // gotoPage(0);
-              pushScreen(
-                context,
-                (_) => const MutationScreen(),
-              );
-            },
-            icon: const Image(
-              image: AppImages.note,
-              width: 32,
-            ),
+          Column(
+            children: [
+              IconButton(
+                onPressed: () {
+                  // gotoPage(0);
+                  pushScreen(
+                    context,
+                    (_) => const HistoryScreen(),
+                  );
+                },
+                icon: const Image(
+                  image: AppImages.history,
+                  width: 26,
+                ),
+              ),
+              Flexible(
+                child: Text(
+                  AppLabel.history,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.visible,
+                  maxLines: 2,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        height: 1,
+                        overflow: TextOverflow.visible,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                ),
+              ),
+              const SizedBox(height: 2.0),
+            ],
           ),
-          IconButton(
-            onPressed: () {
-              // gotoPage(1);
-              pushScreen(
-                context,
-                (_) => const NotificationScreen(),
-              );
-            },
-            icon: const Image(
-              image: AppImages.notification,
-              width: 32,
-            ),
+          Column(
+            children: [
+              IconButton(
+                onPressed: () {
+                  // gotoPage(1);
+                  pushScreen(
+                    context,
+                    (_) => const NotificationScreen(),
+                  );
+                },
+                icon: const Image(
+                  image: AppImages.notification,
+                  width: 32,
+                ),
+              ),
+              Flexible(
+                child: Text(
+                  AppLabel.notification,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.visible,
+                  maxLines: 2,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        height: 1,
+                        overflow: TextOverflow.visible,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                ),
+              ),
+              const SizedBox(height: 2.0),
+            ],
           ),
           const SizedBox(
-            width: 50.0,
+            width: 10.0,
           ),
-          IconButton(
-            onPressed: () {
-              // gotoPage(3);
-              pushScreen(
-                context,
-                (_) => const CustomerServiceScreen(),
-              );
-            },
-            icon: const Image(
-              image: AppImages.chat,
-              width: 32,
-            ),
+          Column(
+            children: [
+              IconButton(
+                onPressed: () {
+                  // gotoPage(3);
+                  pushScreen(
+                    context,
+                    (_) => const CustomerServiceScreen(),
+                  );
+                },
+                icon: const Image(
+                  image: AppImages.chat,
+                  width: 32,
+                ),
+              ),
+              Flexible(
+                child: Text(
+                  AppLabel.chat,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.visible,
+                  maxLines: 2,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        height: 1,
+                        overflow: TextOverflow.visible,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                ),
+              ),
+              const SizedBox(height: 2.0),
+            ],
           ),
-          IconButton(
-            onPressed: () {
-              // gotoPage(4);
-              if (userBalanceState.isGuest()) {
-                confirmSignin(context);
-              } else {
-                pushScreen(
-                  context,
-                  (_) => UserBalanceScope(
-                    notifier: userBalanceState,
-                    child: const ProfileScreen(),
-                  ),
-                );
-              }
-            },
-            icon: const Image(
-              image: AppImages.user,
-              width: 32,
-            ),
+          Column(
+            children: [
+              IconButton(
+                onPressed: () {
+                  // gotoPage(4);
+                  if (userBalanceState.isGuest()) {
+                    confirmSignin(context);
+                  } else {
+                    pushScreen(
+                      context,
+                      (_) => UserBalanceScope(
+                        notifier: userBalanceState,
+                        child: const ProfileScreen(),
+                      ),
+                    );
+                  }
+                },
+                icon: const Image(
+                  image: AppImages.user,
+                  width: 32,
+                ),
+              ),
+              Flexible(
+                child: Text(
+                  AppLabel.profile,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.visible,
+                  maxLines: 2,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        height: 1,
+                        overflow: TextOverflow.visible,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                ),
+              ),
+              const SizedBox(height: 2.0),
+            ],
           ),
         ],
       ),
@@ -137,29 +213,35 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
       children: [
         buildMenuBar(),
         Positioned(
-          top: -25,
-          left: MediaQuery.of(context).size.width / 2 - 25,
-          child: FloatingActionButton(
-            isExtended: false,
-            onPressed: () {
-              gotoPage(0);
-            },
-            backgroundColor: AppColors.blue5,
-            tooltip: "Home",
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                // color: AppColors.blue5,
-                border: Border.all(color: Colors.white, width: 2.5),
-                borderRadius: const BorderRadius.all(Radius.circular(40)),
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: const Image(
-                image: AppImages.logonavbar,
-                width: 80,
+          top: -32,
+          left: MediaQuery.of(context).size.width / 2 - 30,
+          child: SizedBox(
+            width: 70,
+            height: 70,
+            child: FittedBox(
+              child: FloatingActionButton(
+                isExtended: false,
+                onPressed: () {
+                  gotoPage(0);
+                },
+                backgroundColor: AppColors.blue5,
+                tooltip: "Home",
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    // color: AppColors.blue5,
+                    border: Border.all(color: Colors.white, width: 2.5),
+                    borderRadius: const BorderRadius.all(Radius.circular(40)),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: const Image(
+                    image: AppImages.logonavbar,
+                    width: 80,
+                  ),
+                ),
+                elevation: 2.0,
               ),
             ),
-            elevation: 2.0,
           ),
         ),
       ],

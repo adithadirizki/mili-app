@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/purchase.dart';
@@ -24,7 +25,10 @@ import 'package:miliv2/src/widgets/purchase_history_item.dart';
 import 'package:share_plus/share_plus.dart';
 
 class HistoryScreen extends StatefulWidget {
-  const HistoryScreen({Key? key}) : super(key: key);
+  final String title;
+
+  const HistoryScreen({Key? key, this.title = 'Riwayat Transaksi'})
+      : super(key: key);
 
   @override
   _HistoryScreenState createState() => _HistoryScreenState();
@@ -44,6 +48,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
   int currentPage = 0;
   int itemPerPage = 10;
   bool hasMore = false;
+
+  int successTotal = 0;
+  int failedTotal = 0;
+  int pendingTotal = 0;
+  double totalTransaction = 0;
 
   @override
   void initState() {
@@ -91,6 +100,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       await AppDB.syncHistory();
       currentPage = 0;
       items = [];
+      await countSummary();
     }
 
     Condition<PurchaseHistory> filterDate = PurchaseHistory_.transactionDate
@@ -120,11 +130,39 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
     items.addAll(records);
 
+    query.close();
+
     debugPrint(
         'InitDB History $currentPage x ${records.length} x ${items.length}');
 
     setState(() {
       isLoading = false;
+    });
+  }
+
+  Future<void> countSummary({bool sync = false}) async {
+    Condition<PurchaseHistory> filterDate = PurchaseHistory_.transactionDate
+        .greaterOrEqual(dateRange.start.millisecondsSinceEpoch)
+        .and(PurchaseHistory_.transactionDate.lessOrEqual(dateRange.end
+            .add(const Duration(hours: 24))
+            .millisecondsSinceEpoch));
+
+    Condition<PurchaseHistory> filterUser =
+        PurchaseHistory_.userId.equals(userBalanceState.userId);
+
+    final purchaseHistoryDB = AppDB.purchaseHistoryDB;
+    QueryBuilder<PurchaseHistory> qb =
+        purchaseHistoryDB.query(filterDate.and(filterUser));
+
+    var query = qb.build();
+    List<PurchaseHistory> records = query.find();
+
+    setState(() {
+      successTotal = records.where((element) => element.isSuccess).length;
+      failedTotal = records.where((element) => element.isFailed).length;
+      pendingTotal = records.where((element) => element.isPending).length;
+      totalTransaction = records.fold(
+          0, (previousValue, element) => previousValue + element.price);
     });
   }
 
@@ -440,19 +478,20 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SimpleAppBar(
-        title: 'Riwayat Transaksi',
+        title: widget.title,
+        elevation: 0,
         actions: <Widget>[
-          TextButton(
-            child: Text(
-              '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
-              // style: Theme.of(context).textTheme.button,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: AppColors.black1),
-            ),
-            onPressed: openFilterDate,
-          ),
+          // TextButton(
+          //   child: Text(
+          //     '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
+          //     // style: Theme.of(context).textTheme.button,
+          //     style: Theme.of(context)
+          //         .textTheme
+          //         .bodySmall
+          //         ?.copyWith(color: AppColors.black1),
+          //   ),
+          //   onPressed: openFilterDate,
+          // ),
           IconButton(
             onPressed: openFilterDate,
             icon: const Image(
@@ -461,9 +500,113 @@ class _HistoryScreenState extends State<HistoryScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        child: buildItems(context),
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Container(
+            padding:
+                const EdgeInsets.only(top: 0, bottom: 20, left: 20, right: 20),
+            decoration: const BoxDecoration(
+              color: AppColors.white1,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
+                  // style: Theme.of(context).textTheme.button,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall
+                      ?.copyWith(color: AppColors.black1),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      flex: 20,
+                      child: Column(
+                        children: [
+                          const Text('Sukses'),
+                          Text(
+                            formatNumber(successTotal.toDouble()),
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 20,
+                      child: Column(
+                        children: [
+                          const Text('Gagal'),
+                          Text(
+                            formatNumber(failedTotal.toDouble()),
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 20,
+                      child: Column(
+                        children: [
+                          const Text('Diproses'),
+                          Text(
+                            formatNumber(pendingTotal.toDouble()),
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 30,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          const Text('Total'),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            // crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                'Rp',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium!
+                                    .copyWith(
+                                        textBaseline: TextBaseline.ideographic),
+                              ),
+                              const SizedBox(width: 5),
+                              Flexible(
+                                child: FittedBox(
+                                  child: Text(
+                                    formatNumber(totalTransaction),
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              child: buildItems(context),
+            ),
+          ),
+        ],
       ),
     );
   }

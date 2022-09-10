@@ -56,4 +56,8 @@ class AppLabel {
   static const topup = "Topup";
   static const transfer = "Transfer";
   static const history = "Riwayat";
+  static const mutation = "Mutasi";
+  static const notification = "Notifikasi";
+  static const chat = "Chat CS";
+  static const profile = "Profil";
 }
