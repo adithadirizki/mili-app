@@ -123,7 +123,7 @@ abstract class AppTheme {
 
 final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
-  fontFamily: 'Montserrat',
+  fontFamily: 'MavenPro',
   appBarTheme: const AppBarTheme(
     backgroundColor: Colors.white,
     titleTextStyle: TextStyle(color: Colors.blue),
@@ -171,7 +171,7 @@ final ThemeData lightTheme = ThemeData(
 
 final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
-  fontFamily: 'Montserrat',
+  fontFamily: 'MavenPro',
   // appBarTheme: const AppBarTheme(backgroundColor: Colors.white),
   pageTransitionsTheme: const PageTransitionsTheme(
     builders: <TargetPlatform, PageTransitionsBuilder>{

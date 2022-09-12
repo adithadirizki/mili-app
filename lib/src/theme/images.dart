@@ -9,10 +9,13 @@ class AppImages {
   static const logoColor = AssetImage('assets/images/mili_logo_color.png');
   static const logo = AssetImage('assets/images/Logomili180x1801.png');
   static const logonavbar = AssetImage('assets/images/logonavbar.png');
+  static const coinWhite = AssetImage('assets/images/mili_coin_white.png');
+  static const coinYellow = AssetImage('assets/images/mili_coin_yellow.png');
   static const note = AssetImage('assets/images/note.png');
   static const back = AssetImage('assets/images/back.png');
   static const calendar = AssetImage('assets/images/calendar.png');
   static const search = AssetImage('assets/images/search.png');
+  static const sort = AssetImage('assets/images/sorting.png');
   static const notification = AssetImage('assets/images/notification.png');
   static const chat = AssetImage('assets/images/chat.png');
   static const user = AssetImage('assets/images/user.png');
@@ -22,11 +25,12 @@ class AppImages {
   static const topup = AssetImage('assets/images/topup.png');
   static const transfer = AssetImage('assets/images/transfer.png');
   static const history = AssetImage('assets/images/history.png');
+  static const mutasi = AssetImage('assets/images/mutasi.png');
   static const emptyPlaceholder =
       AssetImage('assets/images/empty_placeholder.png');
   static const menuListrik = AssetImage('assets/images/pln.png');
   static const menuTagihan = AssetImage('assets/images/tagihan.png');
-  static const menuPulsa = AssetImage('assets/images/pulsa2.png');
+  static const menuPulsa = AssetImage('assets/images/pulsa.png');
   static const menuBPJS = AssetImage('assets/images/bpjs.png');
   static const menuEmoney = AssetImage('assets/images/e_money.png');
   static const menuCicilan = AssetImage('assets/images/cicilan.png');
@@ -34,7 +38,10 @@ class AppImages {
   static const menuGame = AssetImage('assets/images/game.png');
   static const menuTV = AssetImage('assets/images/tv_kabel.png');
   static const menuKAI = AssetImage('assets/images/kai.png');
-  static const menuPesawat = AssetImage('assets/images/plane/plane.png');
+  static const menuBank = AssetImage('assets/images/bank_transfer.png');
+  static const menuAktivasi = AssetImage('assets/images/aktivasi.png');
+  static const menuPesawat = AssetImage('assets/images/pesawat.png');
+  static const menuPajak = AssetImage('assets/images/pajak.png');
   static const menuMore = AssetImage('assets/images/more.png');
   static const promoPlaceholder = AssetImage('assets/images/promo/promo_1.jpg');
   static const home = AssetImage('assets/images/home.png');
@@ -80,6 +87,10 @@ class AppImages {
   static const trainSeat = AssetImage('assets/images/train/seat.png');
   static const trainArrow =
       AssetImage('assets/images/train/arrow_destination.png');
+  static const logoWallet = AssetImage('assets/images/finpay.png');
+  static const logoWalletPowered =
+      AssetImage('assets/images/finpay_powered.png');
+  static const logoQris = AssetImage('assets/images/qris.png');
 
   static AssetImage getAssetImage(String filename) {
     return AssetImage('images/' + filename);

@@ -33,7 +33,7 @@ class _TrainHomeScreenState extends State<TrainHomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SimpleAppBar(title: widget.title),
+      appBar: SimpleAppBar2(title: widget.title),
       body: Column(
         mainAxisSize: MainAxisSize.max,
         children: [

@@ -21,11 +21,13 @@ class AppAuth extends ChangeNotifier {
   String _deviceId = "";
   bool _signedIn = false;
   bool _verified = false;
+  bool _activationWallet = false;
 
   String get deviceId => _deviceId;
   String get username => _username;
   bool get signedIn => _signedIn;
   bool get verified => _verified;
+  bool get activationWallet => _activationWallet;
 
   AppAuth() {
     init();
@@ -62,13 +64,14 @@ class AppAuth extends ChangeNotifier {
   }
 
   Future<void> setAuth(bool signedIn, bool verified, String username,
-      String deviceId, String token) async {
+      String deviceId, String token, bool activationWallet) async {
     var engine = await AppStorage.engine;
 
     _signedIn = signedIn;
     _verified = verified;
     _username = username;
     _deviceId = deviceId;
+    _activationWallet = activationWallet;
 
     // Store credential
     AppStorage.setAuthenticated(_signedIn);
@@ -104,6 +107,8 @@ class AppAuth extends ChangeNotifier {
     AppStorage.setUsername(null);
     AppStorage.setDeviceId(null);
     AppStorage.setToken(null);
+    AppStorage.seUserProfile(null);
+    AppStorage.setWallet(null);
 
     _signedIn = false;
     _verified = false;

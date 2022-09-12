@@ -18,7 +18,9 @@ import 'package:miliv2/src/widgets/button.dart';
 import 'package:miliv2/src/widgets/screen.dart';
 
 class TopupScreen extends StatefulWidget {
-  const TopupScreen({Key? key}) : super(key: key);
+  final String title;
+
+  const TopupScreen({Key? key, this.title = 'Topup'}) : super(key: key);
 
   @override
   _TopupScreenState createState() => _TopupScreenState();
@@ -132,7 +134,7 @@ class _TopupScreenState extends State<TopupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SimpleAppBar(
-        title: 'Topup',
+        title: widget.title,
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.list_alt, size: 32),

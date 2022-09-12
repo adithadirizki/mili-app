@@ -9,6 +9,7 @@ import 'package:miliv2/src/screens/otp_verification.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/device.dart';
 import 'package:miliv2/src/utils/dialog.dart';
+import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:miliv2/src/widgets/button.dart';
 
 import '../theme.dart';
@@ -195,23 +196,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: const Text(
-          AppLabel.forgotPasswordTitle,
-          style: TextStyle(color: Colors.blueAccent),
-        ),
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_rounded,
-            color: Colors.blueAccent,
-          ),
-          tooltip: AppLabel.backNavigation,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+      appBar: const SimpleAppBar2(
+        title: AppLabel.forgotPasswordTitle,
       ),
       body: Column(
         children: [

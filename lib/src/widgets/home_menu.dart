@@ -80,15 +80,15 @@ class _HomeMenuState extends State<HomeMenu> {
     //     ),
     //   );
     // }));
-    menuList.add(AppMenu(AppImages.menuTelkom, 'Telkom', () {
-      pushScreen(
-        context,
-        (_) => const VendorScreen(
-          title: 'Telkom',
-          groupName: menuGroupTelkom,
-        ),
-      );
-    }));
+    // menuList.add(AppMenu(AppImages.menuTelkom, 'Telkom', () {
+    //   pushScreen(
+    //     context,
+    //     (_) => const VendorScreen(
+    //       title: 'Telkom',
+    //       groupName: menuGroupTelkom,
+    //     ),
+    //   );
+    // }));
     menuList.add(AppMenu(AppImages.menuGame, 'Game', () {
       pushScreen(
         context,
@@ -98,7 +98,16 @@ class _HomeMenuState extends State<HomeMenu> {
         ),
       );
     }));
-    menuList.add(AppMenu(AppImages.menuCicilan, 'Transfer Bank', () {
+    menuList.add(AppMenu(AppImages.menuTV, 'TV Berbayar', () {
+      pushScreen(
+        context,
+        (_) => const VendorScreen(
+          title: 'TV Berbayar',
+          groupName: menuGroupStreaming,
+        ),
+      );
+    }));
+    menuList.add(AppMenu(AppImages.menuBank, 'Transfer Bank', () {
       pushScreen(
         context,
         (_) => const VendorScreen(
@@ -107,21 +116,21 @@ class _HomeMenuState extends State<HomeMenu> {
         ),
       );
     }));
-    menuList.add(AppMenu(AppImages.menuEmoney, 'Aktivasi', () {
+    menuList.add(AppMenu(AppImages.menuTV, 'Pajak', () {
+      pushScreen(
+        context,
+        (_) => const VendorScreen(
+          title: 'Pajak',
+          groupName: menuGroupPajak,
+        ),
+      );
+    }));
+    menuList.add(AppMenu(AppImages.menuAktivasi, 'Aktivasi', () {
       pushScreen(
         context,
         (_) => const VendorScreen(
           title: 'Aktivasi',
           groupName: menuGroupAct,
-        ),
-      );
-    }));
-    menuList.add(AppMenu(AppImages.menuTV, 'Streaming', () {
-      pushScreen(
-        context,
-        (_) => const VendorScreen(
-          title: 'Streaming',
-          groupName: menuGroupStreaming,
         ),
       );
     }));
@@ -163,13 +172,13 @@ class _HomeMenuState extends State<HomeMenu> {
           Container(
             width: 60,
             height: 60,
-            decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xffCECECE), width: 0.5),
-              //borderRadius: BorderRadius.all(Radius.circular(20.0))
-              color: const Color(0xffFBFBFB),
-              borderRadius: const BorderRadius.all(Radius.elliptical(69, 69)),
-            ),
-            padding: const EdgeInsets.all(12.0),
+            // decoration: BoxDecoration(
+            //   border: Border.all(color: const Color(0xffCECECE), width: 0.5),
+            //   //borderRadius: BorderRadius.all(Radius.circular(20.0))
+            //   color: const Color(0xffFBFBFB),
+            //   borderRadius: const BorderRadius.all(Radius.elliptical(69, 69)),
+            // ),
+            // padding: const EdgeInsets.all(12.0),
             child: Image(
               image: menu.icon,
             ),
@@ -181,13 +190,14 @@ class _HomeMenuState extends State<HomeMenu> {
               textAlign: TextAlign.center,
               overflow: TextOverflow.visible,
               maxLines: 2,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(height: 1, overflow: TextOverflow.visible),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    height: 1,
+                    overflow: TextOverflow.visible,
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           // Flexible(
           //   child: Text(
           //     menu.label,
@@ -219,7 +229,7 @@ class _HomeMenuState extends State<HomeMenu> {
           shrinkWrap: true,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
-            mainAxisSpacing: 7,
+            mainAxisSpacing: 15,
           ),
           itemBuilder: itemBuilder,
           clipBehavior: Clip.antiAlias,

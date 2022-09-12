@@ -19,8 +19,22 @@ enum historyAction {
   contactCS,
 }
 
+class _WalletMutation {
+  int id = 0;
+  DateTime transactionDate = DateTime.now();
+  String type = '';
+  String code = '';
+  String desc = '';
+  String source = '';
+  String sourceName = '';
+  double credit = 0;
+  double debit = 0;
+}
+
 class MutationScreen extends StatefulWidget {
-  const MutationScreen({Key? key}) : super(key: key);
+  final String title;
+
+  const MutationScreen({Key? key, this.title = 'Mutasi'}) : super(key: key);
 
   @override
   _MutationScreenState createState() => _MutationScreenState();
@@ -28,13 +42,15 @@ class MutationScreen extends StatefulWidget {
 
 class _MutationScreenState extends State<MutationScreen> {
   final formKey = GlobalKey<FormState>();
-  List<BalanceMutation> items = [];
-  List<CreditMutation> items2 = [];
+  List<BalanceMutation> balanceHistory = [];
+  List<CreditMutation> creditHistory = [];
   final TextEditingController textAmountController = TextEditingController();
   bool isLoading = true;
 
   late DateTime firstDate;
   late DateTimeRange dateRange;
+
+  List<_WalletMutation> walletHistory = [];
 
   @override
   void initState() {
@@ -48,15 +64,20 @@ class _MutationScreenState extends State<MutationScreen> {
     });
   }
 
+  FutureOr<void> _handleError(Object e) {
+    setState(() {
+      isLoading = false;
+    });
+    snackBarDialog(context, e.toString());
+  }
+
   Future<void> initDB() async {
     setState(() {
       isLoading = true;
     });
 
-    await AppDB.syncBalanceMutation();
-    await AppDB.syncCreditMutation();
-
     {
+      await AppDB.syncBalanceMutation();
       Condition<BalanceMutation> filterDate = BalanceMutation_.mutationDate
           .greaterOrEqual(dateRange.start.millisecondsSinceEpoch)
           .and(BalanceMutation_.mutationDate.lessOrEqual(dateRange.end
@@ -69,10 +90,12 @@ class _MutationScreenState extends State<MutationScreen> {
       final db = AppDB.balanceMutationDB;
       QueryBuilder<BalanceMutation> query = db.query(filterDate.and(filterUser))
         ..order(BalanceMutation_.mutationDate, flags: 1);
-      items = query.build().find();
+      balanceHistory = query.build().find();
+      debugPrint('InitDB BalanceMutation ${balanceHistory.length}');
     }
 
     {
+      await AppDB.syncCreditMutation();
       Condition<CreditMutation> filterDate = CreditMutation_.mutationDate
           .greaterOrEqual(dateRange.start.millisecondsSinceEpoch)
           .and(CreditMutation_.mutationDate.lessOrEqual(dateRange.end
@@ -85,11 +108,9 @@ class _MutationScreenState extends State<MutationScreen> {
       final db = AppDB.creditMutationDB;
       QueryBuilder<CreditMutation> query = db.query(filterDate.and(filterUser))
         ..order(CreditMutation_.mutationDate, flags: 1);
-      items2 = query.build().find();
+      creditHistory = query.build().find();
+      debugPrint('InitDB CreditMutation ${creditHistory.length}');
     }
-
-    debugPrint('InitDB BalanceMutation ${items.length}');
-    debugPrint('InitDB CreditMutation ${items2.length}');
 
     setState(() {
       isLoading = false;
@@ -145,7 +166,7 @@ class _MutationScreenState extends State<MutationScreen> {
     );
   }
 
-  Widget item(BalanceMutation data) {
+  Widget balanceItem(BalanceMutation data) {
     bool isDebit = data.debitAmount > 0;
     String description = data.description;
     if (data.productName != null &&
@@ -204,7 +225,7 @@ class _MutationScreenState extends State<MutationScreen> {
     );
   }
 
-  Widget item2(CreditMutation data) {
+  Widget creditItem(CreditMutation data) {
     bool isDebit = data.debitAmount > 0;
     String description = data.description;
     if (data.productName != null &&
@@ -263,8 +284,60 @@ class _MutationScreenState extends State<MutationScreen> {
     );
   }
 
+  Widget walletItem(_WalletMutation data) {
+    bool isDebit = data.debit > 0;
+    String description = data.desc;
+    return Container(
+      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 0, top: 10),
+      // color: Colors.white,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text(
+                formatDate(data.transactionDate),
+                style: Theme.of(context).textTheme.caption,
+              ),
+              const Spacer(),
+              // Text(
+              //   '${formatNumber(data.startBalance)} ${isDebit ? '-' : '+'} ',
+              //   style: Theme.of(context).textTheme.caption,
+              // ),
+              Text(
+                isDebit ? formatNumber(data.debit) : formatNumber(data.credit),
+                style: Theme.of(context).textTheme.caption!.copyWith(
+                    color: isDebit ? Colors.redAccent : Colors.blueAccent),
+              ),
+              // Text(
+              //   ' = ${formatNumber(data.endBalance)}',
+              //   style: Theme.of(context).textTheme.caption,
+              // ),
+            ],
+          ),
+          const SizedBox(height: 5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Flexible(
+                child: Text(data.type.toUpperCase() + '\n' + description
+                    // '\n' +
+                    // data.source +
+                    // ' - ' +
+                    // data.sourceName,
+                    // style: Theme.of(context).textTheme.bodySmall,
+                    ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 5),
+          const Divider(),
+        ],
+      ),
+    );
+  }
+
   Widget buildItems(BuildContext context) {
-    if (isLoading && items.isEmpty) {
+    if (isLoading && balanceHistory.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(
           strokeWidth: 2,
@@ -282,26 +355,26 @@ class _MutationScreenState extends State<MutationScreen> {
           pc.jumpToPage(page);
         },
         children: [
-          items.isEmpty
+          balanceHistory.isEmpty
               ? const Center(
                   child: Text('Tidak ada data'),
                 )
               : ListView.builder(
                   key: const PageStorageKey<String>('listMutation'),
-                  itemCount: items.length,
+                  itemCount: balanceHistory.length,
                   itemBuilder: (context, index) {
-                    return item(items[index]);
+                    return balanceItem(balanceHistory[index]);
                   },
                 ),
-          items2.isEmpty
+          creditHistory.isEmpty
               ? const Center(
                   child: Text('Tidak ada data'),
                 )
               : ListView.builder(
                   key: const PageStorageKey<String>('listMutationCredit'),
-                  itemCount: items2.length,
+                  itemCount: creditHistory.length,
                   itemBuilder: (context, index) {
-                    return item2(items2[index]);
+                    return creditItem(creditHistory[index]);
                   },
                 ),
         ],
@@ -313,7 +386,7 @@ class _MutationScreenState extends State<MutationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SimpleAppBar(
-        title: 'Mutasi Saldo',
+        title: widget.title,
         actions: <Widget>[
           TextButton(
             child: Text(

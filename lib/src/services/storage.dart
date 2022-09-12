@@ -8,6 +8,7 @@ class AppStorage {
   static const String _verifiedKey = "_vefified";
   static const String _usernameKey = "_username";
   static const String _profileKey = "_profile";
+  static const String _walletKey = "_wallet";
 
   // Private
   static const String _pinEnable = "_pinEnable";
@@ -91,6 +92,19 @@ class AppStorage {
 
   static String getUserProfile() {
     String? value = _engine.getString(_profileKey);
+    return value ?? '';
+  }
+
+  static void setWallet(String? value) {
+    if (null != value) {
+      _engine.setString(_walletKey, value);
+    } else {
+      _engine.remove(_walletKey);
+    }
+  }
+
+  static String getWallet() {
+    String? value = _engine.getString(_walletKey);
     return value ?? '';
   }
 

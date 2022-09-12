@@ -160,10 +160,12 @@ class Api {
         .catchError(_parseException);
   }
 
-  static Future<http.Response> verifyOTP(String otp) {
+  static Future<http.Response> verifyOTP(String otp,
+      {bool activationWallet = false}) {
     Map<String, Object> body = <String, Object>{
       'imei': _deviceId,
       'otp': otp,
+      'activationWallet': activationWallet
     };
     return http
         .post(
@@ -309,25 +311,25 @@ class Api {
     return request.send();
   }
 
-  static Future<http.StreamedResponse> upgrade(
-      {required String idCardNumber,
-      required int province,
-      required int city,
-      required int district,
-      required int village,
-      required String postCode,
-      required String address,
-      required List<int>? photo}) async {
+  static Future<http.StreamedResponse> upgrade({
+    required String idCardNumber,
+    required int province,
+    required int city,
+    required int district,
+    required int village,
+    required String postCode,
+    required String address,
+    required List<int> photo,
+    required String photoName,
+  }) async {
     var request = http.MultipartRequest(
         'POST', Uri.parse(AppConfig.baseUrl + '/profile/upgrade'));
 
     var headers = getRequestHeaders();
     request.headers.addAll(headers!);
 
-    if (photo != null) {
-      request.files.add(http.MultipartFile.fromBytes('id_card_photo', photo,
-          filename: idCardNumber));
-    }
+    request.files.add(http.MultipartFile.fromBytes('id_card_photo', photo,
+        filename: photoName));
 
     request.fields.addAll(<String, String>{
       // 'agenid': userId,
@@ -552,8 +554,9 @@ class Api {
       'transaction_id': trxId,
       'product_code': productCode,
       'transaction_number': destination,
-      'payment_type':
-          method == PaymentMethod.creditBalance ? 'credit' : 'balance'
+      'payment_type': method == PaymentMethod.wallet
+          ? 'wallet'
+          : (method == PaymentMethod.creditBalance ? 'credit' : 'balance')
     };
     debugPrint('purchaseProduct $body');
     return http
@@ -1073,6 +1076,158 @@ class Api {
           json.decode(response.body) as Map<String, dynamic>;
       return bodyMap;
     }).catchError(_parseException);
+  }
+
+  /// WALLET API
+
+  static Future<http.Response> walletActivation(String fullname) {
+    Map<String, dynamic> body = <String, Object?>{
+      'fullname': fullname,
+    };
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/activation'),
+          headers: getRequestHeaders(),
+          body: json.encode(body),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> walletConfirmation(String otp) {
+    Map<String, dynamic> body = <String, Object?>{
+      'otp': otp,
+    };
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/confirmation'),
+          headers: getRequestHeaders(),
+          body: json.encode(body),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> walletProfile() {
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/profile'),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> walletTransferWidget() {
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/transferWidget'),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> walletTopup() {
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/topup'),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> walletBalance() {
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/balance'),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> walletTransfer(
+      double amount, String userId, String desc) {
+    Map<String, Object> body = <String, Object>{
+      'amount': amount,
+      'phoneNumber': userId,
+      'description': desc,
+    };
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/transfer'),
+          headers: getRequestHeaders(),
+          body: json.encode(body),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> walletHistory(
+      DateTime startDate, DateTime endDate) {
+    Map<String, Object> body = <String, Object>{
+      'startDate': formatDate(startDate, format: 'yyyy-MM-dd'),
+      'endDate': formatDate(endDate, format: 'yyyy-MM-dd'),
+    };
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/history'),
+          headers: getRequestHeaders(),
+          body: json.encode(body),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> walletPayment(String paymentCode) {
+    Map<String, Object> body = <String, Object>{
+      'paymentCode': paymentCode,
+    };
+
+    return http
+        .post(
+          Uri.parse(AppConfig.baseUrl + '/wallet/payment'),
+          headers: getRequestHeaders(),
+          body: json.encode(body),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.StreamedResponse> walletUpgrade({
+    required String identityNo,
+    required String noKK,
+    required String motherName,
+    required String email,
+    required String nationality,
+    required List<int> idCard,
+    required String idCardName,
+    required List<int> selfie,
+    required String selfieName,
+  }) async {
+    var request = http.MultipartRequest(
+        'POST', Uri.parse(AppConfig.baseUrl + '/wallet/upgrade'));
+
+    var headers = getRequestHeaders();
+    request.headers.addAll(headers!);
+
+    request.files.add(
+        http.MultipartFile.fromBytes('idCard', idCard, filename: idCardName));
+    request.files.add(
+        http.MultipartFile.fromBytes('selfie', selfie, filename: selfieName));
+
+    request.fields.addAll(<String, String>{
+      // 'agenid': userId,
+      'identityNo': identityNo,
+      'noKK': noKK,
+      'motherName': motherName,
+      'email': email,
+      'nationality': nationality,
+    });
+
+    return request.send();
   }
 }
 

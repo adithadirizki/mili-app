@@ -149,7 +149,7 @@ class _VendorScreenState extends State<VendorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SimpleAppBar(title: widget.title),
+      appBar: SimpleAppBar2(title: widget.title),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         child: buildListVendor(context),

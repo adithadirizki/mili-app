@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/data/user_balance.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/images.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 
@@ -17,47 +19,59 @@ class BalanceCreditCard extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: [Color(0xff0196DD), Color(0xff01C9D0)],
+          colors: [AppColors.gradientBlue1, AppColors.gradientBlue2],
         ),
       ),
       child: Stack(
         children: [
           Align(
-            alignment: Alignment.topCenter,
-            child: Text(
-              'Saldo Kredit',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(color: Colors.white),
+            alignment: Alignment.topLeft,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: AppColors.red2,
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Image(
+                    image: AppImages.iconBalance,
+                    width: 20,
+                    color: AppColors.white2,
+                  ),
+                  const SizedBox(width: 5),
+                  Flexible(
+                    child: FittedBox(
+                      child: Text(
+                        paymentMethodLabel[PaymentMethod.creditBalance]!,
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.white1,
+                            ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Container(
-            alignment: const Alignment(-1, 0),
+            alignment: Alignment.centerRight,
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Image(
-                  image: AppImages.wallet,
-                  width: 52,
-                ),
-                // const Icon(
-                //   Icons.account_balance_wallet_outlined,
-                //   size: 64,
+                // Text(
+                //   'Rp',
+                //   style: Theme.of(context)
+                //       .textTheme
+                //       .bodyMedium!
+                //       .copyWith(color: Colors.white),
                 // ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  'Rp',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(color: Colors.white),
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
+                // const SizedBox(
+                //   width: 5,
+                // ),
                 Flexible(
                   child: FittedBox(
                     child: Text(
@@ -72,7 +86,7 @@ class BalanceCreditCard extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

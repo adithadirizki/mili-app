@@ -1,11 +1,15 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/active_banner.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
+import 'package:miliv2/src/screens/activation_wallet.dart';
+import 'package:miliv2/src/screens/coin_mili.dart';
 import 'package:miliv2/src/screens/home_screen.dart';
 import 'package:miliv2/src/screens/otp_verification.dart';
 import 'package:miliv2/src/services/analytics.dart';
@@ -15,6 +19,7 @@ import 'package:miliv2/src/services/messaging.dart';
 import 'package:miliv2/src/services/storage.dart';
 import 'package:miliv2/src/theme/images.dart';
 import 'package:miliv2/src/utils/dialog.dart';
+import 'package:miliv2/src/widgets/coin_chip.dart';
 import 'package:miliv2/src/widgets/home_bottom_bar.dart';
 import 'package:miliv2/src/widgets/pin_verification.dart';
 
@@ -63,30 +68,51 @@ class _HomepageState extends State<Homepage>
     });
   }
 
+  FutureOr<Null> _handleError(Object e) async {
+    snackBarDialog(context, e.toString());
+    if (e is UnauthorisedException) {
+      debugPrint('Homepage _handleError  ${e.toString()}');
+      AppAuthScope.of(context).signOut();
+    }
+    return;
+  }
+
   Timer? _timer;
   void beginTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 60), (timer) {
-      debugPrint('Homepage timer');
-      userBalanceState.fetchData().catchError((dynamic e) {
-        if (e is UnauthorisedException) {
-          AppAuthScope.of(context).signOut();
-        }
-      });
+    debugPrint('Register timer');
+    _timer = Timer.periodic(const Duration(seconds: 60), (timer) async {
+      // Update wallet
+      if (userBalanceState.walletActive) {
+        await userBalanceState.fetchWallet().catchError(_handleError);
+      }
+      await userBalanceState.fetchData().catchError(_handleError);
     });
   }
 
-  void initProvider() {
+  Future<void> initProvider() async {
     AppAnalytic.setUserId(userBalanceState.userId);
-    AppMessaging.requestPermission(context);
-    userBalanceState.fetchData().catchError((dynamic e) {
-      if (e is UnauthorisedException) {
-        debugPrint('Homepage init provider ${e.toString()}');
-        AppAuthScope.of(context).signOut();
-      }
-    });
-    beginTimer();
+    await AppMessaging.requestPermission(context);
     activeBannerState.fetchData();
+    await userBalanceState.fetchData().catchError(_handleError);
+    await userBalanceState.fetchWallet().then((_) {
+      // // Init Wallet Activation
+      // if (!userBalanceState.walletActive) {
+      //   // Activation wallet
+      //   walletActivation();
+      // }
+    }).catchError(_handleError);
+    // Start timer
+    beginTimer();
   }
+
+  void walletActivation() {
+    pushScreen(
+      context,
+      (_) => const ActivationWalletScreen(),
+    );
+  }
+
+  // End Finpay function
 
   void initialize() async {
     var closeLoader = showLoaderDialog(context, message: 'Memperbarui...');
@@ -263,6 +289,15 @@ class _HomepageState extends State<Homepage>
     return true;
   }
 
+  void coinScreen() async {
+    await userBalanceState.fetchData();
+    pushScreen(
+        context,
+        (_) => const CoinMiliScreen(
+              title: 'Koin MILI & Kredit',
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -311,18 +346,20 @@ class _HomepageState extends State<Homepage>
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70.0),
         child: AppBar(
-          // backgroundColor: Colors.white,
-          elevation: 0,
-          toolbarHeight: 70,
-          title: Container(
-            alignment: Alignment.center,
-            child: const Image(
-              image: AppImages.logoColor,
-              height: 40,
-              fit: BoxFit.fill,
-            ),
-          ),
-        ),
+            // backgroundColor: Colors.white,
+            elevation: 0,
+            toolbarHeight: 70,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Image(
+                  image: AppImages.logoColor,
+                  height: 40,
+                  fit: BoxFit.fill,
+                ),
+                withBalanceProvider(CoinChip(onTap: coinScreen)),
+              ],
+            )),
       ),
       bottomNavigationBar: isShowBottomBar
           ? HomeBottomBar(
@@ -332,6 +369,7 @@ class _HomepageState extends State<Homepage>
           : null,
       body: Container(
         padding: const EdgeInsets.only(top: 0, bottom: 0),
+        color: Colors.white,
         child: TabBarView(
           key: const PageStorageKey<String>("homepage"),
           controller: tabController,
@@ -358,6 +396,14 @@ class _HomepageState extends State<Homepage>
         notifier: activeBannerState,
         child: child,
       ),
+    );
+  }
+
+  // @override
+  Widget withBalanceProvider(Widget child) {
+    return UserBalanceScope(
+      notifier: userBalanceState,
+      child: child,
     );
   }
 

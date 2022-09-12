@@ -99,34 +99,35 @@ class _HomePromoState extends State<HomePromo> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Promo',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              // Row(
-              //   children: [
-              //     Text(
-              //       'Please wait...',
-              //       style: Theme.of(context).textTheme.titleSmall,
-              //     ),
-              //     const SizedBox(width: 20),
-              //     const SizedBox(
-              //       width: 15,
-              //       height: 15,
-              //       child: Center(
-              //         child: CircularProgressIndicator(
-              //           color: AppColors.blue1,
-              //         ),
-              //       ),
-              //     )
-              //   ],
-              // ),
-            ],
-          ),
-          const Divider(),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Text(
+          //       'Promo',
+          //       style: Theme.of(context).textTheme.bodyMedium,
+          //     ),
+          //     // Row(
+          //     //   children: [
+          //     //     Text(
+          //     //       'Please wait...',
+          //     //       style: Theme.of(context).textTheme.titleSmall,
+          //     //     ),
+          //     //     const SizedBox(width: 20),
+          //     //     const SizedBox(
+          //     //       width: 15,
+          //     //       height: 15,
+          //     //       child: Center(
+          //     //         child: CircularProgressIndicator(
+          //     //           color: AppColors.blue1,
+          //     //         ),
+          //     //       ),
+          //     //     )
+          //     //   ],
+          //     // ),
+          //   ],
+          // ),
+          // const Divider(),
+          const SizedBox(height: 20),
           SizedBox(
             // height: getProportionateScreenHeight(150),
             height: 150,
