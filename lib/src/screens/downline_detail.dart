@@ -122,10 +122,15 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
         initial: dateRange, firstDate: firstDate);
     if (range != null) {
       debugPrint('Date range $range');
-      setState(() {
-        dateRange = range;
-      });
-      initDB();
+      
+      if (range.end.isBefore(range.start.add(const Duration(days: 30)))) {
+        setState(() {
+          dateRange = range;
+        });
+        initDB();
+      } else {
+        snackBarDialog(context, 'Maksimal 30 hari terakhir.');
+      }
     }
   }
 
