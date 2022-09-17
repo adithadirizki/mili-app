@@ -63,4 +63,7 @@ class AppLabel {
   static const history = "Riwayat";
   static const upgrade = "Upgrade";
   static const mutation = "Mutasi Saldo";
+  static const notification = "Notifikasi";
+  static const chat = "Chat CS";
+  static const profile = "Profil";
 }

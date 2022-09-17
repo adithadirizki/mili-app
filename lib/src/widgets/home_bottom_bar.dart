@@ -113,7 +113,7 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
               ),
               Flexible(
                 child: Text(
-                  'Notifikasi',
+                  AppLabel.notification,
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.visible,
                   maxLines: 2,
@@ -148,7 +148,7 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
               ),
               Flexible(
                 child: Text(
-                  'Chat CS',
+                  AppLabel.chat,
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.visible,
                   maxLines: 2,
@@ -187,7 +187,7 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
               ),
               Flexible(
                 child: Text(
-                  'Profil',
+                  AppLabel.profile,
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.visible,
                   maxLines: 2,

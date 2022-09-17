@@ -11,7 +11,7 @@ class AppConfig {
       // return 'http://api.mili-dev.sridata.net';
     }
     // return 'http://api.mili-dev.sridata.net';
-    return 'http://192.168.20.102:8100/0';
+    return 'http://192.168.20.104:8100/0';
   }
 
   static String get dbName {
