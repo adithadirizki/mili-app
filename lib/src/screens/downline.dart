@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -228,13 +230,6 @@ class _DownlineScreenState extends State<DownlineScreen> {
             child: Column(
               children: [
                 TextButton(
-                  style: TextButton.styleFrom(
-                    primary: Colors.blue,
-                    textStyle: const TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.bold),
-                  ),
                   onPressed: () {
                     const field = 'balance';
                     var direction = 'desc';
@@ -247,24 +242,17 @@ class _DownlineScreenState extends State<DownlineScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Saldo Utama'),
+                      Text('Saldo Utama', style: Theme.of(context).textTheme.subtitle1?.copyWith(fontWeight: FontWeight.bold, color: AppColors.blue6)),
                       Transform.scale(
                         scaleY: (sort[0] == 'balance'
                             ? (sort[1] == 'asc' ? -1 : 1)
                             : 0),
-                        child: Icon(Icons.sort),
+                        child: const Image(image: AppImages.sort, width: 25),
                       )
                     ],
                   ),
                 ),
                 TextButton(
-                  style: TextButton.styleFrom(
-                    primary: Colors.blue,
-                    textStyle: const TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.bold),
-                  ),
                   onPressed: () {
                     const field = 'balance_credit';
                     var direction = 'desc';
@@ -277,24 +265,17 @@ class _DownlineScreenState extends State<DownlineScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Saldo Kredit'),
+                      Text('Saldo Kredit', style: Theme.of(context).textTheme.subtitle1?.copyWith(fontWeight: FontWeight.bold, color: AppColors.blue6)),
                       Transform.scale(
                         scaleY: (sort[0] == 'balance_credit'
                             ? (sort[1] == 'asc' ? -1 : 1)
                             : 0),
-                        child: Icon(Icons.sort),
+                          child: const Image(image: AppImages.sort, width: 25)
                       )
                     ],
                   ),
                 ),
                 TextButton(
-                  style: TextButton.styleFrom(
-                    primary: Colors.blue,
-                    textStyle: const TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.bold),
-                  ),
                   onPressed: () {
                     const field = 'hit';
                     var direction = 'desc';
@@ -307,24 +288,17 @@ class _DownlineScreenState extends State<DownlineScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Hit'),
+                      Text('Hit', style: Theme.of(context).textTheme.subtitle1?.copyWith(fontWeight: FontWeight.bold, color: AppColors.blue6)),
                       Transform.scale(
                         scaleY: (sort[0] == 'hit'
                             ? (sort[1] == 'asc' ? -1 : 1)
                             : 0),
-                        child: Icon(Icons.sort),
+                          child: const Image(image: AppImages.sort, width: 25)
                       )
                     ],
                   ),
                 ),
                 TextButton(
-                  style: TextButton.styleFrom(
-                    primary: Colors.blue,
-                    textStyle: const TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.bold),
-                  ),
                   onPressed: () {
                     const field = 'last_active';
                     var direction = 'desc';
@@ -337,12 +311,12 @@ class _DownlineScreenState extends State<DownlineScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Terakhir Aktif'),
+                      Text('Terakhir Aktif', style: Theme.of(context).textTheme.subtitle1?.copyWith(fontWeight: FontWeight.bold, color: AppColors.blue6)),
                       Transform.scale(
                         scaleY: (sort[0] == 'last_active'
                             ? (sort[1] == 'asc' ? -1 : 1)
                             : 0),
-                        child: Icon(Icons.sort),
+                          child: const Image(image: AppImages.sort, width: 25)
                       )
                     ],
                   ),
@@ -499,15 +473,76 @@ class _DownlineScreenState extends State<DownlineScreen> {
                 return buildDownlineItem(items[index]);
               },
             )
-          : const Center(
-              child: Image(
-                image: AppImages.emptyPlaceholder,
-              ),
-            ),
+          : const Padding(padding: EdgeInsets.only(top: 20), child: Text('- Tidak ada data -')),
     );
   }
 
   Widget buildSummary(BuildContext context) {
+    return Container(
+      // height: 200,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.elliptical(20, 20)),
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [AppColors.gradientBlue2, AppColors.gradientBlue1],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x40000000),
+            offset: Offset(0.0, 4.0), //(x,y)
+            blurRadius: 4.0,
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Container(
+            padding:
+            const EdgeInsets.only(left: 15, top: 15, right: 15, bottom: 15),
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.elliptical(18, 18)),
+            ),
+            child: Text('Statistik Bulanan', style: Theme.of(context).textTheme.headline6?.copyWith(color: AppColors.white1, fontWeight: FontWeight.bold),),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const SizedBox(width: 0),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Transaksi', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white1)),
+                  Text(formatNumber(totalTrx), style: Theme.of(context).textTheme.headline6?.copyWith(color: AppColors.white1, fontWeight: FontWeight.bold)),
+                ],
+              ),
+              const SizedBox(width: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Total', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white1)),
+                  Text(formatNumber(totalDownline), style: Theme.of(context).textTheme.headline6?.copyWith(color: AppColors.white1, fontWeight: FontWeight.bold)),
+                ],
+              ),
+              const SizedBox(width: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Komisi', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white1)),
+                  Text(formatNumber(totalBonus), style: Theme.of(context).textTheme.headline6?.copyWith(color: AppColors.white1, fontWeight: FontWeight.bold)),
+                ],
+              ),
+              const SizedBox(width: 0),
+            ],
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
     return Card(
       child: Container(
         // width: double.infinity,
@@ -610,10 +645,35 @@ class _DownlineScreenState extends State<DownlineScreen> {
         actions: openSearch
             ? []
             : <Widget>[
+                IconButton(
+                  onPressed: toggleSearch,
+                  icon: const Image(
+                    image: AppImages.search,
+                  ),
+                ),
+                IconButton(
+                  onPressed: openFilterSort,
+                  icon: const Image(
+                    image: AppImages.sort,
+                  ),
+                ),
+              ],
+      ),
+      body: Container(
+        decoration: const BoxDecoration(color: AppColors.white1),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
                 TextButton(
                   child: Text(
                     '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall
+                        ?.copyWith(color: AppColors.black1),
                   ),
                   onPressed: openFilterDate,
                 ),
@@ -623,22 +683,14 @@ class _DownlineScreenState extends State<DownlineScreen> {
                     image: AppImages.calendar,
                   ),
                 ),
-                IconButton(
-                  onPressed: toggleSearch,
-                  icon: const Icon(Icons.search, size: 32),
-                ),
-                IconButton(
-                  onPressed: openFilterSort,
-                  icon: const Icon(Icons.sort, size: 32),
-                ),
               ],
-      ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        child: Column(
-          children: [
+            ),
+            const SizedBox(height: 10),
             buildSummary(context),
+            const SizedBox(height: 20),
+            Text('Daftar Downline', style: Theme.of(context).textTheme.headline6?.copyWith(color: AppColors.black1, fontWeight: FontWeight.normal)),
             FlexBoxGray(
+              padding: const EdgeInsets.all(10),
               margin: const EdgeInsets.only(top: 10),
               child: buildItems(context),
             ),
@@ -649,7 +701,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
       floatingActionButton: FloatingActionButton(
         isExtended: false,
         onPressed: onRegisterDownline,
-        backgroundColor: const Color(0xffFFCC40),
+        backgroundColor: const Color(0xff1c96d2),
         child: Container(
           margin: const EdgeInsets.all(1.0),
           padding: const EdgeInsets.all(12),

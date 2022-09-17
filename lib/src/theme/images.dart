@@ -15,6 +15,7 @@ class AppImages {
   static const back = AssetImage('assets/images/back.png');
   static const calendar = AssetImage('assets/images/calendar.png');
   static const search = AssetImage('assets/images/search.png');
+  static const sort = AssetImage('assets/images/sorting.png');
   static const notification = AssetImage('assets/images/notification.png');
   static const chat = AssetImage('assets/images/chat.png');
   static const user = AssetImage('assets/images/user.png');
