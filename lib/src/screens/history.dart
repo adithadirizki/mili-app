@@ -162,7 +162,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
       failedTotal = records.where((element) => element.isFailed).length;
       pendingTotal = records.where((element) => element.isPending).length;
       totalTransaction = records.fold(
-          0, (previousValue, element) => previousValue + element.price);
+          0,
+          (previousValue, element) =>
+              previousValue + (element.isSuccess ? element.price : 0));
     });
   }
 
