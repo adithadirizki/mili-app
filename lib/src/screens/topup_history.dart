@@ -112,7 +112,7 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
   }
 
   void copy(TopupHistory history) {
-    Clipboard.setData(ClipboardData(text: history.amount.toString()));
+    Clipboard.setData(ClipboardData(text: history.amount.toInt().toString()));
     snackBarDialog(context, 'Nominal disalin');
   }
 
