@@ -23,9 +23,10 @@ import 'package:objectbox/internal.dart';
 class PurchasePaymentProductScreen extends StatefulWidget {
   final Vendor vendor;
   final String? destination;
+  final String? productCode;
 
   const PurchasePaymentProductScreen(
-      {Key? key, required this.vendor, this.destination})
+      {Key? key, required this.vendor, this.destination, this.productCode})
       : super(key: key);
 
   @override
@@ -46,14 +47,25 @@ class _PurchasePaymentProductScreenState
   List<Product> productPulsa = [];
   Product? selectedProduct;
 
+  VendorConfigResponse? vendorConfig;
+
   @override
   void initState() {
     super.initState();
     destinationNumber = widget.destination ?? '';
     textController.text = widget.destination ?? '';
+    vendorConfig = widget.vendor.configMap;
     WidgetsBinding.instance?.addPostFrameCallback((_) {
-      initDB();
+      initialize();
     });
+  }
+
+  void initialize() async {
+    await initDB();
+    if (widget.productCode != null) {
+      selectedProduct = productPulsa
+          .firstWhere((product) => product.code == widget.productCode!);
+    }
   }
 
   Future<void> initDB() async {
@@ -175,7 +187,7 @@ class _PurchasePaymentProductScreenState
   }
 
   bool isValidDestination() {
-    return destinationNumber.isNotEmpty && selectedProduct != null;
+    return formKey.currentState!.validate();
   }
 
   void onDestinationChange(String value) {
@@ -183,7 +195,7 @@ class _PurchasePaymentProductScreenState
     if (postpaidKey.currentState != null) {
       postpaidKey.currentState!.reset();
     }
-    if (destinationNumber != value && value.length > 3) {
+    if (destinationValidator(value) == null) {
       setState(() {
         destinationNumber = value;
       });
@@ -192,6 +204,7 @@ class _PurchasePaymentProductScreenState
         destinationNumber = '';
       });
     }
+    isValidDestination();
   }
 
   void onProductChange(Product? value) {
@@ -199,8 +212,10 @@ class _PurchasePaymentProductScreenState
       postpaidKey.currentState!.reset();
     }
     inquiryResponse = null;
-    selectedProduct = value;
-    setState(() {});
+    setState(() {
+      selectedProduct = value;
+    });
+    isValidDestination();
   }
 
   Widget buildProduct(BuildContext context) {
@@ -209,8 +224,32 @@ class _PurchasePaymentProductScreenState
       destination: destinationNumber,
       inquiryCode: widget.vendor.inquiryCode,
       onInquiryCompleted: onInquiryCompleted,
-      productCode: selectedProduct == null ? null : selectedProduct!.code,
+      productCode: selectedProduct == null ? '' : selectedProduct!.code,
     );
+  }
+
+  String? destinationValidator(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Isi nomor tujuan ';
+    } else if (vendorConfig != null) {
+      var config = vendorConfig!;
+      if ((config.minLength != null &&
+              config.minLength! > 0 &&
+              value.length < config.minLength!) ||
+          (config.maxLength != null &&
+              config.maxLength! > 0 &&
+              value.length > config.maxLength!)) {
+        return 'Nomor tidak sesuai ';
+      }
+    }
+    return null;
+  }
+
+  String? productValidator(Product? value) {
+    if (value == null) {
+      return 'Pilih Produk';
+    }
+    return null;
   }
 
   @override
@@ -226,8 +265,8 @@ class _PurchasePaymentProductScreenState
               TextFormField(
                 controller: textController,
                 decoration: generateInputDecoration(
-                  hint: '0123456789',
-                  label: 'Nomor Pelanggan',
+                  hint: vendorConfig?.hint ?? '0123456789',
+                  label: vendorConfig?.label ?? 'Nomor Pelanggan',
                   onClear: destinationNumber.isNotEmpty
                       ? () {
                           textController.clear();
@@ -257,12 +296,7 @@ class _PurchasePaymentProductScreenState
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                 ],
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Nomor tidak sesuai ';
-                  }
-                  return null;
-                },
+                validator: destinationValidator,
                 onChanged: onDestinationChange,
               ),
               const SizedBox(height: 10),
@@ -281,7 +315,8 @@ class _PurchasePaymentProductScreenState
                 // label: "Pilih Produk",
                 onChanged: onProductChange,
                 //show selected item
-                selectedItem: null,
+                selectedItem: selectedProduct,
+                validator: productValidator,
               ),
               FlexBoxGray(
                 margin: const EdgeInsets.only(top: 10),

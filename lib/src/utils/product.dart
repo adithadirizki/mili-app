@@ -146,7 +146,9 @@ void openPurchaseScreen(
       pushScreen(
         context,
         (_) => PurchasePaymentProductScreen(
-            vendor: vendor!, destination: destination),
+            vendor: vendor!,
+            productCode: productCode,
+            destination: destination),
       );
     } else if (vendor.productType == vendorTypePaymentDenom) {
       pushScreen(

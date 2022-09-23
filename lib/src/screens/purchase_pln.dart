@@ -87,13 +87,16 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
     });
   }
 
-  void initialize() {
+  void initialize() async {
+    await initDB();
     if (widget.productCode != null) {
       if (widget.productCode!.startsWith('PAY')) {
         onModeChange(productMode.postpaid);
+      } else {
+        selectedProduct = productTopup
+            .firstWhere((product) => product.code == widget.productCode!);
       }
     }
-    initDB();
   }
 
   Future<void> initDB() async {
@@ -187,39 +190,39 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
     }
   }
 
-  FutureOr<void> handleError(dynamic e) {
-    snackBarDialog(context, e.toString());
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  Future<void> inquiryPrepaidAccount() async {
-    // popScreen(context);
-    setState(() {
-      isLoading = true;
-    });
-    await Api.inquiryPayment(
-      trxId: trxId,
-      inquiryCode: prepaidInquiryCode,
-      destination: destinationNumber,
-    ).then((response) {
-      setState(() {
-        isLoading = false;
-        inquiryAccountResult = InquiryResponse.fromString(response.body);
-      });
-    }).catchError(handleError);
-  }
-
-  Future<void> onProductSelected(Product? value) async {
-    if (isValidDestination()) {
-      await inquiryPrepaidAccount();
-      selectedProduct = value;
-      openPayment();
-    } else {
-      snackBarDialog(context, 'Masukkan nomor tujuan');
-    }
-  }
+  // FutureOr<void> handleError(dynamic e) {
+  //   snackBarDialog(context, e.toString());
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+  // }
+  //
+  // Future<void> inquiryPrepaidAccount() async {
+  //   // popScreen(context);
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //   await Api.inquiryPayment(
+  //     trxId: trxId,
+  //     inquiryCode: prepaidInquiryCode,
+  //     destination: destinationNumber,
+  //   ).then((response) {
+  //     setState(() {
+  //       isLoading = false;
+  //       inquiryAccountResult = InquiryResponse.fromString(response.body);
+  //     });
+  //   }).catchError(handleError);
+  // }
+  //
+  // Future<void> onProductSelected(Product? value) async {
+  //   if (isValidDestination()) {
+  //     await inquiryPrepaidAccount();
+  //     selectedProduct = value;
+  //     openPayment();
+  //   } else {
+  //     snackBarDialog(context, 'Masukkan nomor tujuan');
+  //   }
+  // }
 
   void onInquiryCompleted(InquiryResponse response) {
     inquiryResponse = response;
@@ -234,7 +237,7 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
     if (postpaidKey.currentState != null) {
       postpaidKey.currentState!.reset();
     }
-    if (destinationNumber != value && value.length > 3) {
+    if (destinationValidator(value) == null) {
       setState(() {
         destinationNumber = value;
         inquiryResponse = null;
@@ -247,6 +250,7 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
         inquiryAccountResult = null;
       });
     }
+    isValidDestination();
   }
 
   void onPaymentConfirmed() {
@@ -320,7 +324,7 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
   }
 
   bool isValidDestination() {
-    return destinationNumber.isNotEmpty;
+    return formKey.currentState!.validate();
   }
 
   bool canOpenPayment() {
@@ -332,21 +336,16 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
     inquiryResponse = null;
     selectedProduct = value;
     setState(() {});
+    isValidDestination();
   }
 
   Widget buildPrepaidScreen() {
-    // return ProductTopup(
-    //   key: const PageStorageKey<String>('ProductListrik'),
-    //   destination: destinationNumber,
-    //   onProductSelected: onProductSelected,
-    //   vendor: prepaidVendor,
-    // );
     return ProductPayment(
       key: prepaidKey,
       destination: destinationNumber,
-      inquiryCode: 'CEKPLNPRA',
+      inquiryCode: prepaidInquiryCode,
       onInquiryCompleted: onInquiryCompleted,
-      productCode: selectedProduct == null ? null : selectedProduct!.code,
+      productCode: selectedProduct == null ? '' : selectedProduct!.code,
     );
   }
 
@@ -357,6 +356,22 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
       inquiryCode: postpaidInquiryCode,
       onInquiryCompleted: onInquiryCompleted,
     );
+  }
+
+  String? destinationValidator(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Isi nomor tujuan ';
+    } else if ((value.length < 5) || (value.length > 20)) {
+      return 'Nomor tidak sesuai ';
+    }
+    return null;
+  }
+
+  String? productValidator(Product? value) {
+    if (value == null) {
+      return 'Pilih Produk';
+    }
+    return null;
   }
 
   @override
@@ -438,12 +453,7 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                 ],
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Nomor tidak sesuai ';
-                  }
-                  return null;
-                },
+                validator: destinationValidator,
                 onChanged: onDestinationChange,
               ),
               const SizedBox(height: 10),
@@ -464,7 +474,8 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
                       // label: "Pilih Produk",
                       onChanged: onProductChange,
                       //show selected item
-                      selectedItem: null,
+                      selectedItem: selectedProduct,
+                      validator: productValidator,
                     )
                   : const SizedBox(),
               FlexBoxGray(

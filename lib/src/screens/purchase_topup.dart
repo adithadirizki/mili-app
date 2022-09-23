@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:miliv2/src/api/product.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/vendor.dart';
@@ -32,11 +33,14 @@ class _PurchaseTopupScreenState extends State<PurchaseTopupScreen> {
   String destinationNumber = '';
   Product? selectedProduct;
 
+  VendorConfigResponse? vendorConfig;
+
   @override
   void initState() {
     super.initState();
     destinationNumber = widget.destination ?? '';
     textController.text = widget.destination ?? '';
+    vendorConfig = widget.vendor.configMap;
   }
 
   @override
@@ -54,8 +58,6 @@ class _PurchaseTopupScreenState extends State<PurchaseTopupScreen> {
     if (isValidDestination()) {
       selectedProduct = value;
       openPayment();
-    } else {
-      snackBarDialog(context, 'Masukkan nomor tujuan');
     }
   }
 
@@ -118,12 +120,12 @@ class _PurchaseTopupScreenState extends State<PurchaseTopupScreen> {
   }
 
   bool isValidDestination() {
-    return destinationNumber.isNotEmpty;
+    return formKey.currentState!.validate();
   }
 
   void onDestinationChange(String value) {
     value = value.trim();
-    if (destinationNumber != value && value.length > 3) {
+    if (destinationValidator(value) == null) {
       setState(() {
         destinationNumber = value;
       });
@@ -132,6 +134,7 @@ class _PurchaseTopupScreenState extends State<PurchaseTopupScreen> {
         destinationNumber = '';
       });
     }
+    // isValidDestination();
   }
 
   Widget buildProduct() {
@@ -141,6 +144,23 @@ class _PurchaseTopupScreenState extends State<PurchaseTopupScreen> {
       onProductSelected: onProductSelected,
       vendor: widget.vendor,
     );
+  }
+
+  String? destinationValidator(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Isi nomor tujuan ';
+    } else if (vendorConfig != null) {
+      var config = vendorConfig!;
+      if ((config.minLength != null &&
+              config.minLength! > 0 &&
+              value.length < config.minLength!) ||
+          (config.maxLength != null &&
+              config.maxLength! > 0 &&
+              value.length > config.maxLength!)) {
+        return 'Nomor tidak sesuai ';
+      }
+    }
+    return null;
   }
 
   @override
@@ -156,8 +176,8 @@ class _PurchaseTopupScreenState extends State<PurchaseTopupScreen> {
               TextFormField(
                 controller: textController,
                 decoration: generateInputDecoration(
-                  hint: '08xxxxxxxx',
-                  label: 'Nomor Tujuan',
+                  hint: vendorConfig?.hint ?? '08xxxxxxxx',
+                  label: vendorConfig?.label ?? 'Nomor Tujuan',
                   onClear: destinationNumber.isNotEmpty
                       ? () {
                           textController.clear();
@@ -187,12 +207,7 @@ class _PurchaseTopupScreenState extends State<PurchaseTopupScreen> {
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                 ],
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Nomor tidak sesuai ';
-                  }
-                  return null;
-                },
+                validator: destinationValidator,
                 onChanged: onDestinationChange,
               ),
               FlexBoxGray(
