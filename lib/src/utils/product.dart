@@ -117,7 +117,7 @@ void openPurchaseScreen(
   // TODO Vendor PDAM belum ketemu
 
   debugPrint(
-      'Open Purchase screen code $productCode dest $destination opr $groupName vendor ${vendor != null ? vendor.name : 'null'}');
+      'Open Purchase screen product code ${productCode ?? '-'} dest ${destination ?? '-'} opr ${groupName ?? '-'} vendor ${vendor?.name ?? '-'} config ${vendor?.config ?? '-'}');
 
   if (productCode != null &&
       (productCode.startsWith('PL') || productCode == 'PAYPLN')) {

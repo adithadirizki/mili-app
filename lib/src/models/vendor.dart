@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:miliv2/src/api/product.dart';
 import 'package:miliv2/src/config/config.dart';
 import 'package:objectbox/objectbox.dart';
@@ -14,7 +16,7 @@ class Vendor {
   String inquiryCode;
   String paymentCode;
   String productCode;
-  Map<String, dynamic>? config;
+  String? config;
   List<String>? productGroupNameList;
   int productType;
   @Property(uid: 4045970178139976307, type: PropertyType.date)
@@ -55,9 +57,12 @@ class Vendor {
         inquiryCode: response.inquiryCode ?? '',
         paymentCode: response.paymentCode ?? '',
         productCode: response.productCode ?? '',
-        config: response.config,
+        config: json.encode(response.config),
         productGroupNameList: response.productGroupNameList,
         productType: response.productType,
         updatedAt: response.updatedAt,
       );
+
+  VendorConfigResponse? get configMap =>
+      config == null ? null : VendorConfigResponse.fromString(config!);
 }
