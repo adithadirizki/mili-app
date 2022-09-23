@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:miliv2/src/api/product.dart';
 import 'package:miliv2/src/api/purchase.dart';
 import 'package:miliv2/src/models/vendor.dart';
 import 'package:miliv2/src/screens/contacts.dart';
@@ -32,6 +33,8 @@ class _PurchaseDenomScreenState extends State<PurchaseDenomScreen> {
   String destinationNumber = '';
   InquiryResponse? inquiryResponse;
 
+  VendorConfigResponse? vendorConfig;
+
   final TextEditingController textAmountController = TextEditingController();
   double amount = 0;
 
@@ -40,6 +43,7 @@ class _PurchaseDenomScreenState extends State<PurchaseDenomScreen> {
     super.initState();
     destinationNumber = widget.destination ?? '';
     textController.text = widget.destination ?? '';
+    vendorConfig = widget.vendor.configMap;
   }
 
   @override
@@ -109,7 +113,7 @@ class _PurchaseDenomScreenState extends State<PurchaseDenomScreen> {
   }
 
   bool isValidDestination() {
-    return destinationNumber.isNotEmpty;
+    return formKey.currentState!.validate();
   }
 
   void onDestinationChange(String value) {
@@ -117,7 +121,7 @@ class _PurchaseDenomScreenState extends State<PurchaseDenomScreen> {
     if (postpaidKey.currentState != null) {
       postpaidKey.currentState!.reset();
     }
-    if (destinationNumber != value && value.length > 3) {
+    if (destinationValidator(value) == null) {
       setState(() {
         destinationNumber = value;
       });
@@ -126,6 +130,7 @@ class _PurchaseDenomScreenState extends State<PurchaseDenomScreen> {
         destinationNumber = '';
       });
     }
+    isValidDestination();
   }
 
   void onAmountChange(String value) {
@@ -134,10 +139,12 @@ class _PurchaseDenomScreenState extends State<PurchaseDenomScreen> {
       postpaidKey.currentState!.reset();
     }
     var number = parseDouble(value);
-    if (number > 10000000) {
-      number = 1000000;
-    } else if (number < 0) {
-      number = 0;
+    if (vendorConfig != null) {
+      if (vendorConfig!.maxDemon != null && vendorConfig!.maxDemon! < number) {
+        number = vendorConfig!.maxDemon!;
+      } else if (number < 0) {
+        number = 0;
+      }
     }
     //
     value = formatNumber(number);
@@ -150,6 +157,7 @@ class _PurchaseDenomScreenState extends State<PurchaseDenomScreen> {
     setState(() {
       amount = number;
     });
+    isValidDestination();
   }
 
   Widget buildProduct(BuildContext context) {
@@ -160,6 +168,41 @@ class _PurchaseDenomScreenState extends State<PurchaseDenomScreen> {
       onInquiryCompleted: onInquiryCompleted,
       amount: parseDouble(textAmountController.text),
     );
+  }
+
+  String? destinationValidator(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Isi nomor tujuan ';
+    } else if (vendorConfig != null) {
+      var config = vendorConfig!;
+      if ((config.minLength != null &&
+              config.minLength! > 0 &&
+              value.length < config.minLength!) ||
+          (config.maxLength != null &&
+              config.maxLength! > 0 &&
+              value.length > config.maxLength!)) {
+        return 'Nomor tidak sesuai ';
+      }
+    }
+    return null;
+  }
+
+  String? amountValidator(String? value) {
+    if (value == null || value.isEmpty || value == '0') {
+      return 'Masukkan Nominal';
+    } else if (vendorConfig != null) {
+      var config = vendorConfig!;
+      var amount = parseDouble(value);
+      if ((config.minDemon != null &&
+              config.minDemon! > 0 &&
+              amount < config.minDemon!) ||
+          (config.maxDemon != null &&
+              config.maxDemon! > 0 &&
+              amount > config.maxDemon!)) {
+        return 'Nominal tidak sesuai ';
+      }
+    }
+    return null;
   }
 
   @override
@@ -175,8 +218,8 @@ class _PurchaseDenomScreenState extends State<PurchaseDenomScreen> {
               TextFormField(
                 controller: textController,
                 decoration: generateInputDecoration(
-                  hint: '0123456789',
-                  label: 'Nomor Pelanggan',
+                  hint: vendorConfig?.hint ?? '0123456789',
+                  label: vendorConfig?.label ?? 'Nomor Pelanggan',
                   onClear: destinationNumber.isNotEmpty
                       ? () {
                           textController.clear();
@@ -206,12 +249,7 @@ class _PurchaseDenomScreenState extends State<PurchaseDenomScreen> {
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                 ],
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Nomor tidak sesuai ';
-                  }
-                  return null;
-                },
+                validator: destinationValidator,
                 onChanged: onDestinationChange,
               ),
               TextFormField(
@@ -224,12 +262,7 @@ class _PurchaseDenomScreenState extends State<PurchaseDenomScreen> {
                 onChanged: onAmountChange,
                 decoration:
                     generateInputDecoration(hint: '100.000', label: 'Nominal'),
-                validator: (value) {
-                  if (value == null || value.isEmpty || value == '0') {
-                    return 'Masukkan Nominal';
-                  }
-                  return null;
-                },
+                validator: amountValidator,
               ),
               FlexBoxGray(
                 margin: const EdgeInsets.only(top: 10),

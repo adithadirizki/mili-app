@@ -239,7 +239,7 @@ class AppDB {
             VendorResponse.fromJson(data as Map<String, dynamic>);
 
         debugPrint(
-            'syncVendor id: ${res.serverId} name: ${res.name} vendorGroup: ${res.group} productGroups: ${res.productGroupNameList}');
+            'syncVendor id: ${res.serverId} name: ${res.name} vendorGroup: ${res.group} productGroups: ${res.productGroupNameList} config: ${res.config}');
 
         Vendor? prev = vendorDB
             .query(Vendor_.serverId.equals(res.serverId))
@@ -254,7 +254,7 @@ class AppDB {
           prev.inquiryCode = res.inquiryCode ?? '';
           prev.paymentCode = res.paymentCode ?? '';
           prev.productCode = res.productCode ?? '';
-          prev.config = res.config;
+          prev.config = json.encode(res.config);
           prev.productGroupNameList = res.productGroupNameList;
           prev.productType = res.productType;
           prev.updatedAt = res.updatedAt;

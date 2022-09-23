@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:miliv2/src/api/product.dart';
 import 'package:miliv2/src/api/purchase.dart';
 import 'package:miliv2/src/models/vendor.dart';
 import 'package:miliv2/src/screens/contacts.dart';
@@ -26,17 +27,20 @@ class PurchasePaymentScreen extends StatefulWidget {
 class _PurchasePaymentScreenState extends State<PurchasePaymentScreen> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController textController = TextEditingController();
-  final postpaidKey = GlobalKey<ProductPaymentState>();
+  final paymentKey = GlobalKey<ProductPaymentState>();
 
   bool isLoading = true;
   String destinationNumber = '';
   InquiryResponse? inquiryResponse;
+
+  VendorConfigResponse? vendorConfig;
 
   @override
   void initState() {
     super.initState();
     destinationNumber = widget.destination ?? '';
     textController.text = widget.destination ?? '';
+    vendorConfig = widget.vendor.configMap;
   }
 
   @override
@@ -105,15 +109,15 @@ class _PurchasePaymentScreenState extends State<PurchasePaymentScreen> {
   }
 
   bool isValidDestination() {
-    return destinationNumber.isNotEmpty;
+    return formKey.currentState!.validate();
   }
 
   void onDestinationChange(String value) {
     value = value.trim();
-    if (postpaidKey.currentState != null) {
-      postpaidKey.currentState!.reset();
+    if (paymentKey.currentState != null) {
+      paymentKey.currentState!.reset();
     }
-    if (destinationNumber != value && value.length > 3) {
+    if (destinationValidator(value) == null) {
       setState(() {
         destinationNumber = value;
       });
@@ -122,15 +126,33 @@ class _PurchasePaymentScreenState extends State<PurchasePaymentScreen> {
         destinationNumber = '';
       });
     }
+    isValidDestination();
   }
 
   Widget buildProduct(BuildContext context) {
     return ProductPayment(
-      key: postpaidKey,
+      key: paymentKey,
       destination: destinationNumber,
       inquiryCode: widget.vendor.inquiryCode,
       onInquiryCompleted: onInquiryCompleted,
     );
+  }
+
+  String? destinationValidator(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Isi nomor tujuan ';
+    } else if (vendorConfig != null) {
+      var config = vendorConfig!;
+      if ((config.minLength != null &&
+              config.minLength! > 0 &&
+              value.length < config.minLength!) ||
+          (config.maxLength != null &&
+              config.maxLength! > 0 &&
+              value.length > config.maxLength!)) {
+        return 'Nomor tidak sesuai ';
+      }
+    }
+    return null;
   }
 
   @override
@@ -146,8 +168,8 @@ class _PurchasePaymentScreenState extends State<PurchasePaymentScreen> {
               TextFormField(
                 controller: textController,
                 decoration: generateInputDecoration(
-                  hint: '0123456789',
-                  label: 'Nomor Pelanggan',
+                  hint: vendorConfig?.hint ?? '0123456789',
+                  label: vendorConfig?.label ?? 'Nomor Pelanggan',
                   onClear: destinationNumber.isNotEmpty
                       ? () {
                           textController.clear();
@@ -177,12 +199,7 @@ class _PurchasePaymentScreenState extends State<PurchasePaymentScreen> {
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                 ],
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Nomor tidak sesuai ';
-                  }
-                  return null;
-                },
+                validator: destinationValidator,
                 onChanged: onDestinationChange,
               ),
               FlexBoxGray(

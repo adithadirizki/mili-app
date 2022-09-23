@@ -42,7 +42,8 @@ class ProductPaymentState extends State<ProductPayment> {
   bool isValidDestination() {
     return widget.destination.isNotEmpty &&
         widget.inquiryCode.isNotEmpty &&
-        (widget.amount == null || widget.amount! > 0);
+        (widget.amount == null || widget.amount! > 0) &&
+        (widget.productCode == null || widget.productCode!.isNotEmpty);
   }
 
   bool canOpenPayment() {

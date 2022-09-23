@@ -32,9 +32,9 @@ class _VendorScreenState extends State<VendorScreen> {
 
   Future<void> initDB() async {
     await AppDB.syncVendor();
-    QueryBuilder<Vendor> queryPulsa =
+    QueryBuilder<Vendor> queryVendor =
         AppDB.vendorDB.query(Vendor_.group.equals(widget.groupName));
-    vendorList = queryPulsa.build().find();
+    vendorList = queryVendor.build().find();
     // vendorList = vendorList
     //     .where((element) =>
     //         element.group.toUpperCase() == widget.groupName.toUpperCase())

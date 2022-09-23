@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:miliv2/src/api/purchase.dart';
@@ -96,9 +94,9 @@ class _PurchasePulsaScreenState extends State<PurchasePulsaScreen> {
     }
   }
 
-  FutureOr<Null> _handleError(Object e) {
-    snackBarDialog(context, e.toString());
-  }
+  // FutureOr<Null> _handleError(Object e) {
+  //   snackBarDialog(context, e.toString());
+  // }
 
   void reset() {
     textController.clear();
@@ -144,7 +142,7 @@ class _PurchasePulsaScreenState extends State<PurchasePulsaScreen> {
     if (postpaidKey.currentState != null) {
       postpaidKey.currentState!.reset();
     }
-    if (destinationNumber != value && value.length > 3) {
+    if (destinationValidator(value) == null) {
       // Filter postpaid
       var prefix = getDestinationPrefix(destinationNumber);
       for (var key in postpaidPrefix.keys) {
@@ -244,7 +242,7 @@ class _PurchasePulsaScreenState extends State<PurchasePulsaScreen> {
   }
 
   bool isValidDestination() {
-    return destinationNumber.isNotEmpty;
+    return formKey.currentState!.validate();
   }
 
   bool canOpenPayment() {
@@ -268,6 +266,15 @@ class _PurchasePulsaScreenState extends State<PurchasePulsaScreen> {
       inquiryCode: postpaidInquiryCode,
       onInquiryCompleted: onInquiryCompleted,
     );
+  }
+
+  String? destinationValidator(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Isi nomor tujuan ';
+    } else if ((value.length < 5) || (value.length > 15)) {
+      return 'Nomor tidak sesuai ';
+    }
+    return null;
   }
 
   @override
@@ -349,12 +356,7 @@ class _PurchasePulsaScreenState extends State<PurchasePulsaScreen> {
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                 ],
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Nomor tidak sesuai ';
-                  }
-                  return null;
-                },
+                validator: destinationValidator,
                 onChanged: onDestinationChange,
               ),
               FlexBoxGray(

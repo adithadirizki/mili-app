@@ -89,6 +89,43 @@ class ProductResponse {
 }
 
 @JsonSerializable()
+class VendorConfigResponse {
+  @JsonKey(name: 'label')
+  late String? label;
+
+  @JsonKey(name: 'hint')
+  late String? hint;
+
+  @JsonKey(name: 'hide_transaction_number')
+  late bool? hideNumber;
+
+  @JsonKey(name: 'prefix_needed')
+  late bool? needPrefix;
+
+  @JsonKey(name: 'min_length')
+  late int? minLength;
+
+  @JsonKey(name: 'max_length')
+  late int? maxLength;
+
+  @JsonKey(name: 'min_denom')
+  late double? minDemon;
+
+  @JsonKey(name: 'max_denom')
+  late double? maxDemon;
+
+  VendorConfigResponse();
+
+  factory VendorConfigResponse.fromString(String body) =>
+      _$VendorConfigResponseFromJson(json.decode(body) as Map<String, dynamic>);
+
+  factory VendorConfigResponse.fromJson(Map<String, dynamic> json) =>
+      _$VendorConfigResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VendorConfigResponseToJson(this);
+}
+
+@JsonSerializable()
 class VendorResponse {
   @JsonKey(name: 'id')
   late int serverId;

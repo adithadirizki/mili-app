@@ -49,16 +49,16 @@ class _HomeMenuState extends State<HomeMenu> {
         context,
         (_) => PurchasePaymentScreen(
           vendor: Vendor(
-            serverId: 0,
-            updatedAt: DateTime.now(),
-            imageUrl: '',
-            productType: groupTagihan,
-            group: '',
-            name: 'BPJS Kesehatan',
-            title: 'BPJS Kesehatan',
-            inquiryCode: 'CEKBPJSKS',
-            paymentCode: 'PAYBPJSKS',
-          ),
+              serverId: 0,
+              updatedAt: DateTime.now(),
+              imageUrl: '',
+              productType: groupTagihan,
+              group: '',
+              name: 'BPJS Kesehatan',
+              title: 'BPJS Kesehatan',
+              inquiryCode: 'CEKBPJSKS',
+              paymentCode: 'PAYBPJSKS',
+              config: '{"min_length": 5, "max_length": 30}'),
         ),
       );
     }));
