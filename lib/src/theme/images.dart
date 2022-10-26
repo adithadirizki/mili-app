@@ -92,6 +92,10 @@ class AppImages {
       AssetImage('assets/images/finpay_powered.png');
   static const logoQris = AssetImage('assets/images/qris.png');
 
+  static const tiket = AssetImage('assets/images/tiket.png');
+  static const alfamart = AssetImage('assets/images/alfamart.png');
+  static const indormaret = AssetImage('assets/images/indomaret.png');
+
   static AssetImage getAssetImage(String filename) {
     return AssetImage('images/' + filename);
   }

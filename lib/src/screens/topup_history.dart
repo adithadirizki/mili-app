@@ -7,6 +7,8 @@ import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/topup.dart';
+import 'package:miliv2/src/models/topup_retail.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/images.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
@@ -22,8 +24,9 @@ enum historyAction {
 
 class TopupHistoryScreen extends StatefulWidget {
   final int? openDetail;
+  final String? metode;
 
-  const TopupHistoryScreen({Key? key, this.openDetail}) : super(key: key);
+  const TopupHistoryScreen({Key? key, this.openDetail, this.metode}) : super(key: key);
 
   @override
   _TopupHistoryScreenState createState() => _TopupHistoryScreenState();
@@ -31,9 +34,15 @@ class TopupHistoryScreen extends StatefulWidget {
 
 class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
   final formKey = GlobalKey<FormState>();
-  List<TopupHistory> items = [];
+  PageController pageController = PageController(initialPage: 0);
+  List<TopupHistory> itemsTopup = [];
+  List<TopupRetailHistory> itemsTopupRetail = [];
   final TextEditingController textAmountController = TextEditingController();
   bool isLoading = true;
+  String selectedMetode = 'TIKET';
+  List<String> counters = [
+    'Alfamart, Alfamidi, Dan Dan atau Lawson','Indomaret'
+  ];
 
   Timer? timer;
   DateTime now = DateTime.now();
@@ -50,12 +59,20 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
         start: now.subtract(const Duration(hours: 24 * 28)), end: now);
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
       await initDB();
-      //
-      if (widget.openDetail != null) {
-        var idx = items
-            .indexWhere((element) => element.serverId == widget.openDetail);
-        if (idx >= 0) {
-          detail(items[idx]);
+
+      if (widget.openDetail != null && widget.metode != null) {
+        if (widget.metode == 'TIKET') {
+          var idx = itemsTopup
+              .indexWhere((element) => element.id == widget.openDetail);
+          if (idx >= 0) {
+            detailTopup(itemsTopup[idx]);
+          }
+        } else if (widget.metode == 'TOPUP') {
+          var idx = itemsTopupRetail
+              .indexWhere((element) => element.id == widget.openDetail);
+          if (idx >= 0) {
+            detailTopupRetail(itemsTopupRetail[idx]);
+          }
         }
       }
       //
@@ -79,20 +96,38 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
     });
 
     await AppDB.syncTopupHistory();
+    await AppDB.syncTopupRetailHistory();
 
-    Condition<TopupHistory> filterDate = TopupHistory_.transactionDate
+    // Tiket transfer bank
+    Condition<TopupHistory> filterDateTopup = TopupHistory_.transactionDate
         .greaterOrEqual(dateRange.start.millisecondsSinceEpoch)
         .and(TopupHistory_.transactionDate.lessOrEqual(dateRange.end
-            .add(const Duration(hours: 24))
-            .millisecondsSinceEpoch));
+        .add(const Duration(hours: 24))
+        .millisecondsSinceEpoch));
 
-    Condition<TopupHistory> filterUser =
-        TopupHistory_.userId.equals(userBalanceState.userId);
+    Condition<TopupHistory> filterUserTopup =
+    TopupHistory_.userId.equals(userBalanceState.userId);
 
-    final db = AppDB.topupHistoryDB;
-    QueryBuilder<TopupHistory> query = db.query(filterDate.and(filterUser))
+    final dbTopup = AppDB.topupHistoryDB;
+    QueryBuilder<TopupHistory> queryTopup = dbTopup.query(filterDateTopup.and(filterUserTopup))
       ..order(TopupHistory_.transactionDate, flags: 1);
-    items = query.build().find();
+    itemsTopup = queryTopup.build().find();
+
+    // Topup Alfamart/Indomaret
+    Condition<TopupRetailHistory> filterDateTopupRetail = TopupRetailHistory_.created_at
+        .greaterOrEqual(dateRange.start.millisecondsSinceEpoch)
+        .and(TopupRetailHistory_.created_at.lessOrEqual(dateRange.end
+        .add(const Duration(hours: 24))
+        .millisecondsSinceEpoch));
+
+    Condition<TopupRetailHistory> filterUserTopupRetail =
+    TopupRetailHistory_.agenid.equals(userBalanceState.userId);
+
+    final dbTopupRetail = AppDB.topupRetailHistoryDB;
+    QueryBuilder<TopupRetailHistory> queryTopupRetail = dbTopupRetail
+        .query(filterDateTopupRetail.and(filterUserTopupRetail))
+      ..order(TopupRetailHistory_.created_at, flags: 1);
+    itemsTopupRetail = queryTopupRetail.build().find();
 
     setState(() {
       isLoading = false;
@@ -107,8 +142,141 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
     snackBarDialog(context, e.toString());
   }
 
-  void detail(TopupHistory history) {
+  void openFilterDate() async {
+    var range = await dateRangeDialog(context,
+        initial: dateRange, firstDate: firstDate);
+    if (range != null) {
+      debugPrint('Date range $range');
+      setState(() {
+        dateRange = range;
+      });
+      initDB();
+    }
+  }
+
+  void onMetodeChange(String? metode) {
+    if (metode != null) {
+      setState(() {
+        selectedMetode = metode;
+      });
+
+      if (metode == 'TIKET') {
+        pageController.jumpToPage(0);
+      } else {
+        pageController.jumpToPage(1);
+      }
+    }
+  }
+
+  // Tiket transfer bank
+  void detailTopup(TopupHistory history) {
     infoDialog(context, title: 'Detail', msg: history.notes);
+  }
+
+  // Topup Alfamart/Indomaret
+  void detailTopupRetail(TopupRetailHistory history) {
+    List<Widget> buildContent(TopupRetailHistory history) {
+      if (history.isPending || history.isSuccess) {
+        return [
+          const Text(
+            'Detail Transaksi',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(height: 20,),
+          Text('Silahkan lakukan pembayaran LINKITA di gerai ${counters[history.channel == "ALFAMART" ? 0 : 1]} terdekat.'),
+          const SizedBox(height: 15,),
+          Text('Nama Customer: ${history.customer_name}'),
+          Text('No Ponsel: ${history.nohp}'),
+          const SizedBox(height: 15,),
+          Row(
+            children: [
+              const Text('Nominal: '),
+              Text('Rp' + formatNumber(history.nominal), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+            ],
+          ),
+          Row(
+            children: [
+              const Text('Kode Pembayaran: '),
+              Text(history.kode_pembayaran ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+            ],
+          ),
+          history.isSuccess ? Row(
+            children: [
+              const Text('SN: '),
+              Text(history.sn ?? '-', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+            ],
+          ) : const SizedBox(),
+          const SizedBox(height: 15,),
+          const Text('Tunjukkan kode pembayaran ini ke kasir dan bayarlah sesuai nominal.')
+        ];
+      } else if (history.isFailed) {
+        return [
+          const Text(
+            'Detail Transaksi',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(height: 20,),
+          Text(history.sn ?? ''),
+        ];
+      } else if (history.isExpired) {
+        return [
+          const Text(
+            'Detail Transaksi',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(height: 20,),
+          const Text('Pembayaran telah kadaluarsa.'),
+        ];
+      } else {
+        return [
+          const Text(
+            'Detail Transaksi',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(height: 20,),
+          Text(history.sn ?? ''),
+        ];
+      }
+    }
+
+    showDialog<Widget>(
+      context: context,
+      builder: (ctx) {
+        return SimpleDialog(
+          title: Image(
+            image: history.channel == "ALFAMART" ? AppImages.alfamart : AppImages.indormaret,
+            height: 28,
+            alignment: Alignment.centerLeft,
+          ),
+          children: <Widget>[
+            Container(
+              alignment: Alignment.topLeft,
+              padding: const EdgeInsets.only(left: 25, right: 25, bottom: 25),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: buildContent(history),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'Tutup', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void copy(TopupHistory history) {
@@ -129,9 +297,10 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
     });
   }
 
-  Widget buildHistoryItem(TopupHistory history) {
+  // Tiket transfer bank
+  Widget buildTopupHistoryItem(TopupHistory history) {
     var timeLeft =
-        history.transactionDate.add(const Duration(hours: 3)).difference(now);
+    history.transactionDate.add(const Duration(hours: 3)).difference(now);
     return Card(
       child: Container(
         padding: const EdgeInsets.all(15),
@@ -182,7 +351,7 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
                         size: 22,
                       ),
                       onPressed: () {
-                        detail(history);
+                        detailTopup(history);
                       },
                     ),
                   ],
@@ -275,20 +444,113 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
     );
   }
 
-  void openFilterDate() async {
-    var range = await dateRangeDialog(context,
-        initial: dateRange, firstDate: firstDate);
-    if (range != null) {
-      debugPrint('Date range $range');
-      setState(() {
-        dateRange = range;
-      });
-      initDB();
-    }
+  // Topup Alfamart/Indomaret
+  Widget buildTopupRetailHistoryItem(TopupRetailHistory history) {
+    var timeLeft =
+    history.created_at.add(const Duration(hours: 24)).difference(now);
+    return Card(
+      child: Container(
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      formatNumber(history.nominal),
+                    ),
+                    Text(
+                      formatDate(history.created_at),
+                      style: Theme.of(context).textTheme.caption!.copyWith(),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                Row(
+                  children: [
+                    IconButton(
+                      padding: const EdgeInsets.all(0),
+                      icon: const Icon(
+                        Icons.info_outline_rounded,
+                        color: Colors.grey,
+                        size: 22,
+                      ),
+                      onPressed: () {
+                        detailTopupRetail(history);
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const Divider(),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: history.isSuccess
+                            ? Colors.greenAccent
+                            : history.isFailed
+                            ? Colors.redAccent
+                            : history.isExpired
+                            ? Colors.redAccent
+                            : Colors.yellow,
+                        borderRadius:
+                        const BorderRadius.all(Radius.elliptical(15, 15)),
+                      ),
+                      child: Text(
+                        history.isSuccess
+                            ? 'Berhasil'
+                            : history.isFailed
+                            ? 'Gagal'
+                            : history.isPending
+                            ? 'Menunggu Pembayaran'
+                            : history.isExpired
+                            ? 'Kadaluarsa'
+                            : history.status.toString(),
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          fontSize: 12,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    history.isPending
+                        ? Text(
+                      'Waktu bayar ${printDuration(timeLeft)}',
+                    )
+                        : const SizedBox(),
+                  ],
+                ),
+                Image(
+                  image: history.channel == "ALFAMART" ? AppImages.alfamart : AppImages.indormaret,
+                  width: 45,
+                )
+                // Text(history.channel, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red),),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  Widget buildItems(BuildContext context) {
-    if (isLoading && items.isEmpty) {
+  // Tiket transfer bank
+  Widget buildItemsTopupHistory(BuildContext context) {
+    if (isLoading && itemsTopup.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(
           strokeWidth: 2,
@@ -298,14 +560,39 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
 
     return RefreshIndicator(
       onRefresh: onRefresh,
-      child: items.isEmpty
+      child: itemsTopup.isEmpty
           ? const Center(
               child: Text('Tidak ada data'),
             )
           : ListView.builder(
-              itemCount: items.length,
+              itemCount: itemsTopup.length,
               itemBuilder: (context, index) {
-                return buildHistoryItem(items[index]);
+                return buildTopupHistoryItem(itemsTopup[index]);
+              },
+      ),
+    );
+  }
+
+  // Topup Alfamart/Indomaret
+  Widget buildItemsTopupRetailHistory(BuildContext context) {
+    if (isLoading && itemsTopupRetail.isEmpty) {
+      return const Center(
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: itemsTopupRetail.isEmpty
+          ? const Center(
+        child: Text('Tidak ada data'),
+      )
+          : ListView.builder(
+              itemCount: itemsTopupRetail.length,
+              itemBuilder: (context, index) {
+                return buildTopupRetailHistoryItem(itemsTopupRetail[index]);
               },
             ),
     );
@@ -315,15 +602,9 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SimpleAppBar(
-        title: 'Tiket',
+        title: 'Riwayat Beli Koin',
+        elevation: 0,
         actions: <Widget>[
-          TextButton(
-            child: Text(
-              '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            onPressed: openFilterDate,
-          ),
           IconButton(
             onPressed: openFilterDate,
             icon: const Image(
@@ -332,15 +613,75 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
           ),
         ],
       ),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        child: buildItems(context),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
+              // style: Theme.of(context).textTheme.button,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  ?.copyWith(color: AppColors.black1),
+            ),
+            const SizedBox(height: 10,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Row(
+                  children: [
+                    Radio<String>(
+                      onChanged: onMetodeChange,
+                      groupValue: selectedMetode,
+                      value: 'TIKET',
+                      activeColor: Colors.blueAccent,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        onMetodeChange('TIKET');
+                      },
+                      child: const Text("Tiket"),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Radio<String>(
+                      onChanged: onMetodeChange,
+                      groupValue: selectedMetode,
+                      value: 'TOPUP',
+                      activeColor: Colors.blueAccent,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        onMetodeChange('TOPUP');
+                      },
+                      child: const Text('Alfamart/Indomaret'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Expanded(child: PageView(
+              controller: pageController,
+              onPageChanged: (value) {
+                if (value == 0) {
+                  onMetodeChange('TIKET');
+                } else if (value == 1) {
+                  onMetodeChange('TOPUP');
+                }
+              },
+              children: [
+                buildItemsTopupHistory(context),
+                buildItemsTopupRetailHistory(context),
+              ],
+            ))
+          ],
+        ),
       ),
     );
-    // return Container(
-    //   padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-    //   alignment: Alignment.topLeft,
-    //   child: buildItems(context),
-    // );
   }
 }
