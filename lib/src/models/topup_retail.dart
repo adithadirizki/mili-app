@@ -4,6 +4,7 @@ import 'package:objectbox/objectbox.dart';
 @Entity()
 class TopupRetailHistory {
   int id;
+  int serverId;
   String agenid;
   String nohp;
   String customer_name;
@@ -21,6 +22,7 @@ class TopupRetailHistory {
 
   TopupRetailHistory({
     this.id = 0,
+    required this.serverId,
     required this.agenid,
     required this.nohp,
     required this.customer_name,
@@ -35,8 +37,10 @@ class TopupRetailHistory {
     required this.created_at,
   });
 
-  factory TopupRetailHistory.fromResponse(TopupRetailHistoryResponse response) =>
+  factory TopupRetailHistory.fromResponse(
+          TopupRetailHistoryResponse response) =>
       TopupRetailHistory(
+        serverId: response.serverId,
         agenid: response.agenid,
         nohp: response.nohp,
         customer_name: response.customer_name,

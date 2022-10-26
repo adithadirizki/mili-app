@@ -7,7 +7,7 @@ part 'topup_retail.g.dart';
 @JsonSerializable()
 class TopupRetailHistoryResponse {
   @JsonKey(name: 'id')
-  late final int id;
+  late final int serverId;
 
   @JsonKey(name: 'agenid')
   late final String agenid;
@@ -48,7 +48,8 @@ class TopupRetailHistoryResponse {
   TopupRetailHistoryResponse();
 
   factory TopupRetailHistoryResponse.fromString(String body) =>
-      _$TopupRetailHistoryResponseFromJson(json.decode(body) as Map<String, dynamic>);
+      _$TopupRetailHistoryResponseFromJson(
+          json.decode(body) as Map<String, dynamic>);
 
   factory TopupRetailHistoryResponse.fromJson(Map<String, dynamic> json) =>
       _$TopupRetailHistoryResponseFromJson(json);

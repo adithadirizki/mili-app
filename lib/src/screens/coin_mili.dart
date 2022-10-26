@@ -178,50 +178,45 @@ class _CoinMiliScreenState extends State<CoinMiliScreen> {
     return Container(
       padding: const EdgeInsets.only(left: 15, right: 15, bottom: 0, top: 10),
       // color: Colors.white,
-      child: GestureDetector(
-        onTap: () {
-          detail(history);
-        },
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  formatDate(history.transactionDate),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(fontWeight: FontWeight.bold),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text(
+                formatDate(history.transactionDate),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+              const Spacer(),
+              Text(
+                formatNumber(history.amount),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          const SizedBox(height: 5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(
+                child: Text(
+                  history.isSuccess
+                      ? history.notes
+                      : (history.isFailed ? 'Dibatalkan' : 'Pending'),
+                  // style: Theme.of(context).textTheme.caption,
                 ),
-                const Spacer(),
-                Text(
-                  formatNumber(history.amount),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Flexible(
-                  child: Text(
-                    history.isSuccess
-                        ? history.notes
-                        : (history.isFailed ? 'Dibatalkan' : 'Pending'),
-                    // style: Theme.of(context).textTheme.caption,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 5),
-            const Divider(),
-          ],
-        ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 5),
+          const Divider(),
+        ],
       ),
     );
   }

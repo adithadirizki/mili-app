@@ -22,7 +22,8 @@ void confirmDialog(BuildContext context,
         title: title != null
             ? Text(
                 title,
-                style: Theme.of(context).textTheme.titleMedium,
+                // style: Theme.of(context).textTheme.titleMedium,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               )
             : null,
         children: <Widget>[
@@ -53,10 +54,14 @@ void confirmDialog(BuildContext context,
                       ? Text(
                           cancelText,
                           // style: Theme.of(context).textTheme.button,
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500),
                         )
                       : const Text(
                           'Tidak',
                           // style: Theme.of(context).textTheme.button,
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500),
                         ),
                 ),
                 TextButton(
@@ -91,7 +96,8 @@ void infoDialog(BuildContext context, {required String msg, String? title}) {
         title: title != null
             ? Text(
                 title,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
               )
             : null,
         children: <Widget>[
@@ -114,7 +120,8 @@ void infoDialog(BuildContext context, {required String msg, String? title}) {
                     Navigator.of(context).pop();
                   },
                   child: const Text(
-                    'Tutup', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+                    'Tutup',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     // style: Theme.of(context).textTheme.button,
                   ),
                 ),
@@ -127,82 +134,150 @@ void infoDialog(BuildContext context, {required String msg, String? title}) {
   );
 }
 
-void infoTopupRetail(BuildContext context, {required TopupRetailHistory history}) {
+void infoTopupRetail(BuildContext context,
+    {required TopupRetailHistory history}) {
   List<String> counters = [
-    'Alfamart, Alfamidi, Dan Dan atau Lawson','Indomaret'
+    'Alfamart, Alfamidi, Dan Dan atau Lawson',
+    'Indomaret'
   ];
 
   List<Widget> buildContent(TopupRetailHistory history) {
-    if (history.isPending || history.isSuccess) {
+    if (history.isPending) {
       return [
         const Text(
           'Detail Transaksi',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
         ),
-        const SizedBox(height: 20,),
-        Text('Silahkan lakukan pembayaran LINKITA di gerai ${counters[history.channel == "ALFAMART" ? 0 : 1]} terdekat.'),
-        const SizedBox(height: 15,),
+        const SizedBox(
+          height: 20,
+        ),
+        Text(
+            'Silahkan lakukan pembayaran LINKITA di gerai ${counters[history.channel == "ALFAMART" ? 0 : 1]} terdekat.'),
+        const SizedBox(
+          height: 15,
+        ),
         Text('Nama Customer: ${history.customer_name}'),
         Text('No Ponsel: ${history.nohp}'),
-        const SizedBox(height: 15,),
         Row(
           children: [
             const Text('Nominal: '),
-            Text('Rp' + formatNumber(history.nominal), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+            Text(
+              'Rp' + formatNumber(history.nominal),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            )
           ],
         ),
         Row(
           children: [
             const Text('Kode Pembayaran: '),
-            Text(history.kode_pembayaran ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+            Text(
+              history.kode_pembayaran ?? '',
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            )
           ],
         ),
-        history.isPending ? Row(
+        Row(
           children: [
             const Text('Batas Waktu: '),
-            Text(formatDate(history.created_at.add(const Duration(hours: 24))) + ' WIB', style: const TextStyle(fontWeight: FontWeight.bold),)
+            Text(
+              formatDate(history.created_at.add(const Duration(hours: 24)),
+                  format: 'd/MMM/yyyy HH:mm:ss'),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            )
           ],
-        ) : const SizedBox(),
-        history.isSuccess ? Row(
+        ),
+        const SizedBox(
+          height: 15,
+        ),
+        const Text(
+            'Tunjukkan kode pembayaran ini ke kasir dan bayarlah sesuai nominal.')
+      ];
+    } else if (history.isSuccess) {
+      return [
+        const Text(
+          'Detail Transaksi',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Text('Pembayaran berhasil'),
+        const SizedBox(
+          height: 15,
+        ),
+        Text('Nama Customer: ${history.customer_name}'),
+        Text('No Ponsel: ${history.nohp}'),
+        Row(
+          children: [
+            const Text('Nominal: '),
+            Text(
+              'Rp' + formatNumber(history.nominal),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            )
+          ],
+        ),
+        Row(
+          children: [
+            const Text('Kode Pembayaran: '),
+            Text(
+              history.kode_pembayaran ?? '',
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            )
+          ],
+        ),
+        Row(
           children: [
             const Text('SN: '),
-            Text(history.sn ?? '-', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+            Text(
+              history.sn ?? '-',
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            )
           ],
-        ) : const SizedBox(),
-        history.isSuccess ? Row(
+        ),
+        Row(
           children: [
             const Text('Tanggal Bayar: '),
-            Text(formatDate(history.tanggal_bayar!) + ' WIB', style: const TextStyle(fontWeight: FontWeight.bold),)
+            Text(
+              formatDate(history.tanggal_bayar!, format: 'd/MMM/yyyy HH:mm:ss'),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            )
           ],
-        ) : const SizedBox(),
-        const SizedBox(height: 15,),
-        const Text('Tunjukkan kode pembayaran ini ke kasir dan bayarlah sesuai nominal.')
+        ),
+        const SizedBox(
+          height: 15,
+        ),
       ];
     } else if (history.isFailed) {
       return [
         const Text(
           'Detail Transaksi',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
         ),
-        const SizedBox(height: 20,),
+        const SizedBox(
+          height: 20,
+        ),
         Text(history.sn ?? ''),
       ];
     } else if (history.isExpired) {
       return [
         const Text(
           'Detail Transaksi',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
         ),
-        const SizedBox(height: 20,),
+        const SizedBox(
+          height: 20,
+        ),
         Text(history.sn ?? ''),
       ];
     } else {
       return [
         const Text(
           'Detail Transaksi',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
         ),
-        const SizedBox(height: 20,),
+        const SizedBox(
+          height: 20,
+        ),
         Text(history.sn ?? ''),
       ];
     }
@@ -213,7 +288,9 @@ void infoTopupRetail(BuildContext context, {required TopupRetailHistory history}
     builder: (ctx) {
       return SimpleDialog(
         title: Image(
-          image: history.channel == "ALFAMART" ? AppImages.alfamart : AppImages.indormaret,
+          image: history.channel == "ALFAMART"
+              ? AppImages.alfamart
+              : AppImages.indormaret,
           height: 28,
           alignment: Alignment.centerLeft,
         ),
@@ -236,7 +313,8 @@ void infoTopupRetail(BuildContext context, {required TopupRetailHistory history}
                     Navigator.of(context).pop();
                   },
                   child: const Text(
-                    'Tutup', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+                    'Tutup',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                   ),
                 ),
               ],

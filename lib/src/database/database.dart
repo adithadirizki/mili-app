@@ -73,7 +73,8 @@ class AppDB {
   static Box<PurchaseHistory> get purchaseHistoryDB =>
       _db.box<PurchaseHistory>();
   static Box<TopupHistory> get topupHistoryDB => _db.box<TopupHistory>();
-  static Box<TopupRetailHistory> get topupRetailHistoryDB => _db.box<TopupRetailHistory>();
+  static Box<TopupRetailHistory> get topupRetailHistoryDB =>
+      _db.box<TopupRetailHistory>();
   static Box<Notification> get notificationDB => _db.box<Notification>();
   static Box<BalanceMutation> get balanceMutationDB =>
       _db.box<BalanceMutation>();
@@ -451,16 +452,18 @@ class AppDB {
 
     debugPrint('syncTopupRetailHistory with params $params');
 
-    return Api.getTopupRetailHistory(params: params).then((pagingResponse) async {
-      debugPrint('syncTopupRetailHistory data length ${pagingResponse.data.length}');
+    return Api.getTopupRetailHistory(params: params)
+        .then((pagingResponse) async {
+      debugPrint(
+          'syncTopupRetailHistory data length ${pagingResponse.data.length}');
 
       for (var data in pagingResponse.data) {
         try {
           TopupRetailHistoryResponse res =
-          TopupRetailHistoryResponse.fromJson(data as Map<String, dynamic>);
+              TopupRetailHistoryResponse.fromJson(data as Map<String, dynamic>);
 
           TopupRetailHistory? prev = topupRetailHistoryDB
-              .query(TopupRetailHistory_.id.equals(res.id))
+              .query(TopupRetailHistory_.serverId.equals(res.serverId))
               .build()
               .findFirst();
 

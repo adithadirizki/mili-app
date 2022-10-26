@@ -833,7 +833,7 @@
     },
     {
       "id": "24:175369090819899284",
-      "lastPropertyId": "13:256457315860702551",
+      "lastPropertyId": "14:6962505924192965546",
       "name": "TopupRetailHistory",
       "properties": [
         {
@@ -901,6 +901,11 @@
           "id": "13:256457315860702551",
           "name": "nohp",
           "type": 9
+        },
+        {
+          "id": "14:6962505924192965546",
+          "name": "serverId",
+          "type": 6
         }
       ],
       "relations": []
