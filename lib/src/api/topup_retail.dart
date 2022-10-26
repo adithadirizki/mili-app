@@ -25,7 +25,7 @@ class TopupRetailHistoryResponse {
   late final double? additionalfee;
 
   @JsonKey(name: 'payment_reff')
-  late final String? payment_reff;
+  late final int? payment_reff;
 
   @JsonKey(name: 'kode_pembayaran')
   late final String? kode_pembayaran;

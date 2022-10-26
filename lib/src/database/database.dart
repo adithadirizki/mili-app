@@ -446,7 +446,7 @@ class AppDB {
     Map<String, String> params = {
       'limit': limit.toString(),
       'sort': json.encode({'created_at': 'asc'}),
-      'filter': json.encode({'created_at': '>|$timestamp'})
+      'filter': json.encode({'updated_at': '>|$timestamp'})
     };
 
     debugPrint('syncTopupRetailHistory with params $params');

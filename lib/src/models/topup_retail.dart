@@ -9,7 +9,7 @@ class TopupRetailHistory {
   String customer_name;
   double nominal;
   double? additionalfee;
-  String? payment_reff;
+  int? payment_reff;
   String? kode_pembayaran;
   String channel;
   int status;

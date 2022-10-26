@@ -9,6 +9,7 @@ import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/topup.dart';
 import 'package:miliv2/src/models/topup_retail.dart';
+import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
@@ -41,6 +42,9 @@ class _CoinMiliScreenState extends State<CoinMiliScreen> {
   final TextEditingController textAmountController = TextEditingController();
   String selectedMetode = 'TIKET';
   bool isLoading = true;
+  List<String> counters = [
+    'Alfamart, Alfamidi, Dan Dan atau Lawson','Indomaret'
+  ];
 
   Timer? timer;
   DateTime now = DateTime.now();
@@ -62,7 +66,7 @@ class _CoinMiliScreenState extends State<CoinMiliScreen> {
         var idx = itemsTopup
             .indexWhere((element) => element.serverId == widget.openDetail);
         if (idx >= 0) {
-          detail(itemsTopup[idx]);
+          detailTopup(itemsTopup[idx]);
         }
       }
       //
@@ -132,8 +136,14 @@ class _CoinMiliScreenState extends State<CoinMiliScreen> {
     snackBarDialog(context, e.toString());
   }
 
-  void detail(TopupHistory history) {
-    infoDialog(context, title: 'Detail', msg: history.notes);
+  // Tiket Transfer Bank
+  void detailTopup(TopupHistory history) {
+    infoDialog(context, title: 'Detail Transaksi', msg: history.notes);
+  }
+
+  // Topup Alfamart/Indomaret
+  void detailTopupRetail(TopupRetailHistory history) {
+    infoTopupRetail(context, history: history);
   }
 
   void copy(TopupHistory history) {
@@ -311,7 +321,11 @@ class _CoinMiliScreenState extends State<CoinMiliScreen> {
           : ListView.builder(
               itemCount: itemsTopup.length,
               itemBuilder: (context, index) {
-                return buildTopupHistoryItem(itemsTopup[index]);
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => detailTopup(itemsTopup[index]),
+                  child: buildTopupHistoryItem(itemsTopup[index]),
+                );
               },
             ),
     );
@@ -335,7 +349,11 @@ class _CoinMiliScreenState extends State<CoinMiliScreen> {
           : ListView.builder(
         itemCount: itemsTopupRetail.length,
         itemBuilder: (context, index) {
-          return buildTopupRetailHistoryItem(itemsTopupRetail[index]);
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => detailTopupRetail(itemsTopupRetail[index]),
+            child: buildTopupRetailHistoryItem(itemsTopupRetail[index]),
+          );
         },
       ),
     );
