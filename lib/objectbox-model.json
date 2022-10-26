@@ -830,9 +830,83 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "24:175369090819899284",
+      "lastPropertyId": "13:256457315860702551",
+      "name": "TopupRetailHistory",
+      "properties": [
+        {
+          "id": "1:5693342467541617234",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:4876543417058854184",
+          "name": "agenid",
+          "type": 9
+        },
+        {
+          "id": "3:8724874317156785153",
+          "name": "nominal",
+          "type": 8
+        },
+        {
+          "id": "4:7370076159196826543",
+          "name": "additionalfee",
+          "type": 8
+        },
+        {
+          "id": "5:7389724528950826811",
+          "name": "payment_reff",
+          "type": 9
+        },
+        {
+          "id": "6:6268293175080463418",
+          "name": "kode_pembayaran",
+          "type": 9
+        },
+        {
+          "id": "7:7718061910469135457",
+          "name": "channel",
+          "type": 9
+        },
+        {
+          "id": "8:8477641432851608872",
+          "name": "status",
+          "type": 6
+        },
+        {
+          "id": "9:7625908294475498116",
+          "name": "sn",
+          "type": 9
+        },
+        {
+          "id": "10:7473715056684975318",
+          "name": "tanggal_bayar",
+          "type": 10
+        },
+        {
+          "id": "11:5045748379622200306",
+          "name": "created_at",
+          "type": 10
+        },
+        {
+          "id": "12:6198437893466947722",
+          "name": "customer_name",
+          "type": 9
+        },
+        {
+          "id": "13:256457315860702551",
+          "name": "nohp",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "23:5369826945022665503",
+  "lastEntityId": "24:175369090819899284",
   "lastIndexId": "1:3042645842357435335",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

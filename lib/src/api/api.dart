@@ -432,6 +432,22 @@ class Api {
         .catchError(_parseException);
   }
 
+  static Future<Map<String, dynamic>> createTopupRetail(double amount, String channel) {
+    Map<String, Object> body = <String, Object>{
+      "amount": amount,
+      "channel": channel,
+    };
+    return http
+        .post(
+      Uri.parse(AppConfig.baseUrl + '/balance/topup'),
+      headers: getRequestHeaders(),
+      body: json.encode(body),
+    )
+        .then(_parseResponse)
+        .then((response) => json.decode(response.body) as Map<String, dynamic>)
+        .catchError(_parseException);
+  }
+
   static Future<http.Response> cancelTopupTicket(int id) {
     Map<String, Object> body = <String, Object>{
       'id': id,
@@ -458,6 +474,23 @@ class Api {
         .then((response) {
       Map<String, dynamic> bodyMap =
           json.decode(response.body) as Map<String, dynamic>;
+      var pagingResponse = PagingResponse.fromJson(bodyMap);
+      return pagingResponse;
+    }).catchError(_parseException);
+  }
+
+  // TODO ganti semua response paging ke PagingResponse<T>
+  static Future<PagingResponse> getTopupRetailHistory({Map<String, Object>? params}) {
+    return http
+        .get(
+      Uri.parse(AppConfig.baseUrl + '/balance/topup')
+          .replace(queryParameters: params),
+      headers: getRequestHeaders(),
+    )
+        .then(_parseResponse)
+        .then((response) {
+      Map<String, dynamic> bodyMap =
+      json.decode(response.body) as Map<String, dynamic>;
       var pagingResponse = PagingResponse.fromJson(bodyMap);
       return pagingResponse;
     }).catchError(_parseException);

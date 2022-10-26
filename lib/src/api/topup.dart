@@ -9,13 +9,16 @@ class BankInfo {
   @JsonKey(name: 'bank_name')
   final String bankName;
 
+  @JsonKey(name: 'image')
+  final String image;
+
   @JsonKey(name: 'account_name')
   final String accountName;
 
   @JsonKey(name: 'account_number')
   final String accountNumber;
 
-  BankInfo(this.bankName, this.accountName, this.accountNumber);
+  BankInfo(this.bankName, this.image, this.accountName, this.accountNumber);
 
   factory BankInfo.fromString(String body) =>
       _$BankInfoFromJson(json.decode(body) as Map<String, dynamic>);
@@ -37,10 +40,16 @@ class TopupInfoResponse {
   @JsonKey(name: 'max_amount')
   final double maxAmount;
 
+  @JsonKey(name: 'min_topup')
+  final double min_topup;
+
+  @JsonKey(name: 'max_topup')
+  final double max_topup;
+
   @JsonKey(name: 'banks')
   final List<BankInfo> banks;
 
-  TopupInfoResponse(this.notes, this.banks, this.minAmount, this.maxAmount);
+  TopupInfoResponse(this.notes, this.banks, this.minAmount, this.maxAmount, this.min_topup, this.max_topup);
 
   factory TopupInfoResponse.fromString(String body) =>
       _$TopupInfoResponseFromJson(json.decode(body) as Map<String, dynamic>);

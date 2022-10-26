@@ -9,6 +9,7 @@ import 'package:miliv2/src/api/notification.dart';
 import 'package:miliv2/src/api/product.dart';
 import 'package:miliv2/src/api/purchase.dart';
 import 'package:miliv2/src/api/topup.dart';
+import 'package:miliv2/src/api/topup_retail.dart';
 import 'package:miliv2/src/api/train.dart';
 import 'package:miliv2/src/api/user_config.dart';
 import 'package:miliv2/src/config/config.dart';
@@ -19,6 +20,7 @@ import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/purchase.dart';
 import 'package:miliv2/src/models/timestamp.dart';
 import 'package:miliv2/src/models/topup.dart';
+import 'package:miliv2/src/models/topup_retail.dart';
 import 'package:miliv2/src/models/train_station.dart';
 import 'package:miliv2/src/models/user_config.dart';
 import 'package:miliv2/src/models/vendor.dart';
@@ -71,6 +73,7 @@ class AppDB {
   static Box<PurchaseHistory> get purchaseHistoryDB =>
       _db.box<PurchaseHistory>();
   static Box<TopupHistory> get topupHistoryDB => _db.box<TopupHistory>();
+  static Box<TopupRetailHistory> get topupRetailHistoryDB => _db.box<TopupRetailHistory>();
   static Box<Notification> get notificationDB => _db.box<Notification>();
   static Box<BalanceMutation> get balanceMutationDB =>
       _db.box<BalanceMutation>();
@@ -425,6 +428,78 @@ class AppDB {
     }).catchError((dynamic e) {
       _unlockSyncronize(apiCode);
       debugPrint('syncTopupHistory error $e');
+    });
+  }
+
+  static Future<void> syncTopupRetailHistory() async {
+    const apiCode = 'topup-retail-history';
+
+    if (_lockedSyncronize(apiCode)) {
+      return;
+    }
+    _lockSyncronize(apiCode);
+
+    const limit = 50;
+    DateTime? lastUpdate = getLastUpdate(apiCode);
+    String timestamp = lastUpdate == null ? '' : lastUpdate.toIso8601String();
+
+    Map<String, String> params = {
+      'limit': limit.toString(),
+      'sort': json.encode({'created_at': 'asc'}),
+      'filter': json.encode({'created_at': '>|$timestamp'})
+    };
+
+    debugPrint('syncTopupRetailHistory with params $params');
+
+    return Api.getTopupRetailHistory(params: params).then((pagingResponse) async {
+      debugPrint('syncTopupRetailHistory data length ${pagingResponse.data.length}');
+
+      for (var data in pagingResponse.data) {
+        try {
+          TopupRetailHistoryResponse res =
+          TopupRetailHistoryResponse.fromJson(data as Map<String, dynamic>);
+
+          TopupRetailHistory? prev = topupRetailHistoryDB
+              .query(TopupRetailHistory_.id.equals(res.id))
+              .build()
+              .findFirst();
+
+          if (prev != null) {
+            prev.agenid = res.agenid;
+            prev.nohp = res.nohp;
+            prev.customer_name = res.customer_name;
+            prev.nominal = res.nominal;
+            prev.additionalfee = res.additionalfee;
+            prev.payment_reff = res.payment_reff;
+            prev.kode_pembayaran = res.kode_pembayaran;
+            prev.channel = res.channel;
+            prev.status = res.status;
+            prev.sn = res.sn;
+            prev.tanggal_bayar = res.tanggal_bayar;
+            prev.created_at = res.created_at;
+            topupRetailHistoryDB.put(prev);
+            setLastUpdate(apiCode, res.created_at);
+          } else {
+            TopupRetailHistory history = TopupRetailHistory.fromResponse(res);
+            topupRetailHistoryDB.put(history);
+            setLastUpdate(apiCode, res.created_at);
+          }
+        } catch (error) {
+          debugPrint('syncTopupRetailHistory error $error at $data');
+        }
+      }
+
+      debugPrint(
+          'syncTopupRetailHistory lastUpdate $timestamp get ${pagingResponse.data.length} item from ${pagingResponse.total} ');
+
+      _unlockSyncronize(apiCode);
+      // Get next page
+      if (pagingResponse.data.length >= limit) {
+        return await syncTopupRetailHistory();
+      }
+    }).catchError((dynamic e) {
+      _unlockSyncronize(apiCode);
+      debugPrint('syncTopupRetailHistory error $e');
     });
   }
 
