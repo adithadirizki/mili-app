@@ -40,9 +40,6 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
   final TextEditingController textAmountController = TextEditingController();
   bool isLoading = true;
   String selectedMetode = 'TIKET';
-  List<String> counters = [
-    'Alfamart, Alfamidi, Dan Dan atau Lawson','Indomaret'
-  ];
 
   Timer? timer;
   DateTime now = DateTime.now();
@@ -57,6 +54,12 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
     firstDate = DateTime(now.year, now.month - 6);
     dateRange = DateTimeRange(
         start: now.subtract(const Duration(hours: 24 * 28)), end: now);
+
+    if (widget.metode == "TOPUP") {
+      selectedMetode = "TOPUP";
+      pageController = PageController(initialPage: 1);
+    }
+
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
       await initDB();
 
@@ -170,113 +173,12 @@ class _TopupHistoryScreenState extends State<TopupHistoryScreen> {
 
   // Tiket transfer bank
   void detailTopup(TopupHistory history) {
-    infoDialog(context, title: 'Detail', msg: history.notes);
+    infoDialog(context, title: 'Detail Transaksi', msg: history.notes);
   }
 
   // Topup Alfamart/Indomaret
   void detailTopupRetail(TopupRetailHistory history) {
-    List<Widget> buildContent(TopupRetailHistory history) {
-      if (history.isPending || history.isSuccess) {
-        return [
-          const Text(
-            'Detail Transaksi',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-          ),
-          const SizedBox(height: 20,),
-          Text('Silahkan lakukan pembayaran LINKITA di gerai ${counters[history.channel == "ALFAMART" ? 0 : 1]} terdekat.'),
-          const SizedBox(height: 15,),
-          Text('Nama Customer: ${history.customer_name}'),
-          Text('No Ponsel: ${history.nohp}'),
-          const SizedBox(height: 15,),
-          Row(
-            children: [
-              const Text('Nominal: '),
-              Text('Rp' + formatNumber(history.nominal), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
-            ],
-          ),
-          Row(
-            children: [
-              const Text('Kode Pembayaran: '),
-              Text(history.kode_pembayaran ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
-            ],
-          ),
-          history.isSuccess ? Row(
-            children: [
-              const Text('SN: '),
-              Text(history.sn ?? '-', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
-            ],
-          ) : const SizedBox(),
-          const SizedBox(height: 15,),
-          const Text('Tunjukkan kode pembayaran ini ke kasir dan bayarlah sesuai nominal.')
-        ];
-      } else if (history.isFailed) {
-        return [
-          const Text(
-            'Detail Transaksi',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-          ),
-          const SizedBox(height: 20,),
-          Text(history.sn ?? ''),
-        ];
-      } else if (history.isExpired) {
-        return [
-          const Text(
-            'Detail Transaksi',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-          ),
-          const SizedBox(height: 20,),
-          const Text('Pembayaran telah kadaluarsa.'),
-        ];
-      } else {
-        return [
-          const Text(
-            'Detail Transaksi',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-          ),
-          const SizedBox(height: 20,),
-          Text(history.sn ?? ''),
-        ];
-      }
-    }
-
-    showDialog<Widget>(
-      context: context,
-      builder: (ctx) {
-        return SimpleDialog(
-          title: Image(
-            image: history.channel == "ALFAMART" ? AppImages.alfamart : AppImages.indormaret,
-            height: 28,
-            alignment: Alignment.centerLeft,
-          ),
-          children: <Widget>[
-            Container(
-              alignment: Alignment.topLeft,
-              padding: const EdgeInsets.only(left: 25, right: 25, bottom: 25),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: buildContent(history),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      'Tutup', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
-    );
+    infoTopupRetail(context, history: history);
   }
 
   void copy(TopupHistory history) {
