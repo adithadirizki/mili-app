@@ -13,6 +13,7 @@ import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/purchase.dart';
 import 'package:miliv2/src/screens/customer_service.dart';
+import 'package:miliv2/src/screens/print.dart';
 import 'package:miliv2/src/services/printer.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
@@ -276,7 +277,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           infoDialog(
             context,
             title: 'Detail Transaksi',
-            msg: detail.invoice,
+            msg: detail.invoice.struct,
           );
         }).catchError(_handleError);
       } else if (action == historyAction.showInvoice) {
@@ -287,7 +288,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           confirmDialog(
             context,
             title: 'Detail Transaksi',
-            msg: detail.invoice + '\n\nCetak struk ?',
+            msg: detail.invoice.struct + '\n\nCetak struk ?',
             confirmAction: () {
               print(detail);
             },
@@ -298,7 +299,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
           Map<String, dynamic> bodyMap =
               json.decode(response.body) as Map<String, dynamic>;
           var struct = PurchaseHistoryDetailResponse.fromJson(bodyMap);
-          print(struct);
+
+          pushScreen(context, (ctx) {
+            return PrintScreen(history: struct);
+          });
         }).catchError(_handleError);
       } else if (action == historyAction.contactCS) {
         pushScreen(
@@ -311,7 +315,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           Map<String, dynamic> bodyMap =
               json.decode(response.body) as Map<String, dynamic>;
           var struct = PurchaseHistoryDetailResponse.fromJson(bodyMap);
-          Share.share(struct.invoice,
+          Share.share(struct.invoice.struct,
               sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
         }).catchError(_handleError);
       }

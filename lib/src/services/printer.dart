@@ -227,13 +227,30 @@ class AppPrinter {
     await _print(rows, context: context, config: config);
   }
 
+  static Future<void> printStruct(String struct, {required BuildContext context}) async {
+    List<LineText> rows = [];
+    rows.add(LineText(
+      type: LineText.TYPE_TEXT,
+      content: struct,
+      weight: 0,
+      align: LineText.ALIGN_LEFT,
+      linefeed: 1,
+    ));
+
+    rows.add(LineText(
+      linefeed: 1,
+    ));
+
+    await _print(rows, context: context);
+  }
+
   static Future<void> printPurchaseHistory(PurchaseHistoryDetailResponse data,
       {Map<String, dynamic>? config, required BuildContext context}) async {
     if (data.config == null) {
       List<LineText> rows = [];
       rows.add(LineText(
         type: LineText.TYPE_TEXT,
-        content: data.invoice,
+        content: data.invoice.struct,
         weight: 0,
         align: LineText.ALIGN_LEFT,
         linefeed: 1,
