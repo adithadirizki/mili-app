@@ -195,10 +195,14 @@ class _PrintScreenState extends State<PrintScreen> {
                                       ],
                                       onChanged: (string) {
                                         var amount = parseDouble(string);
+                                        var max_markup = widget.history.invoice.max_markup;
+                                        var max = widget.history.invoice.total_pay + (max_markup ?? 0);
                                         double min = 0;
 
                                         if (amount < min) {
                                           amount = min;
+                                        } else if (max_markup != null && amount > max) {
+                                          amount = max;
                                         }
 
                                         string = formatNumber(amount);
@@ -213,15 +217,16 @@ class _PrintScreenState extends State<PrintScreen> {
                                         });
                                       },
                                       validator: (value) {
-                                        double min = widget.history.invoice.total_pay;
-                                        double max = 100025000;
+                                        double min = widget.history.invoice.bill_amount + widget.history.invoice.admin_fee;
+                                        var max_markup = widget.history.invoice.max_markup;
+                                        var max = widget.history.invoice.total_pay + (max_markup ?? 0);
                                         if (value == null ||
                                             value.isEmpty ||
                                             value == '0') {
                                           return 'Masukkan Harga Jual';
                                         }
                                         var amount = parseDouble(value);
-                                        if (amount < min || amount > max) {
+                                        if (amount < min || (max_markup != null && amount > max)) {
                                           return 'Jumlah tidak sesuai';
                                         }
                                         return null;

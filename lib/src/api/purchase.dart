@@ -152,8 +152,11 @@ class StructDetailResponse {
   @JsonKey(name: 'total_pay')
   final double total_pay;
 
+  @JsonKey(name: 'max_markup')
+  final double? max_markup;
+
   StructDetailResponse(this.struct, this.bill_amount, this.admin_fee,
-      this.user_price, this.total_pay);
+      this.user_price, this.total_pay, this.max_markup);
 
   factory StructDetailResponse.fromString(String body) =>
       _$StructDetailResponseFromJson(
