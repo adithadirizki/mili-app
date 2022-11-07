@@ -73,10 +73,14 @@ void confirmDialog(BuildContext context,
                       ? Text(
                           confirmText,
                           // style: Theme.of(context).textTheme.button,
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500),
                         )
                       : const Text(
                           'Ya',
                           // style: Theme.of(context).textTheme.button,
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
                         ),
                 )
               ],
@@ -142,6 +146,8 @@ void infoTopupRetail(BuildContext context,
   ];
 
   List<Widget> buildContent(TopupRetailHistory history) {
+    var _additionalfee = history.additionalfee ?? 1000.toDouble();
+
     if (history.isPending) {
       return [
         const Text(
@@ -158,7 +164,7 @@ void infoTopupRetail(BuildContext context,
         ),
         Text('Nama Customer: ${history.customer_name}'),
         Text('No Ponsel: ${history.nohp}'),
-        Row(
+        Wrap(
           children: [
             const Text('Nominal: '),
             Text(
@@ -167,7 +173,25 @@ void infoTopupRetail(BuildContext context,
             )
           ],
         ),
-        Row(
+        Wrap(
+          children: [
+            const Text('Biaya Layanan: '),
+            Text(
+              'Rp' + formatNumber(_additionalfee),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            )
+          ],
+        ),
+        Wrap(
+          children: [
+            const Text('Total: '),
+            Text(
+              'Rp' + formatNumber(history.nominal + _additionalfee),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            )
+          ],
+        ),
+        Wrap(
           children: [
             const Text('Kode Pembayaran: '),
             Text(
@@ -176,7 +200,7 @@ void infoTopupRetail(BuildContext context,
             )
           ],
         ),
-        Row(
+        Wrap(
           children: [
             const Text('Batas Waktu: '),
             Text(
@@ -190,7 +214,7 @@ void infoTopupRetail(BuildContext context,
           height: 15,
         ),
         const Text(
-            'Tunjukkan kode pembayaran ini ke kasir dan bayarlah sesuai nominal.')
+            'Tunjukkan kode pembayaran ini ke kasir.')
       ];
     } else if (history.isSuccess) {
       return [
@@ -207,7 +231,7 @@ void infoTopupRetail(BuildContext context,
         ),
         Text('Nama Customer: ${history.customer_name}'),
         Text('No Ponsel: ${history.nohp}'),
-        Row(
+        Wrap(
           children: [
             const Text('Nominal: '),
             Text(
@@ -216,7 +240,25 @@ void infoTopupRetail(BuildContext context,
             )
           ],
         ),
-        Row(
+        Wrap(
+          children: [
+            const Text('Biaya Layanan: '),
+            Text(
+              'Rp' + formatNumber(_additionalfee),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            )
+          ],
+        ),
+        Wrap(
+          children: [
+            const Text('Total: '),
+            Text(
+              'Rp' + formatNumber(history.nominal + _additionalfee),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            )
+          ],
+        ),
+        Wrap(
           children: [
             const Text('Kode Pembayaran: '),
             Text(
@@ -225,7 +267,7 @@ void infoTopupRetail(BuildContext context,
             )
           ],
         ),
-        Row(
+        Wrap(
           children: [
             const Text('SN: '),
             Text(
@@ -234,7 +276,7 @@ void infoTopupRetail(BuildContext context,
             )
           ],
         ),
-        Row(
+        Wrap(
           children: [
             const Text('Tanggal Bayar: '),
             Text(

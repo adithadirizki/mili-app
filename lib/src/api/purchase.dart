@@ -136,12 +136,45 @@ class PurchaseHistoryResponse {
 }
 
 @JsonSerializable()
+class StructDetailResponse {
+  @JsonKey(name: 'struct')
+  final String struct;
+
+  @JsonKey(name: 'bill_amount')
+  final double bill_amount;
+
+  @JsonKey(name: 'admin_fee')
+  final double admin_fee;
+
+  @JsonKey(name: 'user_price')
+  final double user_price;
+
+  @JsonKey(name: 'total_pay')
+  final double total_pay;
+
+  @JsonKey(name: 'max_markup')
+  final double? max_markup;
+
+  StructDetailResponse(this.struct, this.bill_amount, this.admin_fee,
+      this.user_price, this.total_pay, this.max_markup);
+
+  factory StructDetailResponse.fromString(String body) =>
+      _$StructDetailResponseFromJson(
+          json.decode(body) as Map<String, dynamic>);
+
+  factory StructDetailResponse.fromJson(Map<String, dynamic> json) =>
+      _$StructDetailResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StructDetailResponseToJson(this);
+}
+
+@JsonSerializable()
 class PurchaseHistoryDetailResponse {
   @JsonKey(name: 'config')
   final List<Map<String, dynamic>>? config;
 
   @JsonKey(name: 'data')
-  final String invoice;
+  final StructDetailResponse invoice;
 
   PurchaseHistoryDetailResponse(this.invoice, this.config);
 

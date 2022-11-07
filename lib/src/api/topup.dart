@@ -46,10 +46,13 @@ class TopupInfoResponse {
   @JsonKey(name: 'max_topup')
   final double max_topup;
 
+  @JsonKey(name: 'service_fee')
+  final double service_fee;
+
   @JsonKey(name: 'banks')
   final List<BankInfo> banks;
 
-  TopupInfoResponse(this.notes, this.banks, this.minAmount, this.maxAmount, this.min_topup, this.max_topup);
+  TopupInfoResponse(this.notes, this.banks, this.minAmount, this.maxAmount, this.min_topup, this.max_topup, this.service_fee);
 
   factory TopupInfoResponse.fromString(String body) =>
       _$TopupInfoResponseFromJson(json.decode(body) as Map<String, dynamic>);

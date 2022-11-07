@@ -31,7 +31,7 @@ class TopupScreen extends StatefulWidget {
 
 class _TopupScreenState extends State<TopupScreen> {
   final formKey = GlobalKey<FormState>();
-  TopupInfoResponse topupInfo = TopupInfoResponse('', [], 0, 1000000, 0, 0);
+  TopupInfoResponse topupInfo = TopupInfoResponse('', [], 0, 1000000, 0, 0, 1000);
   final TextEditingController textAmountController = TextEditingController();
   bool isLoading = true;
   Object? selectedMetode;
@@ -65,19 +65,109 @@ class _TopupScreenState extends State<TopupScreen> {
     snackBarDialog(context, e.toString());
   }
 
+  void confirmTopupRetail(void Function() confirmAction) {
+    showDialog<Widget>(
+      barrierDismissible: false,
+      context: context,
+      builder: (ctx) {
+        return SimpleDialog(
+          title: const Text(
+            'Konfirmasi',
+            // style: Theme.of(context).textTheme.titleMedium,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+          ),
+          children: <Widget>[
+            Container(
+              alignment: Alignment.topLeft,
+              padding: const EdgeInsets.only(left: 25, right: 25, bottom: 25),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                    children: [
+                      const Text('Nominal: '),
+                      Text(
+                        'Rp' + formatNumber(parseDouble(textAmountController.value.text)),
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      )
+                    ],
+                  ),
+                  Wrap(
+                    children: [
+                      const Text('Biaya Layanan: '),
+                      Text(
+                        'Rp' + formatNumber(topupInfo.service_fee),
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      )
+                    ],
+                  ),
+                  Wrap(
+                    children: [
+                      const Text('Total: '),
+                      Text(
+                        'Rp' + formatNumber(parseDouble(textAmountController.value.text) + topupInfo.service_fee),
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 15,),
+                  const Text('Lanjutkan pembayaran ?')
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        isLoading = false;
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'Batal',
+                      // style: Theme.of(context).textTheme.button,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      await Navigator.of(context).maybePop();
+                      confirmAction();
+                    },
+                    child: const Text(
+                      'Lanjutkan',
+                      // style: Theme.of(context).textTheme.button,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void submitData() {
     if (userBalanceState.isGuest()) {
       confirmSignin(context);
     } else if (formKey.currentState!.validate()) {
-      setState(() {
-        isLoading = true;
-      });
-
       var amount = parseDouble(textAmountController.value.text);
       var type = selectedMetode.toString();
 
       debugPrint('TOPUP : ${type}');
-      if (type == "TIKET") {
+      if (type == null.toString()) {
+        handleError('Pilih opsi pembelian koin');
+      } else if (type == "TIKET") {
+        setState(() {
+          isLoading = true;
+        });
+
         Api.createTopupTicket(amount).then((response) {
           int? id;
           debugPrint('Tiket ${response}');
@@ -88,15 +178,21 @@ class _TopupScreenState extends State<TopupScreen> {
           replaceScreen(context, (_) => TopupHistoryScreen(openDetail: id, metode: 'TIKET',));
         }).catchError(handleError);
       } else {
-        Api.createTopupRetail(amount, type).then((response) {
-          int? id;
-          debugPrint('${type} ${response}');
-          if (response.containsKey('data') &&
-              (response['data'] as Map<String, dynamic>).containsKey('id')) {
-            id = response['data']['id'] as int;
-          }
-          replaceScreen(context, (_) => TopupHistoryScreen(openDetail: id, metode: 'TOPUP',));
-        }).catchError(handleError);
+        confirmTopupRetail(() {
+          setState(() {
+            isLoading = true;
+          });
+
+          Api.createTopupRetail(amount, type).then((response) {
+            int? id;
+            debugPrint('${type} ${response}');
+            if (response.containsKey('data') &&
+                (response['data'] as Map<String, dynamic>).containsKey('id')) {
+              id = response['data']['id'] as int;
+            }
+            replaceScreen(context, (_) => TopupHistoryScreen(openDetail: id, metode: 'TOPUP',));
+          }).catchError(handleError);
+        });
       }
     }
   }
@@ -235,10 +331,10 @@ class _TopupScreenState extends State<TopupScreen> {
                       const SizedBox(height: 5),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text('2. '),
+                        children: [
+                          const Text('2. '),
                           Expanded(
-                              child: Text('Silahkan pergi ke outlet Alfamart, Alfamidi, Alfaexpress, Dan Dan atau Lawson terdekat.')
+                              child: Text('Biaya layanan sebesar Rp${formatNumber(topupInfo.service_fee)} tidak termasuk biaya merchant.')
                           )
                         ],
                       ),
@@ -248,7 +344,7 @@ class _TopupScreenState extends State<TopupScreen> {
                         children: const [
                           Text('3. '),
                           Expanded(
-                              child: Text('Masukkan nominal pembelian koin yang diinginkan, lalu catat atau cetak Kode Pembayaran yang diterima.'),
+                              child: Text('Silahkan pergi ke outlet Alfamart, Alfamidi, Alfaexpress, Dan Dan atau Lawson terdekat.')
                           )
                         ],
                       ),
@@ -258,7 +354,7 @@ class _TopupScreenState extends State<TopupScreen> {
                         children: const [
                           Text('4. '),
                           Expanded(
-                            child: Text('Informasikan kepada kasir dengan menyebutkan pembayaran atau top up LINKITA.'),
+                              child: Text('Masukkan nominal pembelian koin yang diinginkan, lalu catat atau cetak Kode Pembayaran yang diterima.'),
                           )
                         ],
                       ),
@@ -268,7 +364,17 @@ class _TopupScreenState extends State<TopupScreen> {
                         children: const [
                           Text('5. '),
                           Expanded(
-                            child: Text('Berikan Kode Pembayaran ke kasir dan lakukan pembayaran sesuai nominal.'),
+                            child: Text('Informasikan kepada kasir dengan menyebutkan pembayaran atau top up LINKITA.'),
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text('6. '),
+                          Expanded(
+                            child: Text('Berikan Kode Pembayaran ke kasir.'),
                           )
                         ],
                       ),
@@ -315,10 +421,10 @@ class _TopupScreenState extends State<TopupScreen> {
                       const SizedBox(height: 5),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text('2. '),
+                        children: [
+                          const Text('2. '),
                           Expanded(
-                              child: Text('Silahkan pergi ke outlet Indomaret terdekat.')
+                              child: Text('Biaya layanan sebesar Rp${formatNumber(topupInfo.service_fee)} tidak termasuk biaya merchant.')
                           )
                         ],
                       ),
@@ -328,7 +434,7 @@ class _TopupScreenState extends State<TopupScreen> {
                         children: const [
                           Text('3. '),
                           Expanded(
-                            child: Text('Masukkan nominal pembelian koin yang diinginkan, lalu catat atau cetak Kode Pembayaran yang diterima.'),
+                              child: Text('Silahkan pergi ke outlet Indomaret terdekat.')
                           )
                         ],
                       ),
@@ -338,7 +444,7 @@ class _TopupScreenState extends State<TopupScreen> {
                         children: const [
                           Text('4. '),
                           Expanded(
-                            child: Text('Informasikan kepada kasir dengan menyebutkan pembayaran atau top up LINKITA.'),
+                            child: Text('Masukkan nominal pembelian koin yang diinginkan, lalu catat atau cetak Kode Pembayaran yang diterima.'),
                           )
                         ],
                       ),
@@ -348,7 +454,17 @@ class _TopupScreenState extends State<TopupScreen> {
                         children: const [
                           Text('5. '),
                           Expanded(
-                            child: Text('Berikan Kode Pembayaran ke kasir dan lakukan pembayaran sesuai nominal.'),
+                            child: Text('Informasikan kepada kasir dengan menyebutkan pembayaran atau top up LINKITA.'),
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text('6. '),
+                          Expanded(
+                            child: Text('Berikan Kode Pembayaran ke kasir.'),
                           )
                         ],
                       ),
