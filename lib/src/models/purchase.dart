@@ -17,7 +17,7 @@ class PurchaseHistory {
   double price;
   Map<String, dynamic>? productConfig; // TODO ganti ke model Vendor
   String? productDetail;
-  StructDetailResponse? purchaseStruct;
+  String? purchaseStruct;
 
   PurchaseHistory({
     this.id = 0,
@@ -32,7 +32,7 @@ class PurchaseHistory {
     required this.price,
     this.productConfig,
     this.productDetail,
-    this.purchaseStruct,
+    this.purchaseStruct = '',
   });
 
   factory PurchaseHistory.fromResponse(PurchaseHistoryResponse response) =>
@@ -50,7 +50,7 @@ class PurchaseHistory {
             ? response.productConfig!.toJson()
             : null,
         productDetail: response.productDetail,
-        purchaseStruct: response.purchaseStruct,
+        purchaseStruct: response.purchaseStruct ?? '',
       );
 
   bool get isSuccess => status.toUpperCase() == 'SUCCESSED';

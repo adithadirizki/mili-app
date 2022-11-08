@@ -250,7 +250,7 @@ class AppPrinter {
       List<LineText> rows = [];
       rows.add(LineText(
         type: LineText.TYPE_TEXT,
-        content: data.invoice.struct,
+        content: data.invoice,
         weight: 0,
         align: LineText.ALIGN_LEFT,
         linefeed: 1,
