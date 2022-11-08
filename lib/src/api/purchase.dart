@@ -121,7 +121,7 @@ class PurchaseHistoryResponse {
   late final String? productDetail;
 
   @JsonKey(name: 'struct')
-  late final String? purchaseStruct;
+  late final StructDetailResponse? purchaseStruct;
 
   PurchaseHistoryResponse();
 
