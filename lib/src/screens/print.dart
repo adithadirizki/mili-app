@@ -25,6 +25,7 @@ class _PrintScreenState extends State<PrintScreen> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController textAmountController = TextEditingController(text: '0');
   String struct = '';
+  List<Map<String, dynamic>>? config;
   List<List<String?>> structList = [];
   bool isLoading = false;
 
@@ -50,17 +51,19 @@ class _PrintScreenState extends State<PrintScreen> {
       );
 
       struct = widget.history.invoice;
+      config = widget.history.config;
     });
   }
 
   void printStruct() {
     if (formKey.currentState!.validate()) {
+
       confirmDialog(
         context,
         title: 'Detail Transaksi',
-        msg: struct,
+        msg: struct + '\nCetak Struk ?',
         confirmAction: () {
-          AppPrinter.printStruct(struct, context: context);
+          AppPrinter.printStruct(struct: struct, config: config, context: context);
         },
       );
     }
@@ -108,6 +111,42 @@ class _PrintScreenState extends State<PrintScreen> {
       return [colLeft, colRight];
     }).toList();
 
+    var configList = widget.history.config?.map((e) {
+      if (e['columns'] != null) {
+        dynamic columns = e['columns'];
+        dynamic colLeft = columns[0];
+        int colsLength = columns.length as int;
+        int colRight = colsLength - 1;
+
+        var bill_amount = widget.history.struct.bill_amount;
+
+        if (colLeft != null && colLeft.toString().toLowerCase().contains('harga')) {
+          if (e['columns'][colRight] != null) {
+            e['columns'][colRight]['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text));
+          }
+        }
+
+        if (colLeft != null && (colLeft.toString().toLowerCase().contains('tagihan') || colLeft.toString().toLowerCase().contains('transfer'))) {
+          if (e['columns'][colRight] != null) {
+            e['columns'][colRight]['text'] = 'Rp. ' + NumberFormat('#,###').format(bill_amount);
+          }
+        }
+
+        if (colLeft != null && colLeft.toString().toLowerCase().contains('admin')) {
+          if (e['columns'][colRight] != null) {
+            e['columns'][colRight]['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text) - bill_amount);
+          }
+        }
+
+        if (colLeft != null && colLeft.toString().toLowerCase().contains('bayar')) {
+          if (e['columns'][colRight] != null) {
+            e['columns'][colRight]['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text));
+          }
+        }
+      }
+      return e;
+    }).toList();
+
     setState(() {
       var _struct = '';
       for (var value in structList) {
@@ -116,8 +155,8 @@ class _PrintScreenState extends State<PrintScreen> {
         _struct += '\n';
       }
 
-      _struct += '\nCetak Struk ?';
       struct = _struct;
+      config = configList;
     });
 
     return structList.asMap().entries.map((e) {
