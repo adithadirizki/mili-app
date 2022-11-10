@@ -121,7 +121,7 @@ class PurchaseHistoryResponse {
   late final String? productDetail;
 
   @JsonKey(name: 'struct')
-  late final StructDetailResponse? purchaseStruct;
+  late final String? purchaseStruct;
 
   PurchaseHistoryResponse();
 
@@ -174,9 +174,12 @@ class PurchaseHistoryDetailResponse {
   final List<Map<String, dynamic>>? config;
 
   @JsonKey(name: 'data')
-  final StructDetailResponse invoice;
+  final String invoice;
 
-  PurchaseHistoryDetailResponse(this.invoice, this.config);
+  @JsonKey(name: 'struct_detail')
+  final StructDetailResponse struct;
+
+  PurchaseHistoryDetailResponse(this.invoice, this.config, this.struct);
 
   factory PurchaseHistoryDetailResponse.fromString(String body) =>
       _$PurchaseHistoryDetailResponseFromJson(

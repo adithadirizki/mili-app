@@ -25,6 +25,7 @@ class _PrintScreenState extends State<PrintScreen> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController textAmountController = TextEditingController(text: '0');
   String struct = '';
+  List<Map<String, dynamic>>? config;
   List<List<String?>> structList = [];
   bool isLoading = false;
 
@@ -43,41 +44,41 @@ class _PrintScreenState extends State<PrintScreen> {
   void initialize() {
     setState(() {
       textAmountController.value = TextEditingValue(
-        text: formatNumber(widget.history.invoice.total_pay),
+        text: formatNumber(widget.history.struct.total_pay),
         selection: TextSelection.collapsed(
-          offset: widget.history.invoice.total_pay.toInt().toString().length,
+          offset: widget.history.struct.total_pay.toInt().toString().length,
         ),
       );
 
-      struct = widget.history.invoice.struct;
+      struct = widget.history.invoice;
+      config = widget.history.config;
     });
-
-    debugPrint('${widget.history.invoice.toJson()}');
   }
 
   void printStruct() {
     if (formKey.currentState!.validate()) {
+
       confirmDialog(
         context,
         title: 'Detail Transaksi',
-        msg: struct,
+        msg: struct + '\nCetak Struk ?',
         confirmAction: () {
-          AppPrinter.printStruct(struct, context: context);
+          AppPrinter.printStruct(struct: struct, config: config, context: context);
         },
       );
     }
   }
 
   List<Widget> buildStruct() {
-    var structList = widget.history.invoice.struct.split('\n').map((e) {
+    var structList = widget.history.invoice.split('\n').map((e) {
       var row = e;
       var cols = row.split(':');
       var colLeft = cols[0].trim();
       cols.removeAt(0);
       var colRight = cols.isNotEmpty ? cols.join(':').trim() : null;
 
-      var bill_amount = widget.history.invoice.bill_amount;
-      var total_pay = widget.history.invoice.total_pay;
+      var bill_amount = widget.history.struct.bill_amount;
+      var total_pay = widget.history.struct.total_pay;
 
       // Replace Harga (pulsa, data, ewallet, prabayar)
       if (colLeft.toLowerCase().contains('harga')) {
@@ -110,6 +111,42 @@ class _PrintScreenState extends State<PrintScreen> {
       return [colLeft, colRight];
     }).toList();
 
+    var configList = widget.history.config?.map((e) {
+      if (e['columns'] != null) {
+        dynamic columns = e['columns'];
+        dynamic colLeft = columns[0];
+        int colsLength = columns.length as int;
+        int colRight = colsLength - 1;
+
+        var bill_amount = widget.history.struct.bill_amount;
+
+        if (colLeft != null && colLeft.toString().toLowerCase().contains('harga')) {
+          if (e['columns'][colRight] != null) {
+            e['columns'][colRight]['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text));
+          }
+        }
+
+        if (colLeft != null && (colLeft.toString().toLowerCase().contains('tagihan') || colLeft.toString().toLowerCase().contains('transfer'))) {
+          if (e['columns'][colRight] != null) {
+            e['columns'][colRight]['text'] = 'Rp. ' + NumberFormat('#,###').format(bill_amount);
+          }
+        }
+
+        if (colLeft != null && colLeft.toString().toLowerCase().contains('admin')) {
+          if (e['columns'][colRight] != null) {
+            e['columns'][colRight]['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text) - bill_amount);
+          }
+        }
+
+        if (colLeft != null && colLeft.toString().toLowerCase().contains('bayar')) {
+          if (e['columns'][colRight] != null) {
+            e['columns'][colRight]['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text));
+          }
+        }
+      }
+      return e;
+    }).toList();
+
     setState(() {
       var _struct = '';
       for (var value in structList) {
@@ -118,8 +155,8 @@ class _PrintScreenState extends State<PrintScreen> {
         _struct += '\n';
       }
 
-      _struct += '\nCetak Struk ?';
       struct = _struct;
+      config = configList;
     });
 
     return structList.asMap().entries.map((e) {
@@ -195,8 +232,8 @@ class _PrintScreenState extends State<PrintScreen> {
                                       ],
                                       onChanged: (string) {
                                         var amount = parseDouble(string);
-                                        var max_markup = widget.history.invoice.max_markup;
-                                        var max = widget.history.invoice.total_pay + (max_markup ?? 0);
+                                        var max_markup = widget.history.struct.max_markup;
+                                        var max = widget.history.struct.total_pay + (max_markup ?? 0);
                                         double min = 0;
 
                                         if (amount < min) {
@@ -217,9 +254,9 @@ class _PrintScreenState extends State<PrintScreen> {
                                         });
                                       },
                                       validator: (value) {
-                                        double min = widget.history.invoice.bill_amount + widget.history.invoice.admin_fee;
-                                        var max_markup = widget.history.invoice.max_markup;
-                                        var max = widget.history.invoice.total_pay + (max_markup ?? 0);
+                                        double min = widget.history.struct.bill_amount + widget.history.struct.admin_fee;
+                                        var max_markup = widget.history.struct.max_markup;
+                                        var max = widget.history.struct.total_pay + (max_markup ?? 0);
                                         if (value == null ||
                                             value.isEmpty ||
                                             value == '0') {

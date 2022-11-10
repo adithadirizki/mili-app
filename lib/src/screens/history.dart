@@ -277,7 +277,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           infoDialog(
             context,
             title: 'Detail Transaksi',
-            msg: detail.invoice.struct,
+            msg: detail.invoice,
           );
         }).catchError(_handleError);
       } else if (action == historyAction.showInvoice) {
@@ -288,7 +288,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           confirmDialog(
             context,
             title: 'Detail Transaksi',
-            msg: detail.invoice.struct + '\n\nCetak struk ?',
+            msg: detail.invoice + '\n\nCetak struk ?',
             confirmAction: () {
               print(detail);
             },
@@ -315,7 +315,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           Map<String, dynamic> bodyMap =
               json.decode(response.body) as Map<String, dynamic>;
           var struct = PurchaseHistoryDetailResponse.fromJson(bodyMap);
-          Share.share(struct.invoice.struct,
+          Share.share(struct.invoice,
               sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
         }).catchError(_handleError);
       }
