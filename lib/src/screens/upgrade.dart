@@ -234,33 +234,36 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
 
   VoidCallback onPhotoTap(BuildContext context) {
     return () async {
-      ImageSource? source = await showDialog<ImageSource>(
-          context: context,
-          builder: (context) {
-            return SimpleDialog(
-              title: const Text('Pilih Foto'),
-              children: <Widget>[
-                SimpleDialogOption(
-                  onPressed: () {
-                    Navigator.pop(context, ImageSource.camera);
-                  },
-                  child: Text('Ambil dari Kamera',
-                      style: Theme.of(context).textTheme.subtitle1),
-                ),
-                SimpleDialogOption(
-                  onPressed: () {
-                    Navigator.pop(context, ImageSource.gallery);
-                  },
-                  child: Text('Ambil dari Galeri',
-                      style: Theme.of(context).textTheme.subtitle1),
-                ),
-              ],
-            );
-          });
+      // disable take from gallery
+      // ImageSource? source = await showDialog<ImageSource>(
+      //     context: context,
+      //     builder: (context) {
+      //       return SimpleDialog(
+      //         title: const Text('Pilih Foto'),
+      //         children: <Widget>[
+      //           SimpleDialogOption(
+      //             onPressed: () {
+      //               Navigator.pop(context, ImageSource.camera);
+      //             },
+      //             child: Text('Ambil dari Kamera',
+      //                 style: Theme.of(context).textTheme.subtitle1),
+      //           ),
+      //           SimpleDialogOption(
+      //             onPressed: () {
+      //               Navigator.pop(context, ImageSource.gallery);
+      //             },
+      //             child: Text('Ambil dari Galeri',
+      //                 style: Theme.of(context).textTheme.subtitle1),
+      //           ),
+      //         ],
+      //       );
+      //     });
 
-      if (source == null) {
-        return;
-      }
+      ImageSource source = ImageSource.camera;
+
+      // if (source == null) {
+      //   return;
+      // }
 
       PickResult? result = await pickImage(
         source,
@@ -312,7 +315,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                       decoration: generateInputDecoration(
                         label: AppLabel.upgradeInputIdCard,
                         suffixIcon: IconButton(
-                          icon: const Icon(Icons.attach_file_rounded),
+                          icon: const Icon(Icons.camera_alt_outlined),
                           onPressed: onPhotoTap(context),
                         ),
                       ),
