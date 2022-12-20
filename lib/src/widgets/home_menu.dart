@@ -66,7 +66,7 @@ class _HomeMenuState extends State<HomeMenu> {
       pushScreen(
         context,
         (_) => const VendorScreen(
-          title: 'E-Money',
+          title: 'E-Wallet',
           groupName: menuGroupEmoney,
         ),
       );
