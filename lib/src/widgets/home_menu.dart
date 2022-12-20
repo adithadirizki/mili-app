@@ -116,7 +116,7 @@ class _HomeMenuState extends State<HomeMenu> {
         ),
       );
     }));
-    menuList.add(AppMenu(AppImages.menuTV, 'Pajak', () {
+    menuList.add(AppMenu(AppImages.menuPajak, 'Pajak', () {
       pushScreen(
         context,
         (_) => const VendorScreen(
