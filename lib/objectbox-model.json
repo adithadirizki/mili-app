@@ -909,9 +909,43 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "25:7966325448516119686",
+      "lastPropertyId": "5:5065379308080012665",
+      "name": "Cutoff",
+      "properties": [
+        {
+          "id": "1:3493018316582353037",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1873151452348228911",
+          "name": "productCode",
+          "type": 9
+        },
+        {
+          "id": "3:1663096635803161179",
+          "name": "notes",
+          "type": 9
+        },
+        {
+          "id": "4:1294127238709495932",
+          "name": "start",
+          "type": 9
+        },
+        {
+          "id": "5:5065379308080012665",
+          "name": "end",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "24:175369090819899284",
+  "lastEntityId": "25:7966325448516119686",
   "lastIndexId": "1:3042645842357435335",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

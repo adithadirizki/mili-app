@@ -60,7 +60,7 @@ class _HomepageState extends State<Homepage>
   @override
   void initState() {
     _controller.setStartWhen((initializedWidgetLength) async {
-      await Future.delayed(const Duration(milliseconds: 3000));
+      await Future<dynamic>.delayed(const Duration(milliseconds: 3000));
       return AppStorage.getFirstInstall() == true;
     });
 
@@ -76,6 +76,7 @@ class _HomepageState extends State<Homepage>
     initPin();
 
     WidgetsBinding.instance?.addPostFrameCallback((_) {
+      AppDB.syncCutoff();
       initProvider();
     });
   }

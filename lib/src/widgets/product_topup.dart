@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/product.dart';
@@ -8,6 +9,7 @@ import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/vendor.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/utils/product.dart';
 import 'package:objectbox/internal.dart';
@@ -32,6 +34,8 @@ class _ProductTopupState extends State<ProductTopup>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   bool isLoading = true;
   Product? selectedProduct;
+
+  Cutoff? cutoff;
 
   List<Product> productTopup = [];
 
@@ -87,6 +91,11 @@ class _ProductTopupState extends State<ProductTopup>
       }
     }
 
+    // product code or group from voucher config
+    final cutoffDB = AppDB.cutoffDB;
+    cutoff = cutoffDB.query(Cutoff_.productCode.equals(widget.vendor.productCode)
+        .or(Cutoff_.productCode.equals(widget.vendor.group))).build().findFirst();
+
     await AppDB.syncProduct();
 
     final productDB = AppDB.productDB;
@@ -119,6 +128,42 @@ class _ProductTopupState extends State<ProductTopup>
       }
       return true;
     });
+  }
+
+  bool isClose() {
+    DateTime now = DateTime.now();
+    DateTime utc = now.toUtc();
+    DateTime wib = utc.add(const Duration(hours: 7));
+    String _wib = DateFormat('HHmm').format(wib);
+    int timeWib = parseInt(_wib);
+
+    if (cutoff != null) {
+      if (timeWib > parseInt(cutoff?.start ?? '') || timeWib < parseInt(cutoff?.end ?? '')) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  Widget info() {
+    if (cutoff == null || cutoff?.notes == null) return Container();
+
+    return Container(
+      color: AppColors.blue4.withOpacity(0.2),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      child: Row(
+        children: [
+          const Icon(Icons.info_outline, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              children: [Text(cutoff?.notes ?? '', style: const TextStyle(fontWeight: FontWeight.w500, height: 1.5))],
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   Widget itemBuilder(Product product) {
@@ -172,13 +217,18 @@ class _ProductTopupState extends State<ProductTopup>
           product.productName,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
-        subtitle: product.description.isNotEmpty
-            ? Text(
-                product.description,
-                style: Theme.of(context).textTheme.bodySmall,
-              )
-            : null,
-        enabled: product.status == statusOpen,
+        subtitle: product.description.isNotEmpty || product.status == 2 || isClose() ? Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            product.description.isNotEmpty ? Text(product.description, style: Theme.of(context).textTheme.bodySmall) : SizedBox(height: 0,),
+            product.status == 2
+                ? Text('Sedang gangguan', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.red))
+                : isClose()
+                ? Text('Sedang cut off', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.red))
+                : const SizedBox(height: 0,),
+          ],
+        ) : null,
+        enabled: product.status == statusOpen && isClose() == false,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -187,15 +237,13 @@ class _ProductTopupState extends State<ProductTopup>
               style: Theme.of(context).textTheme.bodySmall,
             ),
             Radio<Product>(
-              onChanged: _onSelectProduct,
+              onChanged: (value) => product.status == 2 || isClose() ? null : _onSelectProduct(value),
               groupValue: selectedProduct,
               value: product,
             ),
           ],
         ),
-        onTap: () {
-          _onSelectProduct(product);
-        },
+        onTap: () => product.status == 2 || isClose() ? null : _onSelectProduct(product),
       ),
     );
   }
@@ -233,8 +281,12 @@ class _ProductTopupState extends State<ProductTopup>
     return ListView.builder(
       key: const PageStorageKey<String>('listProduct'),
       physics: const ClampingScrollPhysics(),
-      itemCount: filteredProduct.length,
+      itemCount: filteredProduct.length + 1,
       itemBuilder: (context, index) {
+        if (index == 0) {
+          return info();
+        }
+        index--;
         return itemBuilder(filteredProduct.elementAt(index));
       },
     );

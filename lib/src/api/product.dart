@@ -225,3 +225,28 @@ class PriceSettingResponse {
 
   Map<String, dynamic> toJson() => _$PriceSettingResponseToJson(this);
 }
+
+@JsonSerializable()
+class CutoffResponse {
+  @JsonKey(name: 'vtype')
+  final String productCode;
+
+  @JsonKey(name: 'ket')
+  final String? notes;
+
+  @JsonKey(name: 'start')
+  final String start;
+
+  @JsonKey(name: 'end')
+  final String end;
+
+  CutoffResponse(this.productCode, this.notes, this.start, this.end);
+
+  factory CutoffResponse.fromString(String body) =>
+      _$CutoffResponseFromJson(json.decode(body) as Map<String, dynamic>);
+
+  factory CutoffResponse.fromJson(Map<String, dynamic> json) =>
+      _$CutoffResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CutoffResponseToJson(this);
+}
