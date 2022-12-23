@@ -744,6 +744,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  overlay_tooltip:
+    dependency: "direct main"
+    description:
+      name: overlay_tooltip
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.1"
   package_config:
     dependency: transitive
     description:

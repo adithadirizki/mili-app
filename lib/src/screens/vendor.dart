@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/database/database.dart';
+import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/vendor.dart';
 import 'package:miliv2/src/utils/product.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
@@ -50,6 +51,9 @@ class _VendorScreenState extends State<VendorScreen> {
   }
 
   Widget itemBuilder(Vendor vendor) {
+    Product? product = AppDB.productDB.query(Product_.code.equals(vendor.inquiryCode)
+        .or(Product_.code.equals(vendor.paymentCode))).build().findFirst();
+
     return Card(
       child: ListTile(
         contentPadding:
@@ -93,27 +97,26 @@ class _VendorScreenState extends State<VendorScreen> {
           vendor.name,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
-        subtitle: vendor.description.isNotEmpty
-            ? Text(
-                vendor.description,
-                style: Theme.of(context).textTheme.bodySmall,
-              )
-            : null,
-        // enabled: vendor.status == statusOpen,
+        subtitle: vendor.description.isNotEmpty || product?.status == 2 ? Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            vendor.description.isNotEmpty ? Text(vendor.description, style: Theme.of(context).textTheme.bodySmall) : SizedBox(height: 0,),
+            product?.status == 2 ? Text('Sedang gangguan', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.red)) : SizedBox(height: 0,),
+          ],
+        ) : null,
+        enabled: !(product?.status == 2),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             // Text(formatNumber(product.userPrice)),
             Radio<Vendor>(
-              onChanged: onVendorSelected,
+              onChanged: (value) => product?.status == 2 ? null : onVendorSelected(value),
               groupValue: selectedVendor,
               value: vendor,
             ),
           ],
         ),
-        onTap: () {
-          onVendorSelected(vendor);
-        },
+        onTap: () => product?.status == 2 ? null : onVendorSelected(vendor),
       ),
     );
   }

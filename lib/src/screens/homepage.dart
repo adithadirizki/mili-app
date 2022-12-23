@@ -22,6 +22,7 @@ import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/coin_chip.dart';
 import 'package:miliv2/src/widgets/home_bottom_bar.dart';
 import 'package:miliv2/src/widgets/pin_verification.dart';
+import 'package:overlay_tooltip/overlay_tooltip.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -34,6 +35,8 @@ class _HomepageState extends State<Homepage>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late PageController pageController;
   late TabController tabController;
+
+  final TooltipController _controller = TooltipController();
 
   ScrollController mainScreenScrollController = ScrollController();
   bool isScrollingDown = false;
@@ -56,6 +59,15 @@ class _HomepageState extends State<Homepage>
 
   @override
   void initState() {
+    _controller.setStartWhen((initializedWidgetLength) async {
+      await Future<dynamic>.delayed(const Duration(milliseconds: 3000));
+      return AppStorage.getFirstInstall() == true;
+    });
+
+    _controller.onDone(() {
+      AppStorage.setFirstInstall(false);
+    });
+
     super.initState();
     pageController = PageController(initialPage: initialPage);
     tabController = TabController(length: 1, initialIndex: 0, vsync: this);
@@ -64,6 +76,7 @@ class _HomepageState extends State<Homepage>
     initPin();
 
     WidgetsBinding.instance?.addPostFrameCallback((_) {
+      AppDB.syncCutoff();
       initProvider();
     });
   }
@@ -93,7 +106,16 @@ class _HomepageState extends State<Homepage>
     AppAnalytic.setUserId(userBalanceState.userId);
     await AppMessaging.requestPermission(context);
     activeBannerState.fetchData();
-    await userBalanceState.fetchData().catchError(_handleError);
+    await userBalanceState.fetchData().then((value) {
+      bool? isFirstInstall = AppStorage.getFirstInstall();
+      if (userBalanceState.groupName == 'GUEST' && isFirstInstall) {
+        _controller.start();
+        AppStorage.setFirstInstall(false);
+      } else if (isFirstInstall) {
+        _controller.start();
+        AppStorage.setFirstInstall(false);
+      }
+    }).catchError(_handleError);
     await userBalanceState.fetchWallet().then((_) {
       // // Init Wallet Activation
       // if (!userBalanceState.walletActive) {
@@ -143,6 +165,7 @@ class _HomepageState extends State<Homepage>
 
   @override
   void dispose() {
+    _controller.dispose();
     mainScreenScrollController.removeListener(scrollListener);
     tabController.dispose();
     if (_timer != null) _timer!.cancel();
@@ -342,48 +365,54 @@ class _HomepageState extends State<Homepage>
       );
     }
 
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70.0),
-        child: AppBar(
+    return OverlayTooltipScaffold(
+      tooltipAnimationCurve: Curves.linear,
+      tooltipAnimationDuration: const Duration(milliseconds: 700),
+      overlayColor: Colors.black.withOpacity(0.8),
+      controller: _controller,
+      builder: (context) => Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(70.0),
+          child: AppBar(
             // backgroundColor: Colors.white,
-            elevation: 0,
-            toolbarHeight: 70,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Image(
-                  image: AppImages.logoColor,
-                  height: 40,
-                  fit: BoxFit.fill,
-                ),
-                withBalanceProvider(CoinChip(onTap: coinScreen)),
-              ],
-            )),
-      ),
-      bottomNavigationBar: isShowBottomBar
-          ? HomeBottomBar(
-              pageController: tabController,
-              selectedPage: selectedPage,
-            )
-          : null,
-      body: Container(
-        padding: const EdgeInsets.only(top: 0, bottom: 0),
-        color: Colors.white,
-        child: TabBarView(
-          key: const PageStorageKey<String>("homepage"),
-          controller: tabController,
-          children: [
-            withHomeScreenProvider(
-              context,
-              HomeScreen(
-                key: const PageStorageKey<String>('MainPage'),
-                scrollBottomBarController: mainScreenScrollController,
-              ),
-            ),
-          ],
+              elevation: 0,
+              toolbarHeight: 70,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Image(
+                    image: AppImages.logoColor,
+                    height: 40,
+                    fit: BoxFit.fill,
+                  ),
+                  withBalanceProvider(CoinChip(onTap: coinScreen)),
+                ],
+              )),
         ),
-      ),
+        bottomNavigationBar: isShowBottomBar
+            ? HomeBottomBar(
+                pageController: tabController,
+                selectedPage: selectedPage,
+              )
+            : null,
+        body: Container(
+          padding: const EdgeInsets.only(top: 0, bottom: 0),
+          color: Colors.white,
+          child: TabBarView(
+            key: const PageStorageKey<String>("homepage"),
+            controller: tabController,
+            children: [
+              withHomeScreenProvider(
+                context,
+                HomeScreen(
+                  key: const PageStorageKey<String>('MainPage'),
+                  scrollBottomBarController: mainScreenScrollController,
+                ),
+              ),
+            ],
+          ),
+        ),
+      )
     );
   }
 

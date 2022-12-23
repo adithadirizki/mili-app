@@ -6,6 +6,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/api/api.dart';
+import 'package:miliv2/src/services/storage.dart';
 import 'package:miliv2/src/theme/theme.dart';
 import 'package:miliv2/src/utils/device.dart';
 
@@ -167,7 +168,10 @@ class _AppState extends State<App> {
           json.decode(resp.body) as Map<String, dynamic>;
 
       var ip = bodyMap['ip'] == null ? '-' : bodyMap['ip'] as String;
-      return _auth.guestSignIn(deviceId, ip).catchError((dynamic e) {
+      return _auth.guestSignIn(deviceId, ip).then((value) {
+        AppStorage.setFirstInstall(true);
+        return true;
+      }).catchError((dynamic e) {
         debugPrint('Guest signin error $e');
         return false;
       });

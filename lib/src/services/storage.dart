@@ -9,6 +9,7 @@ class AppStorage {
   static const String _usernameKey = "_username";
   static const String _profileKey = "_profile";
   static const String _walletKey = "_wallet";
+  static const String _firstInstallKey = "_firstInstall";
 
   // Private
   static const String _pinEnable = "_pinEnable";
@@ -28,6 +29,20 @@ class AppStorage {
 
   static Future<SharedPreferences> get engine async {
     return _engine;
+  }
+
+
+  static void setFirstInstall(bool? value) {
+    if (value != null) {
+      _engine.setBool(_firstInstallKey, value);
+    } else {
+      _engine.remove(_firstInstallKey);
+    }
+  }
+
+  static bool getFirstInstall() {
+    bool? value = _engine.getBool(_firstInstallKey);
+    return value ?? true;
   }
 
   static void setAuthenticated(bool? value) {

@@ -536,6 +536,16 @@ class Api {
         .catchError(_parseException);
   }
 
+  static Future<http.Response> getAllCutoff() {
+    return http
+        .get(
+      Uri.parse(AppConfig.baseUrl + '/products/cutoff'),
+      headers: getRequestHeaders(),
+    )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
   static Future<http.Response> getAllProducts({Map<String, Object>? params}) {
     return http
         .get(
