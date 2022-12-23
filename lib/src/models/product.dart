@@ -121,3 +121,27 @@ class Product {
     return price + (markup ?? 0);
   }
 }
+
+@Entity()
+class Cutoff {
+  int id;
+  String productCode;
+  String? notes;
+  String start;
+  String end;
+
+  Cutoff({
+    this.id = 0,
+    required this.productCode,
+    this.notes,
+    required this.start,
+    required this.end
+  });
+
+  factory Cutoff.fromResponse(CutoffResponse response) => Cutoff(
+    productCode: response.productCode,
+    notes: response.notes,
+    start: response.start,
+    end: response.end
+  );
+}

@@ -68,6 +68,7 @@ class AppDB {
   }
 
   static Box<ApiSyncTime> get timestampDB => _db.box<ApiSyncTime>();
+  static Box<Cutoff> get cutoffDB => _db.box<Cutoff>();
   static Box<Product> get productDB => _db.box<Product>();
   static Box<Vendor> get vendorDB => _db.box<Vendor>();
   static Box<PurchaseHistory> get purchaseHistoryDB =>
@@ -110,6 +111,43 @@ class AppDB {
       timestampDB.put(rec);
     }
     return rec;
+  }
+
+  static Future<void> syncCutoff() async {
+    const apiCode = 'cutoff-all';
+
+    if (_lockedSyncronize(apiCode)) {
+      return;
+    }
+    _lockSyncronize(apiCode);
+
+    return Api.getAllCutoff().then((response) async {
+      Map<String, dynamic> bodyMap =
+      json.decode(response.body) as Map<String, dynamic>;
+      var pagingResponse = PagingResponse.fromJson(bodyMap);
+
+      debugPrint('syncCutoff data length ${pagingResponse.data.length}');
+
+      // reset storage
+      cutoffDB.removeAll();
+
+      for (var data in pagingResponse.data) {
+        try {
+          CutoffResponse res =
+          CutoffResponse.fromJson(data as Map<String, dynamic>);
+
+          Cutoff cutoff = Cutoff.fromResponse(res);
+          cutoffDB.put(cutoff);
+        } catch (error) {
+          debugPrint('syncCutoff error $error at $data');
+        }
+      }
+
+      _unlockSyncronize(apiCode);
+    }).catchError((dynamic e) {
+      _unlockSyncronize(apiCode);
+      debugPrint('syncCutoff error $e');
+    });
   }
 
   static Future<void> syncProduct({int offset = 0}) async {

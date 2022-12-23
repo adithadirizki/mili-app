@@ -122,12 +122,13 @@ class _ProductPulsaState extends State<ProductPulsa>
           product.productName,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
-        subtitle: product.description.isNotEmpty
-            ? Text(
-                product.description,
-                style: Theme.of(context).textTheme.bodySmall,
-              )
-            : null,
+        subtitle: product.description.isNotEmpty || product.status == 2 ? Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            product.description.isNotEmpty ? Text(product.description, style: Theme.of(context).textTheme.bodySmall) : SizedBox(height: 0,),
+            product.status == 2 ? Text('Sedang gangguan', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.red)) : SizedBox(height: 0,),
+          ],
+        ) : null,
         enabled: product.status == statusOpen,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -137,15 +138,13 @@ class _ProductPulsaState extends State<ProductPulsa>
               style: Theme.of(context).textTheme.bodySmall,
             ),
             Radio<Product>(
-              onChanged: _onSelectProduct,
+              onChanged: (value) => product.status == 2 ? null : _onSelectProduct(value),
               groupValue: selectedProduct,
               value: product,
             ),
           ],
         ),
-        onTap: () {
-          _onSelectProduct(product);
-        },
+        onTap: () => product.status == 2 ? null : _onSelectProduct(product),
       ),
     );
   }

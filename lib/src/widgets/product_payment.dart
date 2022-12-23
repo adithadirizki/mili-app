@@ -2,9 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
+import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/purchase.dart';
+import 'package:miliv2/src/database/database.dart';
+import 'package:miliv2/src/models/product.dart';
+import 'package:miliv2/src/models/vendor.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
+import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/button.dart';
 
 class ProductPayment extends StatefulWidget {
@@ -13,6 +20,7 @@ class ProductPayment extends StatefulWidget {
   final double? amount;
   final String? productCode;
   final Function(InquiryResponse) onInquiryCompleted;
+  final Vendor? vendor;
 
   const ProductPayment({
     Key? key,
@@ -21,6 +29,7 @@ class ProductPayment extends StatefulWidget {
     required this.onInquiryCompleted,
     this.amount,
     this.productCode,
+    this.vendor,
   }) : super(key: key);
 
   @override
@@ -32,11 +41,65 @@ class ProductPaymentState extends State<ProductPayment> {
   bool isLoading = false;
   String trxId = '';
 
+  Cutoff? cutoff;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      initDB();
+    });
+  }
+
+  void initDB() async {
+    // inquiry code or group from voucher config
+    final cutoffDB = AppDB.cutoffDB;
+    cutoff = cutoffDB.query(Cutoff_.productCode.equals(widget.inquiryCode)
+        .or(Cutoff_.productCode.equals(widget.vendor?.group ?? ''))).build().findFirst();
+    setState(() {});
+  }
+
   void reset() {
     trxId = DateTime.now().millisecondsSinceEpoch.toString();
     setState(() {
       inquiryResult = null;
     });
+  }
+
+  bool isClose() {
+    DateTime now = DateTime.now();
+    DateTime utc = now.toUtc();
+    DateTime wib = utc.add(const Duration(hours: 7));
+    String _wib = DateFormat('HHmm').format(wib);
+    int timeWib = parseInt(_wib);
+
+    if (cutoff != null) {
+      if (timeWib > parseInt(cutoff?.start ?? '') || timeWib < parseInt(cutoff?.end ?? '')) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  Widget info() {
+    if (cutoff == null || cutoff?.notes == null) return Container();
+
+    return Container(
+      color: AppColors.blue4.withOpacity(0.2),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      child: Row(
+        children: [
+          const Icon(Icons.info_outline, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              children: [Text(cutoff?.notes ?? '', style: const TextStyle(fontWeight: FontWeight.w500, height: 1.5))],
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   bool isValidDestination() {
@@ -117,6 +180,8 @@ class ProductPaymentState extends State<ProductPayment> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        info(),
+        const SizedBox(height: 5),
         Flexible(
           flex: 1,
           fit: FlexFit.loose,
@@ -132,10 +197,12 @@ class ProductPaymentState extends State<ProductPayment> {
             inquiryResult == null ? 'Cek Tagihan' : 'Lanjutkan',
             isLoading
                 ? null
-                : isValidDestination()
-                    ? (inquiryResult == null
-                        ? inquiryPayment
-                        : onContinuePayment)
+                : isClose() == false
+                    ? (isValidDestination()
+                        ? (inquiryResult == null
+                            ? inquiryPayment
+                            : onContinuePayment)
+                        : null)
                     : null),
         const SizedBox(height: 5),
       ],

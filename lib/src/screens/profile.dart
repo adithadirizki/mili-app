@@ -6,6 +6,7 @@ import 'package:miliv2/src/screens/about.dart';
 import 'package:miliv2/src/screens/change_password.dart';
 import 'package:miliv2/src/screens/customer_service.dart';
 import 'package:miliv2/src/screens/downline.dart';
+import 'package:miliv2/src/screens/faq.dart';
 import 'package:miliv2/src/screens/favorite.dart';
 import 'package:miliv2/src/screens/pin_setup.dart';
 import 'package:miliv2/src/screens/price_setting.dart';
@@ -121,6 +122,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     pushScreen(
       context,
       (_) => const AboutScreen(title: 'Tentang Aplikasi'),
+    );
+  }
+
+  void faq() {
+    pushScreen(
+      context,
+          (_) => const FaqScreen(title: 'FAQ'),
     );
   }
 
@@ -510,6 +518,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ],
                         ),
                         onPressed: about,
+                        style: ElevatedButton.styleFrom(
+                          primary: AppColors.blue5,
+                          minimumSize: const Size(200, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      OutlinedButton(
+                        child: Row(
+                          children: [
+                            const Image(
+                              image: AppImages.mutasi,
+                              color: Color(0xFFFFFFFF),
+                              width: 24,
+                            ),
+                            const SizedBox(width: 20),
+                            Text(
+                              'FAQ',
+                              // style: TextStyle(color: Colors.white),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(color: AppColors.white1),
+                            ),
+                          ],
+                        ),
+                        onPressed: faq,
                         style: ElevatedButton.styleFrom(
                           primary: AppColors.blue5,
                           minimumSize: const Size(200, 50),

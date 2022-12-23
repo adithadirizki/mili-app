@@ -167,6 +167,7 @@ class _PurchaseDenomScreenState extends State<PurchaseDenomScreen> {
       inquiryCode: widget.vendor.inquiryCode,
       onInquiryCompleted: onInquiryCompleted,
       amount: parseDouble(textAmountController.text),
+      vendor: widget.vendor,
     );
   }
 

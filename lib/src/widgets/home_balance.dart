@@ -16,6 +16,8 @@ import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
+import 'package:miliv2/src/widgets/custom_tooltip.dart';
+import 'package:overlay_tooltip/overlay_tooltip.dart';
 
 class HomeBalance extends StatefulWidget {
   const HomeBalance({Key? key}) : super(key: key);
@@ -218,7 +220,14 @@ class _HomeBalanceState extends State<HomeBalance> {
         children: [
           Expanded(
             flex: 40,
-            child: buildBalanceCard(),
+            child: OverlayTooltipItem(
+              displayIndex: 1,
+              child: buildBalanceCard(),
+              tooltip: (controller) => Transform.translate(
+                offset: const Offset(0, 10),
+                child: MTooltip(title: 'Saldo', description: 'Ini adalah jumlah saldo kamu untuk transaksi semua produk.', controller: controller),
+              ),
+            ),
           ),
           const SizedBox(width: 5),
           Expanded(
@@ -229,8 +238,16 @@ class _HomeBalanceState extends State<HomeBalance> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                buildButton(
-                    AppMenu(AppImages.topup, 'Topup Saldo', topupWalletScreen)),
+                OverlayTooltipItem(
+                  displayIndex: 2,
+                  child: buildButton(AppMenu(AppImages.topup, 'Topup Saldo', topupWalletScreen)),
+                  tooltipHorizontalPosition: TooltipHorizontalPosition.CENTER,
+                  tooltip: (controller) => Transform.translate(
+                    offset: const Offset(0, 10),
+                    // padding: const EdgeInsets.only(top: 10),
+                    child: MTooltip(title: 'Top up saldo', description: 'Isi saldo kamu disini, Melalui virtual account berbagai bank & merchant.', controller: controller),
+                  ),
+                ),
                 buildButton(AppMenu(AppImages.transfer, 'Transfer Saldo',
                     transferWalletScreen)),
                 buildButton(AppMenu(
