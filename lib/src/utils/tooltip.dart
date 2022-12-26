@@ -19,7 +19,7 @@ OverlayTooltipItem withTooltip(
     tooltipHorizontalPosition: posX,
     tooltipVerticalPosition: posY,
     tooltip: transformer != null
-        ? transformer!
+        ? transformer
         : (controller) => Transform.translate(
               offset: Offset(offsetX, offsetY),
               child: MTooltip(

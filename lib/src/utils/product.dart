@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/database/database.dart';
@@ -13,6 +14,7 @@ import 'package:miliv2/src/screens/purchase_topup.dart';
 import 'package:miliv2/src/screens/purchase_voucher.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/utils/dialog.dart';
+import 'package:miliv2/src/utils/formatter.dart';
 
 AssetImage getProductLogo(Product product) {
   // FIXME apa memungkinan menggunakan prefix checking ??
@@ -169,4 +171,29 @@ void openPurchaseScreen(
         (_) => PurchasePulsaScreen(
             productCode: productCode, destination: destination));
   }
+}
+
+bool isClosed(Cutoff? cutoff) {
+  if (cutoff != null) {
+    DateTime now = DateTime.now();
+    DateTime utc = now.toUtc();
+    DateTime wib = utc.add(const Duration(hours: 7));
+    String _wib = DateFormat('HHmm').format(wib);
+    int timeWib = parseInt(_wib);
+
+    int startTime = parseInt(cutoff.start);
+    int endTime = parseInt(cutoff.end);
+
+    debugPrint('Cutoff $startTime $endTime == $timeWib');
+
+    if (startTime > endTime) {
+      return timeWib >= parseInt(cutoff.start) ||
+          timeWib < parseInt(cutoff.end);
+    } else {
+      return timeWib >= parseInt(cutoff.start) &&
+          timeWib < parseInt(cutoff.end);
+    }
+  }
+
+  return false;
 }

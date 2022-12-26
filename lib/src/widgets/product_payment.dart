@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:intl/intl.dart';
 import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/purchase.dart';
@@ -11,7 +10,7 @@ import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/vendor.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
-import 'package:miliv2/src/utils/formatter.dart';
+import 'package:miliv2/src/utils/product.dart';
 import 'package:miliv2/src/widgets/button.dart';
 
 class ProductPayment extends StatefulWidget {
@@ -54,8 +53,13 @@ class ProductPaymentState extends State<ProductPayment> {
   void initDB() async {
     // inquiry code or group from voucher config
     final cutoffDB = AppDB.cutoffDB;
-    cutoff = cutoffDB.query(Cutoff_.productCode.equals(widget.inquiryCode)
-        .or(Cutoff_.productCode.equals(widget.vendor?.group ?? ''))).build().findFirst();
+    cutoff = cutoffDB
+        .query(Cutoff_.productCode
+            .equals(widget.inquiryCode, caseSensitive: false)
+            .or(Cutoff_.productCode
+                .equals(widget.vendor?.group ?? '', caseSensitive: false)))
+        .build()
+        .findFirst();
     setState(() {});
   }
 
@@ -66,24 +70,10 @@ class ProductPaymentState extends State<ProductPayment> {
     });
   }
 
-  bool isClose() {
-    DateTime now = DateTime.now();
-    DateTime utc = now.toUtc();
-    DateTime wib = utc.add(const Duration(hours: 7));
-    String _wib = DateFormat('HHmm').format(wib);
-    int timeWib = parseInt(_wib);
-
-    if (cutoff != null) {
-      if (timeWib > parseInt(cutoff?.start ?? '') || timeWib < parseInt(cutoff?.end ?? '')) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   Widget info() {
-    if (cutoff == null || cutoff?.notes == null) return Container();
+    if (cutoff == null || cutoff?.notes == null || !isClosed(cutoff)) {
+      return Container();
+    }
 
     return Container(
       color: AppColors.blue4.withOpacity(0.2),
@@ -94,7 +84,11 @@ class ProductPaymentState extends State<ProductPayment> {
           const SizedBox(width: 10),
           Expanded(
             child: Column(
-              children: [Text(cutoff?.notes ?? '', style: const TextStyle(fontWeight: FontWeight.w500, height: 1.5))],
+              children: [
+                Text(cutoff?.notes ?? '',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w500, height: 1.5))
+              ],
             ),
           )
         ],
@@ -197,7 +191,7 @@ class ProductPaymentState extends State<ProductPayment> {
             inquiryResult == null ? 'Cek Tagihan' : 'Lanjutkan',
             isLoading
                 ? null
-                : isClose() == false
+                : isClosed(cutoff) == false
                     ? (isValidDestination()
                         ? (inquiryResult == null
                             ? inquiryPayment

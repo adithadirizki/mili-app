@@ -228,10 +228,10 @@ class PriceSettingResponse {
 
 @JsonSerializable()
 class CutoffResponse {
-  @JsonKey(name: 'vtype')
+  @JsonKey(name: 'code')
   final String productCode;
 
-  @JsonKey(name: 'ket')
+  @JsonKey(name: 'info')
   final String? notes;
 
   @JsonKey(name: 'start')
