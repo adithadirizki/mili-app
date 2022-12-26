@@ -11,7 +11,7 @@ import 'package:miliv2/src/screens/qris_scan.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
-import 'package:miliv2/src/widgets/custom_tooltip.dart';
+import 'package:miliv2/src/utils/tooltip.dart';
 import 'package:overlay_tooltip/overlay_tooltip.dart';
 
 class HomeBottomBar extends StatefulWidget {
@@ -43,6 +43,35 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
     // });
   }
 
+  Widget buildMenu(AssetImage image, String title, VoidCallback onPressed) {
+    return Column(
+      children: [
+        IconButton(
+          onPressed: onPressed,
+          icon: Image(
+            image: image,
+            width: 26,
+          ),
+        ),
+        Flexible(
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.visible,
+            maxLines: 1,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  height: 1,
+                  overflow: TextOverflow.visible,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+          ),
+        ),
+        const SizedBox(height: 2.0),
+      ],
+    );
+  }
+
   Widget buildMenuBar() {
     return Container(
       height: 70.0,
@@ -66,178 +95,73 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          OverlayTooltipItem(
-            displayIndex: 3,
-            child: Column(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    // gotoPage(0);
-                    pushScreen(
-                      context,
-                          (_) => const HistoryScreen(),
-                    );
-                  },
-                  icon: const Image(
-                    image: AppImages.history,
-                    width: 26,
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    AppLabel.history,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.visible,
-                    maxLines: 2,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      height: 1,
-                      overflow: TextOverflow.visible,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 2.0),
-              ],
-            ),
-            tooltipVerticalPosition: TooltipVerticalPosition.TOP,
-            tooltip: (controller) => Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: MTooltip(title: 'Riwayat', description: 'Ringkasan transaksi kamu bisa lihat disini.', controller: controller),
-            ),
+          withTooltip(
+            buildMenu(AppImages.history, AppLabel.history, () {
+              // gotoPage(0);
+              pushScreen(
+                context,
+                (_) => const HistoryScreen(),
+              );
+            }),
+            4,
+            'Riwayat',
+            'Ringkasan transaksi kamu bisa lihat disini.',
+            posY: TooltipVerticalPosition.TOP,
+            offsetY: -10,
           ),
-          OverlayTooltipItem(
-            displayIndex: 4,
-            child: Column(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    // gotoPage(1);
-                    pushScreen(
-                      context,
-                          (_) => const NotificationScreen(),
-                    );
-                  },
-                  icon: const Image(
-                    image: AppImages.notification,
-                    width: 32,
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    AppLabel.notification,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.visible,
-                    maxLines: 2,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      height: 1,
-                      overflow: TextOverflow.visible,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 2.0),
-              ],
-            ),
-            tooltipVerticalPosition: TooltipVerticalPosition.TOP,
-            tooltipHorizontalPosition: TooltipHorizontalPosition.CENTER,
-            tooltip: (controller) => Transform.translate(
-              offset: const Offset(0, -10),
-              child: MTooltip(title: 'Notifikasi', description: 'Informasi mengenai transaksi & deposit.', controller: controller),
-            ),
+          withTooltip(
+            buildMenu(AppImages.notification, AppLabel.notification, () {
+              // gotoPage(0);
+              pushScreen(
+                context,
+                (_) => const NotificationScreen(),
+              );
+            }),
+            5,
+            'Notifikasi',
+            'Informasi mengenai transaksi & deposit.',
+            posY: TooltipVerticalPosition.TOP,
+            posX: TooltipHorizontalPosition.CENTER,
+            offsetY: -10,
           ),
           const SizedBox(
             width: 10.0,
           ),
-          OverlayTooltipItem(
-            displayIndex: 6,
-            child: Column(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    // gotoPage(3);
-                    pushScreen(
-                      context,
-                          (_) => const CustomerServiceScreen(),
-                    );
-                  },
-                  icon: const Image(
-                    image: AppImages.chat,
-                    width: 32,
-                  ),
-                ),
-                Flexible(
-                  child: Text(
-                    AppLabel.chat,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.visible,
-                    maxLines: 2,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      height: 1,
-                      overflow: TextOverflow.visible,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 2.0),
-              ],
-            ),
-            tooltipVerticalPosition: TooltipVerticalPosition.TOP,
-            tooltipHorizontalPosition: TooltipHorizontalPosition.CENTER,
-            tooltip: (controller) => Transform.translate(
-              offset: const Offset(0, -10),
-              child: MTooltip(title: 'Chat CS', description: 'Fitur yang bikin nyaman, Tanya apapun seputar MILI melalui CS.', controller: controller),
-            ),
+          withTooltip(
+            buildMenu(AppImages.chat, AppLabel.chat, () {
+              // gotoPage(0);
+              pushScreen(
+                context,
+                (_) => const CustomerServiceScreen(),
+              );
+            }),
+            7,
+            'Chat CS',
+            'Fitur yang bikin nyaman, tanya apapun seputar MILI melalui CS.',
+            posY: TooltipVerticalPosition.TOP,
+            posX: TooltipHorizontalPosition.CENTER,
+            offsetY: -10,
           ),
-          OverlayTooltipItem(
-            displayIndex: 0,
-            child: Column(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    // gotoPage(4);
-                    if (userBalanceState.isGuest()) {
-                      confirmSignin(context);
-                    } else {
-                      pushScreen(
-                        context,
-                            (_) => UserBalanceScope(
-                          notifier: userBalanceState,
-                          child: const ProfileScreen(),
-                        ),
-                      );
-                    }
-                  },
-                  icon: const Image(
-                    image: AppImages.user,
-                    width: 32,
+          withTooltip(
+            buildMenu(AppImages.user, AppLabel.profile, () {
+              if (userBalanceState.isGuest()) {
+                confirmSignin(context);
+              } else {
+                pushScreen(
+                  context,
+                  (_) => UserBalanceScope(
+                    notifier: userBalanceState,
+                    child: const ProfileScreen(),
                   ),
-                ),
-                Flexible(
-                  child: Text(
-                    AppLabel.profile,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.visible,
-                    maxLines: 2,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      height: 1,
-                      overflow: TextOverflow.visible,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 2.0),
-              ],
-            ),
-            tooltipVerticalPosition: TooltipVerticalPosition.TOP,
-            tooltip: (controller) => Transform.translate(
-              offset: const Offset(0, -10),
-              child: MTooltip(title: 'Profil', description: userBalanceState.groupName == 'GUEST' ? 'Registrasi/login disini, selangkah lagi untuk menyelesaikan proses pendaftaran/login.' : 'Aktivasi PIN, Setting harga, Setting printer dan lain-lain disini.', controller: controller),
-            ),
-          )
+                );
+              }
+            }),
+            8,
+            'Profil',
+            'Registrasi/login disini, selangkah lagi untuk menyelesaikan proses pendaftaran/login.',
+            posY: TooltipVerticalPosition.TOP,
+            offsetY: -10,
+          ),
         ],
       ),
     );
@@ -255,9 +179,8 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
         Positioned(
           top: -32,
           left: MediaQuery.of(context).size.width / 2 - 30,
-          child: OverlayTooltipItem(
-            displayIndex: 5,
-            child: SizedBox(
+          child: withTooltip(
+            SizedBox(
               width: 70,
               height: 70,
               child: FittedBox(
@@ -265,12 +188,13 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
                   isExtended: false,
                   onPressed: () async {
                     if (!userBalanceState.walletActive) {
-                      pushScreen(context, (_) => const ActivationWalletScreen());
+                      pushScreen(
+                          context, (_) => const ActivationWalletScreen());
                       return;
                     }
                     var code = await pushScreenWithCallback<String>(
                       context,
-                          (_) => const QrisScannerScreen(),
+                      (_) => const QrisScannerScreen(),
                     );
                     // debugPrint('Read code $code');
                     if (code != null) {
@@ -303,12 +227,12 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
                 ),
               ),
             ),
-            tooltipVerticalPosition: TooltipVerticalPosition.TOP,
-            tooltipHorizontalPosition: TooltipHorizontalPosition.CENTER,
-            tooltip: (controller) => Transform.translate(
-              offset: const Offset(0, -10),
-              child: MTooltip(title: 'QRIS', description: 'Transaksi di lebih dari 15 juta merchant QRIS.', controller: controller),
-            ),
+            6,
+            'QRIS',
+            'Transaksi di lebih dari 15 juta merchant QRIS.',
+            posY: TooltipVerticalPosition.TOP,
+            posX: TooltipHorizontalPosition.CENTER,
+            offsetY: -10,
           ),
         ),
       ],

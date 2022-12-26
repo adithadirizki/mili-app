@@ -16,7 +16,7 @@ import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
-import 'package:miliv2/src/widgets/custom_tooltip.dart';
+import 'package:miliv2/src/utils/tooltip.dart';
 import 'package:overlay_tooltip/overlay_tooltip.dart';
 
 class HomeBalance extends StatefulWidget {
@@ -220,14 +220,8 @@ class _HomeBalanceState extends State<HomeBalance> {
         children: [
           Expanded(
             flex: 40,
-            child: OverlayTooltipItem(
-              displayIndex: 1,
-              child: buildBalanceCard(),
-              tooltip: (controller) => Transform.translate(
-                offset: const Offset(0, 10),
-                child: MTooltip(title: 'Saldo', description: 'Ini adalah jumlah saldo kamu untuk transaksi semua produk.', controller: controller),
-              ),
-            ),
+            child: withTooltip(buildBalanceCard(), 0, 'Saldo',
+                'Ini adalah jumlah saldo kamu untuk transaksi semua produk.'),
           ),
           const SizedBox(width: 5),
           Expanded(
@@ -238,20 +232,29 @@ class _HomeBalanceState extends State<HomeBalance> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                OverlayTooltipItem(
-                  displayIndex: 2,
-                  child: buildButton(AppMenu(AppImages.topup, 'Topup Saldo', topupWalletScreen)),
-                  tooltipHorizontalPosition: TooltipHorizontalPosition.CENTER,
-                  tooltip: (controller) => Transform.translate(
-                    offset: const Offset(0, 10),
-                    // padding: const EdgeInsets.only(top: 10),
-                    child: MTooltip(title: 'Top up saldo', description: 'Isi saldo kamu disini, Melalui virtual account berbagai bank & merchant.', controller: controller),
-                  ),
+                withTooltip(
+                  buildButton(AppMenu(
+                      AppImages.topup, 'Topup Saldo', topupWalletScreen)),
+                  1,
+                  'Topup saldo',
+                  'Isi saldo kamu melalui Virtual Account, Transfer Bank, Minimarket dan channel lainnya',
+                  posX: TooltipHorizontalPosition.CENTER,
                 ),
-                buildButton(AppMenu(AppImages.transfer, 'Transfer Saldo',
-                    transferWalletScreen)),
-                buildButton(AppMenu(
-                    AppImages.mutasi, 'Mutasi Saldo', mutationWalletScreen)),
+                withTooltip(
+                  buildButton(AppMenu(AppImages.transfer, 'Transfer Saldo',
+                      transferWalletScreen)),
+                  2,
+                  'Transfer Saldo',
+                  'Transfer saldo ke semua pengguna MILI',
+                  posX: TooltipHorizontalPosition.CENTER,
+                ),
+                withTooltip(
+                  buildButton(AppMenu(
+                      AppImages.mutasi, 'Mutasi Saldo', mutationWalletScreen)),
+                  3,
+                  'Mutasi Saldo',
+                  'Cek penggunaan saldo kamu disini',
+                ),
                 const SizedBox(width: 5),
               ],
             ),
