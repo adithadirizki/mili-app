@@ -18,7 +18,9 @@ import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:uuid/uuid.dart';
 
 class CustomerServiceScreen extends StatefulWidget {
-  const CustomerServiceScreen({Key? key}) : super(key: key);
+  final String? message;
+
+  const CustomerServiceScreen({Key? key, this.message}) : super(key: key);
 
   @override
   _CustomerServiceScreenState createState() => _CustomerServiceScreenState();
@@ -36,8 +38,16 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      initDB(sync: true);
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      await initDB(sync: true);
+
+      // send message after first load chats
+      if (widget.message != null) {
+        types.PartialText textMessage = types.PartialText(
+          text: widget.message ?? '',
+        );
+        _handleSendPressed(textMessage);
+      }
     });
   }
 

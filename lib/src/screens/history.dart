@@ -305,9 +305,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
           });
         }).catchError(_handleError);
       } else if (action == historyAction.contactCS) {
+        var message = '${history.transactionDate.toString().replaceAll('.000', '')}\n';
+        message += 'Transaksi ${history.productName} tujuan ${history.destination}';
         pushScreen(
           context,
-          (_) => const CustomerServiceScreen(),
+          (_) => CustomerServiceScreen(message: message),
         );
       } else if (action == historyAction.share) {
         final box = context.findRenderObject() as RenderBox?;
