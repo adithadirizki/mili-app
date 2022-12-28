@@ -111,6 +111,7 @@ class _ProductPulsaState extends State<ProductPulsa>
   Widget itemBuilder(Product product) {
     return Card(
       child: ListTile(
+        tileColor: product.promo ? Colors.greenAccent.withOpacity(.2) : null,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         leading: CircleAvatar(

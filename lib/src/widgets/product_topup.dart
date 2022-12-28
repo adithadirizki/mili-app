@@ -169,6 +169,7 @@ class _ProductTopupState extends State<ProductTopup>
   Widget itemBuilder(Product product) {
     return Card(
       child: ListTile(
+        tileColor: product.promo ? Colors.greenAccent.withOpacity(.2) : null,
         contentPadding: EdgeInsets.only(
             right: 10,
             left: (widget.vendor.getImageUrl().isNotEmpty ? 10 : 20),
