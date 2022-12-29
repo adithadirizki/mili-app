@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:miliv2/src/services/storage.dart';
 import 'package:overlay_tooltip/overlay_tooltip.dart';
 
 class MTooltip extends StatelessWidget {
@@ -98,26 +97,26 @@ class MTooltip extends StatelessWidget {
                   ),
                 ),
               ),
-              Opacity(
-                opacity: canPause ? 1 : 0,
-                child: TextButton(
-                  onPressed: () {
-                    debugPrint('skip');
-                    controller.pause();
-                    AppStorage.setFirstInstall(false);
-                  },
-                  style: TextButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5))),
-                  child: const Text(
-                    'Skip',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
+              // Opacity(
+              //   opacity: canPause ? 1 : 0,
+              //   child: TextButton(
+              //     onPressed: () {
+              //       debugPrint('skip');
+              //       controller.pause();
+              //       AppStorage.setFirstInstall(false);
+              //     },
+              //     style: TextButton.styleFrom(
+              //         backgroundColor: Colors.orange,
+              //         shape: RoundedRectangleBorder(
+              //             borderRadius: BorderRadius.circular(5))),
+              //     child: const Text(
+              //       'Skip',
+              //       style: TextStyle(
+              //         color: Colors.white,
+              //       ),
+              //     ),
+              //   ),
+              // ),
               TextButton(
                 onPressed: () {
                   debugPrint('next/done');

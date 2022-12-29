@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/product.dart';
@@ -93,8 +92,13 @@ class _ProductTopupState extends State<ProductTopup>
 
     // product code or group from voucher config
     final cutoffDB = AppDB.cutoffDB;
-    cutoff = cutoffDB.query(Cutoff_.productCode.equals(widget.vendor.productCode)
-        .or(Cutoff_.productCode.equals(widget.vendor.group))).build().findFirst();
+    cutoff = cutoffDB
+        .query(Cutoff_.productCode
+            .equals(widget.vendor.productCode, caseSensitive: false)
+            .or(Cutoff_.productCode
+                .equals(widget.vendor.group, caseSensitive: false)))
+        .build()
+        .findFirst();
 
     await AppDB.syncProduct();
 
@@ -130,24 +134,10 @@ class _ProductTopupState extends State<ProductTopup>
     });
   }
 
-  bool isClose() {
-    DateTime now = DateTime.now();
-    DateTime utc = now.toUtc();
-    DateTime wib = utc.add(const Duration(hours: 7));
-    String _wib = DateFormat('HHmm').format(wib);
-    int timeWib = parseInt(_wib);
-
-    if (cutoff != null) {
-      if (timeWib > parseInt(cutoff?.start ?? '') || timeWib < parseInt(cutoff?.end ?? '')) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   Widget info() {
-    if (cutoff == null || cutoff?.notes == null) return Container();
+    if (cutoff == null || cutoff?.notes == null || !isClosed(cutoff)) {
+      return Container();
+    }
 
     return Container(
       color: AppColors.blue4.withOpacity(0.2),
@@ -158,7 +148,11 @@ class _ProductTopupState extends State<ProductTopup>
           const SizedBox(width: 10),
           Expanded(
             child: Column(
-              children: [Text(cutoff?.notes ?? '', style: const TextStyle(fontWeight: FontWeight.w500, height: 1.5))],
+              children: [
+                Text(cutoff?.notes ?? '',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w500, height: 1.5))
+              ],
             ),
           )
         ],
@@ -218,18 +212,37 @@ class _ProductTopupState extends State<ProductTopup>
           product.productName,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
-        subtitle: product.description.isNotEmpty || product.status == 2 || isClose() ? Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            product.description.isNotEmpty ? Text(product.description, style: Theme.of(context).textTheme.bodySmall) : SizedBox(height: 0,),
-            product.status == 2
-                ? Text('Sedang gangguan', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.red))
-                : isClose()
-                ? Text('Sedang cut off', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.red))
-                : const SizedBox(height: 0,),
-          ],
-        ) : null,
-        enabled: product.status == statusOpen && isClose() == false,
+        subtitle: product.description.isNotEmpty ||
+                product.status == 2 ||
+                isClosed(cutoff)
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  product.description.isNotEmpty
+                      ? Text(product.description,
+                          style: Theme.of(context).textTheme.bodySmall)
+                      : SizedBox(
+                          height: 0,
+                        ),
+                  product.status == 2
+                      ? Text('Sedang gangguan',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: Colors.red))
+                      : isClosed(cutoff)
+                          ? Text('Sedang cut off',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(color: Colors.red))
+                          : const SizedBox(
+                              height: 0,
+                            ),
+                ],
+              )
+            : null,
+        enabled: product.status == statusOpen && isClosed(cutoff) == false,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -238,13 +251,17 @@ class _ProductTopupState extends State<ProductTopup>
               style: Theme.of(context).textTheme.bodySmall,
             ),
             Radio<Product>(
-              onChanged: (value) => product.status == 2 || isClose() ? null : _onSelectProduct(value),
+              onChanged: (value) => product.status == 2 || isClosed(cutoff)
+                  ? null
+                  : _onSelectProduct(value),
               groupValue: selectedProduct,
               value: product,
             ),
           ],
         ),
-        onTap: () => product.status == 2 || isClose() ? null : _onSelectProduct(product),
+        onTap: () => product.status == 2 || isClosed(cutoff)
+            ? null
+            : _onSelectProduct(product),
       ),
     );
   }

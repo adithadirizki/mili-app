@@ -36,7 +36,7 @@ class _HomepageState extends State<Homepage>
   late PageController pageController;
   late TabController tabController;
 
-  final TooltipController _controller = TooltipController();
+  final TooltipController tooltipController = TooltipController();
 
   ScrollController mainScreenScrollController = ScrollController();
   bool isScrollingDown = false;
@@ -59,24 +59,25 @@ class _HomepageState extends State<Homepage>
 
   @override
   void initState() {
-    _controller.setStartWhen((initializedWidgetLength) async {
-      await Future<dynamic>.delayed(const Duration(milliseconds: 3000));
-      return AppStorage.getFirstInstall() == true;
-    });
-
-    _controller.onDone(() {
-      AppStorage.setFirstInstall(false);
-    });
-
     super.initState();
     pageController = PageController(initialPage: initialPage);
     tabController = TabController(length: 1, initialIndex: 0, vsync: this);
     mainScreenScrollController.addListener(scrollListener);
 
+    tooltipController.setStartWhen((initializedWidgetLength) async {
+      await Future<dynamic>.delayed(const Duration(milliseconds: 3000));
+      return AppStorage.getFirstInstall() == true;
+    });
+    tooltipController.onDone(() {
+      AppStorage.setFirstInstall(false);
+    });
+
+    // // FIXME debug mode
+    // AppStorage.setFirstInstall(true);
+
     initPin();
 
     WidgetsBinding.instance?.addPostFrameCallback((_) {
-      AppDB.syncCutoff();
       initProvider();
     });
   }
@@ -106,23 +107,8 @@ class _HomepageState extends State<Homepage>
     AppAnalytic.setUserId(userBalanceState.userId);
     await AppMessaging.requestPermission(context);
     activeBannerState.fetchData();
-    await userBalanceState.fetchData().then((value) {
-      bool? isFirstInstall = AppStorage.getFirstInstall();
-      if (userBalanceState.groupName == 'GUEST' && isFirstInstall) {
-        _controller.start();
-        AppStorage.setFirstInstall(false);
-      } else if (isFirstInstall) {
-        _controller.start();
-        AppStorage.setFirstInstall(false);
-      }
-    }).catchError(_handleError);
-    await userBalanceState.fetchWallet().then((_) {
-      // // Init Wallet Activation
-      // if (!userBalanceState.walletActive) {
-      //   // Activation wallet
-      //   walletActivation();
-      // }
-    }).catchError(_handleError);
+    await userBalanceState.fetchData().catchError(_handleError);
+    await userBalanceState.fetchWallet().catchError(_handleError);
     // Start timer
     beginTimer();
   }
@@ -137,16 +123,24 @@ class _HomepageState extends State<Homepage>
   // End Finpay function
 
   void initialize() async {
-    var closeLoader = showLoaderDialog(context, message: 'Memperbarui...');
-    AppDB.syncVendor();
-    AppDB.syncUserConfig();
-    await AppDB.syncProduct();
-    // await AppDB.syncHistory();
-    // await AppDB.syncTopupHistory();
-    // await AppDB.syncBalanceMutation();
-    // await AppDB.syncCreditMutation();
-    synchronized = true;
-    await closeLoader();
+    bool? isFirstInstall = AppStorage.getFirstInstall();
+    if (isFirstInstall) {
+      tooltipController.start();
+      AppStorage.setFirstInstall(false);
+
+      AppDB.syncVendor();
+      AppDB.syncUserConfig();
+      AppDB.syncCutoff();
+      AppDB.syncProduct();
+    } else {
+      var closeLoader = showLoaderDialog(context, message: 'Memperbarui...');
+      AppDB.syncVendor();
+      AppDB.syncUserConfig();
+      AppDB.syncCutoff();
+      await AppDB.syncProduct();
+      synchronized = true;
+      await closeLoader();
+    }
     debugPrint('Completed initialize');
   }
 
@@ -165,7 +159,7 @@ class _HomepageState extends State<Homepage>
 
   @override
   void dispose() {
-    _controller.dispose();
+    tooltipController.dispose();
     mainScreenScrollController.removeListener(scrollListener);
     tabController.dispose();
     if (_timer != null) _timer!.cancel();
@@ -369,12 +363,12 @@ class _HomepageState extends State<Homepage>
       tooltipAnimationCurve: Curves.linear,
       tooltipAnimationDuration: const Duration(milliseconds: 700),
       overlayColor: Colors.black.withOpacity(0.8),
-      controller: _controller,
+      controller: tooltipController,
       builder: (context) => Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(70.0),
           child: AppBar(
-            // backgroundColor: Colors.white,
+              // backgroundColor: Colors.white,
               elevation: 0,
               toolbarHeight: 70,
               title: Row(
@@ -412,7 +406,7 @@ class _HomepageState extends State<Homepage>
             ],
           ),
         ),
-      )
+      ),
     );
   }
 
