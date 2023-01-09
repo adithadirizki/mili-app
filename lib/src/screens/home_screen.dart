@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/data/user_balance.dart';
+import 'package:miliv2/src/widgets/banner_list.dart';
 import 'package:miliv2/src/widgets/home_balance.dart';
 import 'package:miliv2/src/widgets/home_menu.dart';
-import 'package:miliv2/src/widgets/home_promo.dart';
 
 class HomeScreen extends StatefulWidget {
   final ScrollController scrollBottomBarController;
@@ -21,7 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     initialize();
-    debugPrint('Init HomeScreen');
   }
 
   Future<void> Function() refreshBalance(BuildContext context) {
@@ -32,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('Build HomeScreen');
     return mainBuild(context);
   }
 
@@ -53,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Container(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 5.0),
-            child: const HomePromo(key: ValueKey('Home Promo')),
+            child: const BannerList(key: ValueKey('Home Banner')),
           ),
         ],
       ),
