@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/data/user_balance.dart';
+import 'package:miliv2/src/database/database.dart';
+import 'package:miliv2/src/models/program.dart';
 import 'package:miliv2/src/routing.dart';
 import 'package:miliv2/src/screens/about.dart';
 import 'package:miliv2/src/screens/change_password.dart';
@@ -13,6 +16,8 @@ import 'package:miliv2/src/screens/price_setting.dart';
 import 'package:miliv2/src/screens/printer.dart';
 import 'package:miliv2/src/screens/privacy.dart';
 import 'package:miliv2/src/screens/profile_update.dart';
+import 'package:miliv2/src/screens/reward_me.dart';
+import 'package:miliv2/src/screens/reward_premium.dart';
 import 'package:miliv2/src/screens/system_info.dart';
 import 'package:miliv2/src/screens/upgrade.dart';
 import 'package:miliv2/src/services/auth.dart';
@@ -108,6 +113,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initialize() async {
     version = await getAppVersion();
     userBalanceState.fetchData();
+
+    await AppDB.syncProgram();
+
+    final programDB = AppDB.programDB;
+    Program? referralPremiumProgram = programDB.query(
+        Program_.code.equals('referral-premium-2023').and(Program_.isActive.equals(true))
+    ).build().findFirst();
+    Program? rewardNonPremiumProgram = programDB.query(
+        Program_.code.equals('reward-non-premium-2023').and(Program_.isActive.equals(true))
+    ).build().findFirst();
+
+    // only show when program is opened
+    if (referralPremiumProgram != null && referralPremiumProgram.isOpened == true) {
+      menuList2.add(AppMenu(
+          AppImages.iconReward,
+          referralPremiumProgram.title, () {
+            rewardPremium(referralPremiumProgram);
+      }
+      ));
+    } else if (rewardNonPremiumProgram != null && rewardNonPremiumProgram.isOpened == true) {
+      menuList2.add(AppMenu(AppImages.iconReward,
+          rewardNonPremiumProgram.title, rewardNonpremium));
+    }
+    setState(() {});
   }
 
   void logout() {
@@ -125,6 +154,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void copyReffNumber() {
     Clipboard.setData(ClipboardData(text: userBalanceState.referralCode));
     snackBarDialog(context, 'Nomor referal disalin');
+  }
+
+  void rewardPremium(Program program) async {
+    pushScreen(context,
+            (_) => RewardPremiumScreen(program: program));
+  }
+
+  void rewardNonpremium() {
+    pushScreen(context, (_) => const RewardMeScreen(
+      title: 'Reward Non-premium',
+      widgetUrl: 'https://www.mymili.id/non-premium-reward/',)
+    );
   }
 
   void about() {

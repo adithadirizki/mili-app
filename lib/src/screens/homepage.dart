@@ -511,12 +511,14 @@ class _HomepageState extends State<Homepage>
       AppDB.syncVendor();
       AppDB.syncUserConfig();
       AppDB.syncCutoff();
+      AppDB.syncProgram();
       AppDB.syncProduct();
     } else {
       var closeLoader = showLoaderDialog(context, message: 'Memperbarui...');
       AppDB.syncVendor();
       AppDB.syncUserConfig();
       AppDB.syncCutoff();
+      AppDB.syncProgram();
       await AppDB.syncProduct();
       synchronized = true;
       await closeLoader();

@@ -26,6 +26,7 @@ class AppImages {
   static const transfer = AssetImage('assets/images/transfer.png');
   static const history = AssetImage('assets/images/history.png');
   static const mutasi = AssetImage('assets/images/mutasi.png');
+  static const iconReward = AssetImage('assets/images/reward.png');
   static const emptyPlaceholder =
       AssetImage('assets/images/empty_placeholder.png');
   static const menuListrik = AssetImage('assets/images/pln.png');

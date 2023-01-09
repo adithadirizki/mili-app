@@ -536,6 +536,16 @@ class Api {
         .catchError(_parseException);
   }
 
+  static Future<http.Response> getProgram() {
+    return http
+        .get(
+      Uri.parse(AppConfig.baseUrl + '/programs'),
+      headers: getRequestHeaders(),
+    )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
   static Future<http.Response> getAllCutoff() {
     return http
         .get(
@@ -890,6 +900,18 @@ class Api {
               .replace(queryParameters: params),
           headers: getRequestHeaders(),
         )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> getPurchaseSummary(
+      {Map<String, Object>? params}) {
+    return http
+        .get(
+      Uri.parse(AppConfig.baseUrl + '/purchase/summary')
+          .replace(queryParameters: params),
+      headers: getRequestHeaders(),
+    )
         .then(_parseResponse)
         .catchError(_parseException);
   }

@@ -7,6 +7,7 @@ import 'package:miliv2/src/api/customer_service.dart';
 import 'package:miliv2/src/api/mutation.dart';
 import 'package:miliv2/src/api/notification.dart';
 import 'package:miliv2/src/api/product.dart';
+import 'package:miliv2/src/api/program.dart';
 import 'package:miliv2/src/api/purchase.dart';
 import 'package:miliv2/src/api/topup.dart';
 import 'package:miliv2/src/api/topup_retail.dart';
@@ -17,6 +18,7 @@ import 'package:miliv2/src/models/customer_service.dart';
 import 'package:miliv2/src/models/mutation.dart';
 import 'package:miliv2/src/models/notification.dart';
 import 'package:miliv2/src/models/product.dart';
+import 'package:miliv2/src/models/program.dart';
 import 'package:miliv2/src/models/purchase.dart';
 import 'package:miliv2/src/models/timestamp.dart';
 import 'package:miliv2/src/models/topup.dart';
@@ -68,6 +70,7 @@ class AppDB {
   }
 
   static Box<ApiSyncTime> get timestampDB => _db.box<ApiSyncTime>();
+  static Box<Program> get programDB => _db.box<Program>();
   static Box<Cutoff> get cutoffDB => _db.box<Cutoff>();
   static Box<Product> get productDB => _db.box<Product>();
   static Box<Vendor> get vendorDB => _db.box<Vendor>();
@@ -111,6 +114,43 @@ class AppDB {
       timestampDB.put(rec);
     }
     return rec;
+  }
+
+  static Future<void> syncProgram() async {
+    const apiCode = 'program';
+
+    if (_lockedSyncronize(apiCode)) {
+      return;
+    }
+    _lockSyncronize(apiCode);
+
+    return Api.getProgram().then((response) async {
+      Map<String, dynamic> bodyMap =
+      json.decode(response.body) as Map<String, dynamic>;
+      var pagingResponse = PagingResponse.fromJson(bodyMap);
+
+      debugPrint('syncProgram data length ${pagingResponse.data.length}');
+
+      // reset storage
+      programDB.removeAll();
+
+      for (var data in pagingResponse.data) {
+        try {
+          ProgramResponse res =
+          ProgramResponse.fromJson(data as Map<String, dynamic>);
+
+          Program program = Program.fromResponse(res);
+          programDB.put(program);
+        } catch (error) {
+          debugPrint('syncProgram error $error at $data');
+        }
+      }
+
+      _unlockSyncronize(apiCode);
+    }).catchError((dynamic e) {
+      _unlockSyncronize(apiCode);
+      debugPrint('syncProgram error $e');
+    });
   }
 
   static Future<void> syncCutoff() async {
