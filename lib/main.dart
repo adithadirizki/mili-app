@@ -10,6 +10,7 @@ import 'package:miliv2/firebase_options.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/services/analytics.dart';
 import 'package:miliv2/src/services/messaging.dart';
+import 'package:miliv2/src/services/onesignal.dart';
 import 'package:miliv2/src/services/printer.dart';
 import 'package:miliv2/src/services/storage.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -43,6 +44,7 @@ void main() async {
   await AppMessaging.initialize();
   await AppPrinter.initialize();
   await AppDB.initialize();
+  await AppOnesignal.initialize();
 
   await initializeDateFormatting('id_ID', null);
 

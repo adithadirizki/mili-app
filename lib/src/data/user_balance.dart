@@ -6,6 +6,7 @@ import 'package:http/http.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/profile.dart';
 import 'package:miliv2/src/config/config.dart';
+import 'package:miliv2/src/services/onesignal.dart';
 import 'package:miliv2/src/services/storage.dart';
 
 class UserBalanceState extends ChangeNotifier {
@@ -46,6 +47,13 @@ class UserBalanceState extends ChangeNotifier {
       Map<String, dynamic> bodyMap = json.decode(body) as Map<String, dynamic>;
       var profile =
           ProfileResponse.fromJson(bodyMap['data'] as Map<String, dynamic>);
+
+      AppOnesignal.setExternalID(profile.userId);
+      AppOnesignal.setEmail(profile.email);
+      AppOnesignal.setPhoneNumber(profile.phoneNumber);
+      AppOnesignal.setName(profile.name);
+      AppOnesignal.setGroupName(profile.groupName);
+
       return UserBalanceState(0, 0, false)
         ..balance = (profile.balance ?? 0)
         ..balanceCredit = profile.balanceCredit ?? 0
