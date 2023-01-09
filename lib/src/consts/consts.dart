@@ -52,3 +52,43 @@ const menuGroupBank = 'BANK';
 const menuGroupAct = 'ACT';
 const menuGroupStreaming = 'VOUCHER_TV';
 const menuGroupPajak = 'PAJAK';
+
+// key page deeplink
+const pageRegister = 'register';
+const pageSaldoMili = 'saldo_mili';
+const pageTopupSaldoMili = 'topup_saldo_mili';
+const pageTransferSaldoMili = 'transfer_saldo_mili';
+const pageMutasiSaldoMili = 'mutasi_saldo_mili';
+const pageQris = 'qris';
+const pageProfile = 'profile';
+const pageAktifkanPin = 'aktifkan_pin';
+const pageSetHargaJual = 'set_harga_jual';
+const pagePrinter = 'printer';
+const pageGantiPassword = 'ganti_password';
+const pageNomorFavorit = 'nomor_favorit';
+const pageDownline = 'downline';
+const pageTambahDownline = 'tambah_downline';
+const pageUpgradePremium = 'upgrade_premium';
+const pageUpdateProfile = 'update_profile';
+
+const pagePulsaData = 'pulsa_data';
+const pageListrik = 'listrik';
+const pageTagihan = 'tagihan';
+const pageBpjs = 'bpjs';
+const pageEwallet = 'ewallet';
+const pageGame = 'game';
+const pageTvBerbayar = 'tv_berbayar';
+const pageTransferBank = 'transfer_bank';
+const pagePajak = 'pajak';
+const pageAktivasi = 'aktivasi';
+const pageKeretaApi = 'kereta_api';
+const pageTiketPesawat = 'tiket_pesawat';
+
+const pageKoinMili = 'koin_mili';
+const pageBeliKoinMili = 'beli_koin_mili';
+const pageRiwayatBeliKoinMili = 'riwayat_beli_koin_mili';
+const pageKirimKoinMili = 'kirim_koin_mili';
+const pageMutasiKoinMili = 'mutasi_koin_mili';
+const pageRiwayatTransaksi = 'riwayat_transaksi';
+const pageNotifikasi = 'notifikasi';
+const pageCustomerService = 'customer_service';

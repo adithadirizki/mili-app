@@ -2,14 +2,21 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
+import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/routing.dart';
 import 'package:miliv2/src/screens/forgot_password.dart';
+import 'package:miliv2/src/screens/sign_up.dart';
+import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/images.dart';
 import 'package:miliv2/src/theme/style.dart';
+import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/button.dart';
 
 import '../theme.dart';
@@ -39,9 +46,27 @@ class _SignInScreenState extends State<SignInScreen> {
 
   bool _isObscure = true;
 
+  AppAuth authState = AppAuth();
+  StreamSubscription<Map>? streamSubscription;
+
   @override
   void initState() {
     super.initState();
+    listenDynamicLinks();
+  }
+
+  void listenDynamicLinks() {
+    streamSubscription = FlutterBranchSdk.initSession().listen((data) {
+      // only when not signed in
+      if (data['key_page'] == pageRegister) {
+        pushScreen(
+            context,
+            (_) => SignUpScreen(
+                onVerified: (authState.onSignUp),
+                onBack: () {},
+                referralCode: data['referral_code']?.toString()));
+      }
+    });
   }
 
   @override
