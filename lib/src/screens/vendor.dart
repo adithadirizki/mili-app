@@ -1,11 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:miliv2/objectbox.g.dart';
+import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/vendor.dart';
+import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/utils/product.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class VendorScreen extends StatefulWidget {
   final String title;
@@ -22,10 +25,16 @@ class _VendorScreenState extends State<VendorScreen> {
   bool isLoading = true;
   List<Vendor> vendorList = [];
   Vendor? selectedVendor;
+  bool isAct = false;
 
   @override
   void initState() {
     super.initState();
+
+    if (widget.groupName == menuGroupAct) {
+      isAct = true;
+    }
+
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       initDB();
     });
@@ -155,7 +164,33 @@ class _VendorScreenState extends State<VendorScreen> {
       appBar: SimpleAppBar2(title: widget.title),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        child: buildListVendor(context),
+        child: Column(
+          children: [
+            isAct ? Padding(
+                padding: const EdgeInsets.only(top: 5, bottom: 15, left: 5, right: 5),
+                child: InkWell(
+                  highlightColor: Colors.transparent,
+                  overlayColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: const [
+                      Image(
+                        image: AppImages.info,
+                        color: Colors.blue,
+                        width: 16,
+                      ),
+                      SizedBox(width: 5),
+                      Text('Tutorial aktivasi', style: TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                  onTap: () {
+                    launch('https://www.mymili.id/cara-aktivasi-voucher-paket-data-dan-perdana/');
+                  },
+                )
+            ) : const SizedBox(),
+            Expanded(child: buildListVendor(context)),
+          ],
+        ),
       ),
     );
   }
