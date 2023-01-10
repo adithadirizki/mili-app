@@ -21,6 +21,7 @@ class ActiveBannerState extends ChangeNotifier {
       bannerList.add(BannerResponse.fromJson(e as Map<String, dynamic>));
     }
     debugPrint('Fetch ActiveBannerState success ${bannerList.length}');
+    isLoading = false;
     notifyListeners();
   }
 

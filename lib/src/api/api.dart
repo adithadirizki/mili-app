@@ -4,6 +4,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
+import 'package:miliv2/src/api/promo.dart';
 import 'package:miliv2/src/api/train.dart';
 import 'package:miliv2/src/config/config.dart';
 import 'package:miliv2/src/consts/consts.dart';
@@ -432,17 +433,18 @@ class Api {
         .catchError(_parseException);
   }
 
-  static Future<Map<String, dynamic>> createTopupRetail(double amount, String channel) {
+  static Future<Map<String, dynamic>> createTopupRetail(
+      double amount, String channel) {
     Map<String, Object> body = <String, Object>{
       "amount": amount,
       "channel": channel,
     };
     return http
         .post(
-      Uri.parse(AppConfig.baseUrl + '/balance/topup'),
-      headers: getRequestHeaders(),
-      body: json.encode(body),
-    )
+          Uri.parse(AppConfig.baseUrl + '/balance/topup'),
+          headers: getRequestHeaders(),
+          body: json.encode(body),
+        )
         .then(_parseResponse)
         .then((response) => json.decode(response.body) as Map<String, dynamic>)
         .catchError(_parseException);
@@ -480,17 +482,18 @@ class Api {
   }
 
   // TODO ganti semua response paging ke PagingResponse<T>
-  static Future<PagingResponse> getTopupRetailHistory({Map<String, Object>? params}) {
+  static Future<PagingResponse> getTopupRetailHistory(
+      {Map<String, Object>? params}) {
     return http
         .get(
-      Uri.parse(AppConfig.baseUrl + '/balance/topup')
-          .replace(queryParameters: params),
-      headers: getRequestHeaders(),
-    )
+          Uri.parse(AppConfig.baseUrl + '/balance/topup')
+              .replace(queryParameters: params),
+          headers: getRequestHeaders(),
+        )
         .then(_parseResponse)
         .then((response) {
       Map<String, dynamic> bodyMap =
-      json.decode(response.body) as Map<String, dynamic>;
+          json.decode(response.body) as Map<String, dynamic>;
       var pagingResponse = PagingResponse.fromJson(bodyMap);
       return pagingResponse;
     }).catchError(_parseException);
@@ -539,9 +542,9 @@ class Api {
   static Future<http.Response> getAllCutoff() {
     return http
         .get(
-      Uri.parse(AppConfig.baseUrl + '/products/cutoff'),
-      headers: getRequestHeaders(),
-    )
+          Uri.parse(AppConfig.baseUrl + '/products/cutoff'),
+          headers: getRequestHeaders(),
+        )
         .then(_parseResponse)
         .catchError(_parseException);
   }
@@ -1236,6 +1239,27 @@ class Api {
           body: json.encode(body),
         )
         .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> promoList() {
+    return http
+        .get(
+          Uri.parse(AppConfig.baseUrl + '/promos/promo-user'),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> promoSummary(PromoResponse promo) {
+    return http
+        .get(
+          Uri.parse(AppConfig.baseUrl +
+              '/promos/promo-summary/' +
+              promo.id.toString()),
+          headers: getRequestHeaders(),
+        )
         .catchError(_parseException);
   }
 

@@ -9,6 +9,7 @@ import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/data/active_banner.dart';
+import 'package:miliv2/src/data/promo.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/vendor.dart';
@@ -31,6 +32,7 @@ import 'package:miliv2/src/screens/printer.dart';
 import 'package:miliv2/src/screens/profile.dart';
 import 'package:miliv2/src/screens/profile_update.dart';
 import 'package:miliv2/src/screens/profile_wallet.dart';
+import 'package:miliv2/src/screens/promo.dart';
 import 'package:miliv2/src/screens/purchase_payment.dart';
 import 'package:miliv2/src/screens/purchase_pln.dart';
 import 'package:miliv2/src/screens/purchase_pulsa.dart';
@@ -50,6 +52,7 @@ import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/services/biometry.dart';
 import 'package:miliv2/src/services/messaging.dart';
 import 'package:miliv2/src/services/storage.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/images.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/product.dart';
@@ -155,10 +158,12 @@ class _HomepageState extends State<Homepage>
         } else if (data['key_page'] == pageQris) {
           qrisScreen();
         } else if (data['key_page'] == pageProfile) {
-          pushScreen(context, (_) => UserBalanceScope(
-            notifier: userBalanceState,
-            child: const ProfileScreen(),
-          ));
+          pushScreen(
+              context,
+              (_) => UserBalanceScope(
+                    notifier: userBalanceState,
+                    child: const ProfileScreen(),
+                  ));
         } else if (data['key_page'] == pageAktifkanPin) {
           pushScreen(context, (_) => const PINSetupScreen());
         } else if (data['key_page'] == pageSetHargaJual) {
@@ -195,18 +200,18 @@ class _HomepageState extends State<Homepage>
             ),
           );
         } else {
-          QueryBuilder<Vendor> queryVendor =
-          AppDB.vendorDB.query(
-              Vendor_.productCode.equals(data['key_subpage'].toString(), caseSensitive: false)
-                  .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(), caseSensitive: false))
-          );
+          QueryBuilder<Vendor> queryVendor = AppDB.vendorDB.query(Vendor_
+              .productCode
+              .equals(data['key_subpage'].toString(), caseSensitive: false)
+              .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(),
+                  caseSensitive: false)));
           Vendor? vendor = queryVendor.build().findFirst();
           if (vendor != null) openPurchaseScreen(context, vendor: vendor);
         }
       } else if (data['key_page'] == pageBpjs) {
         pushScreen(
           context,
-              (_) => PurchasePaymentScreen(
+          (_) => PurchasePaymentScreen(
             vendor: Vendor(
                 serverId: 0,
                 updatedAt: DateTime.now(),
@@ -224,17 +229,17 @@ class _HomepageState extends State<Homepage>
         if (data['key_subpage'] == null) {
           pushScreen(
             context,
-                (_) => const VendorScreen(
+            (_) => const VendorScreen(
               title: 'E-Wallet',
               groupName: menuGroupEmoney,
             ),
           );
         } else {
-          QueryBuilder<Vendor> queryVendor =
-          AppDB.vendorDB.query(
-              Vendor_.productCode.equals(data['key_subpage'].toString(), caseSensitive: false)
-                  .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(), caseSensitive: false))
-          );
+          QueryBuilder<Vendor> queryVendor = AppDB.vendorDB.query(Vendor_
+              .productCode
+              .equals(data['key_subpage'].toString(), caseSensitive: false)
+              .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(),
+                  caseSensitive: false)));
           Vendor? vendor = queryVendor.build().findFirst();
           if (vendor != null) openPurchaseScreen(context, vendor: vendor);
         }
@@ -242,18 +247,17 @@ class _HomepageState extends State<Homepage>
         if (data['key_subpage'] == null) {
           pushScreen(
             context,
-                (_) =>
-            const VendorScreen(
+            (_) => const VendorScreen(
               title: 'Game',
               groupName: menuGroupGame,
             ),
           );
         } else {
-          QueryBuilder<Vendor> queryVendor =
-          AppDB.vendorDB.query(
-              Vendor_.productCode.equals(data['key_subpage'].toString(), caseSensitive: false)
-                  .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(), caseSensitive: false))
-          );
+          QueryBuilder<Vendor> queryVendor = AppDB.vendorDB.query(Vendor_
+              .productCode
+              .equals(data['key_subpage'].toString(), caseSensitive: false)
+              .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(),
+                  caseSensitive: false)));
           Vendor? vendor = queryVendor.build().findFirst();
           if (vendor != null) openPurchaseScreen(context, vendor: vendor);
         }
@@ -261,17 +265,17 @@ class _HomepageState extends State<Homepage>
         if (data['key_subpage'] == null) {
           pushScreen(
             context,
-                (_) => const VendorScreen(
+            (_) => const VendorScreen(
               title: 'TV Berbayar',
               groupName: menuGroupStreaming,
             ),
           );
         } else {
-          QueryBuilder<Vendor> queryVendor =
-          AppDB.vendorDB.query(
-              Vendor_.productCode.equals(data['key_subpage'].toString(), caseSensitive: false)
-                  .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(), caseSensitive: false))
-          );
+          QueryBuilder<Vendor> queryVendor = AppDB.vendorDB.query(Vendor_
+              .productCode
+              .equals(data['key_subpage'].toString(), caseSensitive: false)
+              .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(),
+                  caseSensitive: false)));
           Vendor? vendor = queryVendor.build().findFirst();
           if (vendor != null) openPurchaseScreen(context, vendor: vendor);
         }
@@ -279,17 +283,17 @@ class _HomepageState extends State<Homepage>
         if (data['key_subpage'] == null) {
           pushScreen(
             context,
-                (_) => const VendorScreen(
+            (_) => const VendorScreen(
               title: 'Transfer Bank',
               groupName: menuGroupBank,
             ),
           );
         } else {
-          QueryBuilder<Vendor> queryVendor =
-          AppDB.vendorDB.query(
-              Vendor_.productCode.equals(data['key_subpage'].toString(), caseSensitive: false)
-                  .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(), caseSensitive: false))
-          );
+          QueryBuilder<Vendor> queryVendor = AppDB.vendorDB.query(Vendor_
+              .productCode
+              .equals(data['key_subpage'].toString(), caseSensitive: false)
+              .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(),
+                  caseSensitive: false)));
           Vendor? vendor = queryVendor.build().findFirst();
           if (vendor != null) openPurchaseScreen(context, vendor: vendor);
         }
@@ -297,17 +301,17 @@ class _HomepageState extends State<Homepage>
         if (data['key_subpage'] == null) {
           pushScreen(
             context,
-                (_) => const VendorScreen(
+            (_) => const VendorScreen(
               title: 'Pajak',
               groupName: menuGroupPajak,
             ),
           );
         } else {
-          QueryBuilder<Vendor> queryVendor =
-          AppDB.vendorDB.query(
-              Vendor_.productCode.equals(data['key_subpage'].toString(), caseSensitive: false)
-                  .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(), caseSensitive: false))
-          );
+          QueryBuilder<Vendor> queryVendor = AppDB.vendorDB.query(Vendor_
+              .productCode
+              .equals(data['key_subpage'].toString(), caseSensitive: false)
+              .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(),
+                  caseSensitive: false)));
           Vendor? vendor = queryVendor.build().findFirst();
           if (vendor != null) openPurchaseScreen(context, vendor: vendor);
         }
@@ -315,24 +319,24 @@ class _HomepageState extends State<Homepage>
         if (data['key_subpage'] == null) {
           pushScreen(
             context,
-                (_) => const VendorScreen(
+            (_) => const VendorScreen(
               title: 'Aktivasi',
               groupName: menuGroupAct,
             ),
           );
         } else {
-          QueryBuilder<Vendor> queryVendor =
-          AppDB.vendorDB.query(
-              Vendor_.productCode.equals(data['key_subpage'].toString(), caseSensitive: false)
-                  .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(), caseSensitive: false))
-          );
+          QueryBuilder<Vendor> queryVendor = AppDB.vendorDB.query(Vendor_
+              .productCode
+              .equals(data['key_subpage'].toString(), caseSensitive: false)
+              .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(),
+                  caseSensitive: false)));
           Vendor? vendor = queryVendor.build().findFirst();
           if (vendor != null) openPurchaseScreen(context, vendor: vendor);
         }
       } else if (data['key_page'] == pageKeretaApi) {
         pushScreen(
           context,
-              (_) => const TrainHomeScreen(
+          (_) => const TrainHomeScreen(
             title: 'Tiket Kereta',
           ),
         );
@@ -345,9 +349,11 @@ class _HomepageState extends State<Homepage>
       } else if (data['key_page'] == pageRiwayatBeliKoinMili) {
         pushScreen(context, (_) => const TopupHistoryScreen());
       } else if (data['key_page'] == pageKirimKoinMili) {
-        pushScreen(context, (_) => const TransferScreen(title: 'Transfer Koin'));
+        pushScreen(
+            context, (_) => const TransferScreen(title: 'Transfer Koin'));
       } else if (data['key_page'] == pageMutasiKoinMili) {
-        pushScreen(context, (_) => const MutationScreen(title: 'Mutasi Koin MILI & Kredit'));
+        pushScreen(context,
+            (_) => const MutationScreen(title: 'Mutasi Koin MILI & Kredit'));
       } else if (data['key_page'] == pageRiwayatTransaksi) {
         pushScreen(context, (_) => const HistoryScreen());
       } else if (data['key_page'] == pageNotifikasi) {
@@ -382,7 +388,7 @@ class _HomepageState extends State<Homepage>
       return;
     } else if (!userBalanceState.walletPremium) {
       pushScreen(context,
-              (_) => const UpgradeWalletScreen(title: 'Upgrade Saldo MILI'));
+          (_) => const UpgradeWalletScreen(title: 'Upgrade Saldo MILI'));
       return;
     }
     pushScreen(
@@ -409,12 +415,12 @@ class _HomepageState extends State<Homepage>
     if (userBalanceState.premium) {
       pushScreen(
         context,
-            (_) => const DownlineScreen(),
+        (_) => const DownlineScreen(),
       );
     } else {
       pushScreen(
         context,
-            (_) => const UpgradeScreen(
+        (_) => const UpgradeScreen(
           title: 'Upgrade Akun',
         ),
       );
@@ -425,12 +431,12 @@ class _HomepageState extends State<Homepage>
     if (userBalanceState.premium) {
       pushScreen(
         context,
-            (_) => const DownlineRegisterScreen(),
+        (_) => const DownlineRegisterScreen(),
       );
     } else {
       pushScreen(
         context,
-            (_) => const UpgradeScreen(
+        (_) => const UpgradeScreen(
           title: 'Upgrade Akun',
         ),
       );
@@ -441,7 +447,7 @@ class _HomepageState extends State<Homepage>
     if (userBalanceState.premium) {
       pushScreen(
         context,
-            (_) => const UpgradeScreen(
+        (_) => const UpgradeScreen(
           title: 'Akun Premium',
           allowUpgrade: false,
         ),
@@ -449,7 +455,7 @@ class _HomepageState extends State<Homepage>
     } else {
       pushScreen(
         context,
-            (_) => const UpgradeScreen(
+        (_) => const UpgradeScreen(
           title: 'Upgrade Akun',
         ),
       );
@@ -487,6 +493,7 @@ class _HomepageState extends State<Homepage>
     AppAnalytic.setUserId(userBalanceState.userId);
     await AppMessaging.requestPermission(context);
     activeBannerState.fetchData();
+    promoState.fetchData();
     await userBalanceState.fetchData().catchError(_handleError);
     await userBalanceState.fetchWallet().catchError(_handleError);
     // Start timer
@@ -501,6 +508,13 @@ class _HomepageState extends State<Homepage>
   }
 
   // End Finpay function
+
+  void promo() {
+    pushScreen(
+      context,
+      (_) => const PromoScreen(),
+    );
+  }
 
   void initialize() async {
     bool? isFirstInstall = AppStorage.getFirstInstall();
@@ -758,6 +772,15 @@ class _HomepageState extends State<Homepage>
                     image: AppImages.logoColor,
                     height: 40,
                     fit: BoxFit.fill,
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.workspace_premium_outlined,
+                      size: 32,
+                    ),
+                    color: AppColors.black2,
+                    onPressed: promo,
                   ),
                   withBalanceProvider(CoinChip(onTap: coinScreen)),
                 ],

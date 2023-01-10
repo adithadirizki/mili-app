@@ -5,14 +5,14 @@ import 'package:miliv2/src/data/active_banner.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class HomePromo extends StatefulWidget {
-  const HomePromo({Key? key}) : super(key: key);
+class BannerList extends StatefulWidget {
+  const BannerList({Key? key}) : super(key: key);
 
   @override
-  _HomePromoState createState() => _HomePromoState();
+  _BannerListState createState() => _BannerListState();
 }
 
-class _HomePromoState extends State<HomePromo> {
+class _BannerListState extends State<BannerList> {
   // List<BannerResponse> bannerList = [];
   int currentIndex = 0;
 
@@ -20,7 +20,6 @@ class _HomePromoState extends State<HomePromo> {
   void initState() {
     super.initState();
     // Provider.of<ActiveBannerState>(context, listen: false).fetchData();
-    // print('init home promo');
   }
 
   @override
@@ -43,7 +42,7 @@ class _HomePromoState extends State<HomePromo> {
                 currentIndex = index;
               });
             }),
-        items: activeBanner.bannerList.map((promo) {
+        items: activeBanner.bannerList.map((banner) {
           return Container(
             margin: const EdgeInsets.only(
               bottom: 50,
@@ -63,19 +62,19 @@ class _HomePromoState extends State<HomePromo> {
               clipBehavior: Clip.hardEdge,
               borderRadius: BorderRadius.circular(10.0),
               child: GestureDetector(
-                onTap: (promo.bannerLink != null &&
-                        promo.bannerLink!.isNotEmpty)
+                onTap: (banner.bannerLink != null &&
+                        banner.bannerLink!.isNotEmpty)
                     ? () async {
-                        if (await canLaunch(promo.bannerLink!)) {
-                          debugPrint('Launch ${promo.bannerLink}');
-                          await launch(promo.bannerLink!);
+                        if (await canLaunch(banner.bannerLink!)) {
+                          debugPrint('Launch ${banner.bannerLink}');
+                          await launch(banner.bannerLink!);
                         } else {
                           snackBarDialog(context, 'Tidak bisa membuka link');
                         }
                       }
                     : null,
                 child: CachedNetworkImage(
-                  imageUrl: promo.getImageUrl(),
+                  imageUrl: banner.getImageUrl(),
                   placeholder: (context, url) => const Center(
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
@@ -92,8 +91,8 @@ class _HomePromoState extends State<HomePromo> {
                       ),
                     ),
                     alignment: Alignment.topRight,
-                    child: (promo.bannerLink != null &&
-                            promo.bannerLink!.isNotEmpty)
+                    child: (banner.bannerLink != null &&
+                            banner.bannerLink!.isNotEmpty)
                         ? const Icon(
                             Icons.info_outlined,
                             color: Colors.white,
