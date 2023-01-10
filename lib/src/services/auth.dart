@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/login.dart';
+import 'package:miliv2/src/screens/sign_up.dart';
 import 'package:miliv2/src/services/biometry.dart';
 import 'package:miliv2/src/services/storage.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -197,6 +198,17 @@ class AppAuth extends ChangeNotifier {
     Api.setDeviceId(deviceId);
 
     return true;
+  }
+
+  Future<void> onSignUp(SignUpVerified credentials) async {
+    await setAuth(
+      credentials.signedIn,
+      credentials.verified,
+      credentials.username,
+      credentials.deviceId,
+      credentials.token,
+      credentials.activationWallet,
+    );
   }
 
   static bool pinTransactionRequired() {

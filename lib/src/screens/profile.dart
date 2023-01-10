@@ -80,10 +80,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }));
     menuList2.add(AppMenu(AppImages.downline, 'Downline', () {
-      pushScreen(
-        context,
-        (_) => const DownlineScreen(),
-      );
+      if (userBalanceState.premium) {
+        pushScreen(
+          context,
+          (_) => const DownlineScreen(),
+        );
+      } else {
+        pushScreen(
+          context,
+              (_) => const UpgradeScreen(
+            title: 'Upgrade Akun',
+          ),
+        );
+      }
     }));
     menuList2.add(AppMenu(AppImages.headphones, 'Customer Service', () {
       pushScreen(

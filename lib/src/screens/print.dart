@@ -77,33 +77,52 @@ class _PrintScreenState extends State<PrintScreen> {
       cols.removeAt(0);
       var colRight = cols.isNotEmpty ? cols.join(':').trim() : null;
 
+      bool isPostpaid = true;
+
       var bill_amount = widget.history.struct.bill_amount;
       var total_pay = widget.history.struct.total_pay;
+      var user_price = widget.history.struct.user_price;
 
       // Replace Harga (pulsa, data, ewallet, prabayar)
       if (colLeft.toLowerCase().contains('harga')) {
-        if (colRight != null && parseDouble(colRight) == total_pay) {
+        isPostpaid = false;
+        if (colRight != null) {
           colRight = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text));
         }
       }
 
-      // Replace Total Tagihan / Nominal Transfer / Jumlah Transfer (plnpasca, tf bank)
-      if (colLeft.toLowerCase().contains('tagihan') || colLeft.toLowerCase().contains('transfer')) {
-        if (colRight != null && parseDouble(colRight) == bill_amount) {
+      // Replace Total Tagihan (pln, pdam, pgn, etc)
+      if (colLeft.toLowerCase().contains('tagihan') && !colLeft.toLowerCase().contains('bulan')) {
+        if (colRight != null) {
+          if (parseDouble(textAmountController.text) > (total_pay - user_price)) {
+            colRight = 'Rp. ' + NumberFormat('#,###').format(total_pay - user_price);
+          } else {
+            colRight = 'Rp. ' + NumberFormat('#,###').format(bill_amount);
+          }
+        }
+      }
+
+      // Replace Nominal Transfer / Jumlah Transfer (tf bank)
+      if (colLeft.toLowerCase().contains('transfer')) {
+        if (colRight != null) {
           colRight = 'Rp. ' + NumberFormat('#,###').format(bill_amount);
         }
       }
 
       // Replace Biaya Admin / Admin Fee / Admin Bank
       if (colLeft.toLowerCase().contains('admin')) {
-        if (colRight != null && parseDouble(colRight) == total_pay - bill_amount) {
-          colRight = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text) - bill_amount);
+        if (colRight != null) {
+          if (parseDouble(textAmountController.text) > (total_pay - user_price) && isPostpaid) {
+            colRight = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text) - (total_pay - user_price));
+          } else {
+            colRight = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text) - bill_amount);
+          }
         }
       }
 
       // Replace Total Bayar (tf bank, pascabayar, tagihan)
       if (colLeft.toLowerCase().contains('total bayar')) {
-        if (colRight != null && parseDouble(colRight) == total_pay) {
+        if (colRight != null) {
           colRight = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text));
         }
       }
@@ -114,33 +133,56 @@ class _PrintScreenState extends State<PrintScreen> {
     var configList = widget.history.config?.map((e) {
       if (e['columns'] != null) {
         dynamic columns = e['columns'];
-        dynamic colLeft = columns[0];
         int colsLength = columns.length as int;
-        int colRight = colsLength - 1;
+        int indexRight = colsLength - 1;
+        dynamic colLeft = columns[0];
+        dynamic colRight = columns[indexRight];
+
+        bool isPostpaid = true;
 
         var bill_amount = widget.history.struct.bill_amount;
+        var total_pay = widget.history.struct.total_pay;
+        var user_price = widget.history.struct.user_price;
 
-        if (colLeft != null && colLeft.toString().toLowerCase().contains('harga')) {
-          if (e['columns'][colRight] != null) {
-            e['columns'][colRight]['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text));
+        if (colLeft != null) {
+          if (colLeft.toString().toLowerCase().contains('harga')) {
+            isPostpaid = false;
+            if (colRight != null) {
+              colRight['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text));
+            }
           }
-        }
 
-        if (colLeft != null && (colLeft.toString().toLowerCase().contains('tagihan') || colLeft.toString().toLowerCase().contains('transfer'))) {
-          if (e['columns'][colRight] != null) {
-            e['columns'][colRight]['text'] = 'Rp. ' + NumberFormat('#,###').format(bill_amount);
+          if (colLeft.toString().toLowerCase().contains('tagihan') && !colLeft.toString().toLowerCase().contains('bulan')) {
+            isPostpaid = true;
+            if (colRight != null) {
+              if (parseDouble(textAmountController.text) > (total_pay - user_price)) {
+                colRight['text'] = 'Rp. ' + NumberFormat('#,###').format(total_pay);
+              } else {
+                colRight['text'] = 'Rp. ' + NumberFormat('#,###').format(bill_amount);
+              }
+            }
           }
-        }
 
-        if (colLeft != null && colLeft.toString().toLowerCase().contains('admin')) {
-          if (e['columns'][colRight] != null) {
-            e['columns'][colRight]['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text) - bill_amount);
+          if (colLeft.toString().toLowerCase().contains('transfer')) {
+            if (colRight != null) {
+              colRight['text'] = 'Rp. ' + NumberFormat('#,###').format(bill_amount);
+            }
           }
-        }
 
-        if (colLeft != null && colLeft.toString().toLowerCase().contains('bayar')) {
-          if (e['columns'][colRight] != null) {
-            e['columns'][colRight]['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text));
+          if (colLeft.toString().toLowerCase().contains('admin')) {
+            if (colRight != null) {
+              if (parseDouble(textAmountController.text) > (total_pay - user_price) && isPostpaid) {
+                colRight['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text) - (total_pay - user_price));
+              } else {
+                colRight['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text) - bill_amount);
+              }
+            }
+          }
+
+          if (colLeft.toString().toLowerCase().contains('bayar')) {
+            if (colRight != null) {
+              colRight['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text));
+            }
           }
         }
       }

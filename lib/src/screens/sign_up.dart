@@ -11,6 +11,7 @@ import 'package:miliv2/src/api/location.dart';
 import 'package:miliv2/src/api/login.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/services/auth.dart';
+import 'package:miliv2/src/services/storage.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/device.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -35,10 +36,12 @@ class SignUpVerified {
 class SignUpScreen extends StatefulWidget {
   final ValueChanged<SignUpVerified> onVerified;
   final Function onBack;
+  final String? referralCode;
 
   const SignUpScreen({
     required this.onVerified,
     required this.onBack,
+    this.referralCode,
     Key? key,
   }) : super(key: key);
 
@@ -81,6 +84,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   void initState() {
     super.initState();
+    _referralController.text = widget.referralCode ?? AppStorage.getReferralCode() ?? '';
+    if (_referralController.value.text.isNotEmpty) {
+      verifyReferral();
+    }
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       initialize();
     });

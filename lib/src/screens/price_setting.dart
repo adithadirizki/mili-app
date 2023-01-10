@@ -129,7 +129,7 @@ class _PriceSettingScreenState extends State<PriceSettingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const SimpleAppBar2(
-        title: 'Setting Harga',
+        title: 'Set Harga Jual',
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),

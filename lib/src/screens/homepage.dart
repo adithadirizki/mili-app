@@ -4,16 +4,49 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
+import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/api/api.dart';
+import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/data/active_banner.dart';
 import 'package:miliv2/src/data/promo.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
+import 'package:miliv2/src/models/vendor.dart';
 import 'package:miliv2/src/screens/activation_wallet.dart';
+import 'package:miliv2/src/screens/change_password.dart';
 import 'package:miliv2/src/screens/coin_mili.dart';
+import 'package:miliv2/src/screens/customer_service.dart';
+import 'package:miliv2/src/screens/downline.dart';
+import 'package:miliv2/src/screens/downline_register.dart';
+import 'package:miliv2/src/screens/favorite.dart';
+import 'package:miliv2/src/screens/history.dart';
 import 'package:miliv2/src/screens/home_screen.dart';
+import 'package:miliv2/src/screens/mutation.dart';
+import 'package:miliv2/src/screens/mutation_wallet.dart';
+import 'package:miliv2/src/screens/notification.dart';
 import 'package:miliv2/src/screens/otp_verification.dart';
+import 'package:miliv2/src/screens/pin_setup.dart';
+import 'package:miliv2/src/screens/price_setting.dart';
+import 'package:miliv2/src/screens/printer.dart';
+import 'package:miliv2/src/screens/profile.dart';
+import 'package:miliv2/src/screens/profile_update.dart';
+import 'package:miliv2/src/screens/profile_wallet.dart';
 import 'package:miliv2/src/screens/promo.dart';
+import 'package:miliv2/src/screens/purchase_payment.dart';
+import 'package:miliv2/src/screens/purchase_pln.dart';
+import 'package:miliv2/src/screens/purchase_pulsa.dart';
+import 'package:miliv2/src/screens/qris_scan.dart';
+import 'package:miliv2/src/screens/sign_up.dart';
+import 'package:miliv2/src/screens/topup.dart';
+import 'package:miliv2/src/screens/topup_history.dart';
+import 'package:miliv2/src/screens/topup_wallet.dart';
+import 'package:miliv2/src/screens/train_home.dart';
+import 'package:miliv2/src/screens/transfer.dart';
+import 'package:miliv2/src/screens/transfer_widget_wallet.dart';
+import 'package:miliv2/src/screens/upgrade.dart';
+import 'package:miliv2/src/screens/upgrade_wallet.dart';
+import 'package:miliv2/src/screens/vendor.dart';
 import 'package:miliv2/src/services/analytics.dart';
 import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/services/biometry.dart';
@@ -22,6 +55,7 @@ import 'package:miliv2/src/services/storage.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/images.dart';
 import 'package:miliv2/src/utils/dialog.dart';
+import 'package:miliv2/src/utils/product.dart';
 import 'package:miliv2/src/widgets/coin_chip.dart';
 import 'package:miliv2/src/widgets/home_bottom_bar.dart';
 import 'package:miliv2/src/widgets/pin_verification.dart';
@@ -60,6 +94,9 @@ class _HomepageState extends State<Homepage>
   final confirmPinState = GlobalKey<PINVerificationState>();
   final verifyPinState = GlobalKey<PINVerificationState>();
 
+  AppAuth authState = AppAuth();
+  StreamSubscription<Map>? streamSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -79,10 +116,356 @@ class _HomepageState extends State<Homepage>
     // AppStorage.setFirstInstall(true);
 
     initPin();
+    listenDynamicLinks();
 
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       initProvider();
     });
+  }
+
+  void listenDynamicLinks() async {
+    streamSubscription = FlutterBranchSdk.initSession().listen((data) async {
+      // note: guest is user signed in
+      // only user guest
+      if (userBalanceState.isGuest()) {
+        if (data['key_page'] == pageRegister) {
+          // when guest open app for the first time they can't direct to registration page
+          // so, referral code is stored in app storage
+          AppStorage.setReferralCode(data['referral_code']?.toString());
+
+          pushScreen(
+              context,
+              (_) => SignUpScreen(
+                  onVerified: authState.onSignUp,
+                  onBack: () {},
+                  referralCode: data['referral_code']?.toString()));
+        }
+      }
+
+      // can't access to page bellow when user is not signed in
+      if (authState.signedIn == false) return;
+
+      // only user register
+      if (userBalanceState.isGuest() == false) {
+        if (data['key_page'] == pageSaldoMili) {
+          profileWalletScreen();
+        } else if (data['key_page'] == pageTopupSaldoMili) {
+          topupWalletScreen();
+        } else if (data['key_page'] == pageTransferSaldoMili) {
+          transferWalletScreen();
+        } else if (data['key_page'] == pageMutasiSaldoMili) {
+          mutationWalletScreen();
+        } else if (data['key_page'] == pageQris) {
+          qrisScreen();
+        } else if (data['key_page'] == pageProfile) {
+          pushScreen(
+              context,
+              (_) => UserBalanceScope(
+                    notifier: userBalanceState,
+                    child: const ProfileScreen(),
+                  ));
+        } else if (data['key_page'] == pageAktifkanPin) {
+          pushScreen(context, (_) => const PINSetupScreen());
+        } else if (data['key_page'] == pageSetHargaJual) {
+          pushScreen(context, (_) => const PriceSettingScreen());
+        } else if (data['key_page'] == pagePrinter) {
+          pushScreen(context, (_) => const PrinterScreen());
+        } else if (data['key_page'] == pageGantiPassword) {
+          pushScreen(context, (_) => const ChangePasswordScreen());
+        } else if (data['key_page'] == pageNomorFavorit) {
+          pushScreen(context, (_) => const FavoriteScreen());
+        } else if (data['key_page'] == pageDownline) {
+          downlineScreen();
+        } else if (data['key_page'] == pageTambahDownline) {
+          addDownlineScreen();
+        } else if (data['key_page'] == pageUpgradePremium) {
+          upgradePremiumScreen();
+        } else if (data['key_page'] == pageUpdateProfile) {
+          profileUpdateScreen();
+        }
+      }
+
+      // for all user
+      if (data['key_page'] == pagePulsaData) {
+        pushScreen(context, (_) => const PurchasePulsaScreen());
+      } else if (data['key_page'] == pageListrik) {
+        pushScreen(context, (_) => const PurchasePLNScreen());
+      } else if (data['key_page'] == pageTagihan) {
+        if (data['key_subpage'] == null) {
+          pushScreen(
+            context,
+            (_) => const VendorScreen(
+              title: 'Tagihan',
+              groupName: menuGroupTagihan,
+            ),
+          );
+        } else {
+          QueryBuilder<Vendor> queryVendor = AppDB.vendorDB.query(Vendor_
+              .productCode
+              .equals(data['key_subpage'].toString(), caseSensitive: false)
+              .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(),
+                  caseSensitive: false)));
+          Vendor? vendor = queryVendor.build().findFirst();
+          if (vendor != null) openPurchaseScreen(context, vendor: vendor);
+        }
+      } else if (data['key_page'] == pageBpjs) {
+        pushScreen(
+          context,
+          (_) => PurchasePaymentScreen(
+            vendor: Vendor(
+                serverId: 0,
+                updatedAt: DateTime.now(),
+                imageUrl: '',
+                productType: groupTagihan,
+                group: '',
+                name: 'BPJS Kesehatan',
+                title: 'BPJS Kesehatan',
+                inquiryCode: 'CEKBPJSKS',
+                paymentCode: 'PAYBPJSKS',
+                config: '{"min_length": 5, "max_length": 30}'),
+          ),
+        );
+      } else if (data['key_page'] == pageEwallet) {
+        if (data['key_subpage'] == null) {
+          pushScreen(
+            context,
+            (_) => const VendorScreen(
+              title: 'E-Wallet',
+              groupName: menuGroupEmoney,
+            ),
+          );
+        } else {
+          QueryBuilder<Vendor> queryVendor = AppDB.vendorDB.query(Vendor_
+              .productCode
+              .equals(data['key_subpage'].toString(), caseSensitive: false)
+              .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(),
+                  caseSensitive: false)));
+          Vendor? vendor = queryVendor.build().findFirst();
+          if (vendor != null) openPurchaseScreen(context, vendor: vendor);
+        }
+      } else if (data['key_page'] == pageGame) {
+        if (data['key_subpage'] == null) {
+          pushScreen(
+            context,
+            (_) => const VendorScreen(
+              title: 'Game',
+              groupName: menuGroupGame,
+            ),
+          );
+        } else {
+          QueryBuilder<Vendor> queryVendor = AppDB.vendorDB.query(Vendor_
+              .productCode
+              .equals(data['key_subpage'].toString(), caseSensitive: false)
+              .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(),
+                  caseSensitive: false)));
+          Vendor? vendor = queryVendor.build().findFirst();
+          if (vendor != null) openPurchaseScreen(context, vendor: vendor);
+        }
+      } else if (data['key_page'] == pageTvBerbayar) {
+        if (data['key_subpage'] == null) {
+          pushScreen(
+            context,
+            (_) => const VendorScreen(
+              title: 'TV Berbayar',
+              groupName: menuGroupStreaming,
+            ),
+          );
+        } else {
+          QueryBuilder<Vendor> queryVendor = AppDB.vendorDB.query(Vendor_
+              .productCode
+              .equals(data['key_subpage'].toString(), caseSensitive: false)
+              .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(),
+                  caseSensitive: false)));
+          Vendor? vendor = queryVendor.build().findFirst();
+          if (vendor != null) openPurchaseScreen(context, vendor: vendor);
+        }
+      } else if (data['key_page'] == pageTransferBank) {
+        if (data['key_subpage'] == null) {
+          pushScreen(
+            context,
+            (_) => const VendorScreen(
+              title: 'Transfer Bank',
+              groupName: menuGroupBank,
+            ),
+          );
+        } else {
+          QueryBuilder<Vendor> queryVendor = AppDB.vendorDB.query(Vendor_
+              .productCode
+              .equals(data['key_subpage'].toString(), caseSensitive: false)
+              .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(),
+                  caseSensitive: false)));
+          Vendor? vendor = queryVendor.build().findFirst();
+          if (vendor != null) openPurchaseScreen(context, vendor: vendor);
+        }
+      } else if (data['key_page'] == pagePajak) {
+        if (data['key_subpage'] == null) {
+          pushScreen(
+            context,
+            (_) => const VendorScreen(
+              title: 'Pajak',
+              groupName: menuGroupPajak,
+            ),
+          );
+        } else {
+          QueryBuilder<Vendor> queryVendor = AppDB.vendorDB.query(Vendor_
+              .productCode
+              .equals(data['key_subpage'].toString(), caseSensitive: false)
+              .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(),
+                  caseSensitive: false)));
+          Vendor? vendor = queryVendor.build().findFirst();
+          if (vendor != null) openPurchaseScreen(context, vendor: vendor);
+        }
+      } else if (data['key_page'] == pageAktivasi) {
+        if (data['key_subpage'] == null) {
+          pushScreen(
+            context,
+            (_) => const VendorScreen(
+              title: 'Aktivasi',
+              groupName: menuGroupAct,
+            ),
+          );
+        } else {
+          QueryBuilder<Vendor> queryVendor = AppDB.vendorDB.query(Vendor_
+              .productCode
+              .equals(data['key_subpage'].toString(), caseSensitive: false)
+              .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(),
+                  caseSensitive: false)));
+          Vendor? vendor = queryVendor.build().findFirst();
+          if (vendor != null) openPurchaseScreen(context, vendor: vendor);
+        }
+      } else if (data['key_page'] == pageKeretaApi) {
+        pushScreen(
+          context,
+          (_) => const TrainHomeScreen(
+            title: 'Tiket Kereta',
+          ),
+        );
+      } else if (data['key_page'] == pageTiketPesawat) {
+        // comming soon
+      } else if (data['key_page'] == pageKoinMili) {
+        coinScreen();
+      } else if (data['key_page'] == pageBeliKoinMili) {
+        pushScreen(context, (_) => const TopupScreen(title: 'Beli Koin'));
+      } else if (data['key_page'] == pageRiwayatBeliKoinMili) {
+        pushScreen(context, (_) => const TopupHistoryScreen());
+      } else if (data['key_page'] == pageKirimKoinMili) {
+        pushScreen(
+            context, (_) => const TransferScreen(title: 'Transfer Koin'));
+      } else if (data['key_page'] == pageMutasiKoinMili) {
+        pushScreen(context,
+            (_) => const MutationScreen(title: 'Mutasi Koin MILI & Kredit'));
+      } else if (data['key_page'] == pageRiwayatTransaksi) {
+        pushScreen(context, (_) => const HistoryScreen());
+      } else if (data['key_page'] == pageNotifikasi) {
+        pushScreen(context, (_) => const NotificationScreen());
+      } else if (data['key_page'] == pageCustomerService) {
+        pushScreen(context, (_) => const CustomerServiceScreen());
+      }
+    }, onError: (dynamic error) {
+      print('InitSesseion error: ${error.toString()}');
+    });
+  }
+
+  void profileWalletScreen() {
+    if (!userBalanceState.walletActive) {
+      pushScreen(context, (_) => const ActivationWalletScreen());
+      return;
+    }
+    pushScreen(context, (_) => const ProfileWalletScreen());
+  }
+
+  void topupWalletScreen() {
+    if (!userBalanceState.walletActive) {
+      pushScreen(context, (_) => const ActivationWalletScreen());
+      return;
+    }
+    pushScreen(context, (_) => const TopupWalletScreen());
+  }
+
+  void transferWalletScreen() {
+    if (!userBalanceState.walletActive) {
+      pushScreen(context, (_) => const ActivationWalletScreen());
+      return;
+    } else if (!userBalanceState.walletPremium) {
+      pushScreen(context,
+          (_) => const UpgradeWalletScreen(title: 'Upgrade Saldo MILI'));
+      return;
+    }
+    pushScreen(
+        context, (_) => const TransferWidgetWalletScreen(title: 'Kirim Saldo'));
+  }
+
+  void mutationWalletScreen() {
+    if (!userBalanceState.walletActive) {
+      pushScreen(context, (_) => const ActivationWalletScreen());
+      return;
+    }
+    pushScreen(context, (_) => const MutationWalletScreen());
+  }
+
+  void qrisScreen() {
+    if (!userBalanceState.walletActive) {
+      pushScreen(context, (_) => const ActivationWalletScreen());
+      return;
+    }
+    pushScreen(context, (_) => const QrisScannerScreen());
+  }
+
+  void downlineScreen() {
+    if (userBalanceState.premium) {
+      pushScreen(
+        context,
+        (_) => const DownlineScreen(),
+      );
+    } else {
+      pushScreen(
+        context,
+        (_) => const UpgradeScreen(
+          title: 'Upgrade Akun',
+        ),
+      );
+    }
+  }
+
+  void addDownlineScreen() {
+    if (userBalanceState.premium) {
+      pushScreen(
+        context,
+        (_) => const DownlineRegisterScreen(),
+      );
+    } else {
+      pushScreen(
+        context,
+        (_) => const UpgradeScreen(
+          title: 'Upgrade Akun',
+        ),
+      );
+    }
+  }
+
+  void upgradePremiumScreen() {
+    if (userBalanceState.premium) {
+      pushScreen(
+        context,
+        (_) => const UpgradeScreen(
+          title: 'Akun Premium',
+          allowUpgrade: false,
+        ),
+      );
+    } else {
+      pushScreen(
+        context,
+        (_) => const UpgradeScreen(
+          title: 'Upgrade Akun',
+        ),
+      );
+    }
+  }
+
+  void profileUpdateScreen() {
+    if (!userBalanceState.isGuest()) {
+      pushScreen(context, (_) => const ProfileUpdateScreen());
+    }
   }
 
   FutureOr<Null> _handleError(Object e) async {

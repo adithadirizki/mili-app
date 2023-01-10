@@ -10,6 +10,7 @@ class AppStorage {
   static const String _profileKey = "_profile";
   static const String _walletKey = "_wallet";
   static const String _firstInstallKey = "_firstInstall";
+  static const String _referralCodeKey = "_referralCodeKey";
 
   // Private
   static const String _pinEnable = "_pinEnable";
@@ -197,5 +198,19 @@ class AppStorage {
     return null != selected
         ? PaymentMethod.values.firstWhere((method) => method.name == selected)
         : null;
+  }
+
+  static void setReferralCode(String? value) {
+    if (value != null) {
+      _engine.setString(_referralCodeKey, value);
+    } else {
+      _engine.remove(_referralCodeKey);
+    }
+  }
+
+  static String? getReferralCode() {
+    String? value = _engine.getString(_referralCodeKey);
+    setReferralCode(null);
+    return value;
   }
 }
