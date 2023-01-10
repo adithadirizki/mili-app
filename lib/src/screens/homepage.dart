@@ -6,17 +6,20 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/active_banner.dart';
+import 'package:miliv2/src/data/promo.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/screens/activation_wallet.dart';
 import 'package:miliv2/src/screens/coin_mili.dart';
 import 'package:miliv2/src/screens/home_screen.dart';
 import 'package:miliv2/src/screens/otp_verification.dart';
+import 'package:miliv2/src/screens/promo.dart';
 import 'package:miliv2/src/services/analytics.dart';
 import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/services/biometry.dart';
 import 'package:miliv2/src/services/messaging.dart';
 import 'package:miliv2/src/services/storage.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/images.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/coin_chip.dart';
@@ -107,6 +110,7 @@ class _HomepageState extends State<Homepage>
     AppAnalytic.setUserId(userBalanceState.userId);
     await AppMessaging.requestPermission(context);
     activeBannerState.fetchData();
+    promoState.fetchData();
     await userBalanceState.fetchData().catchError(_handleError);
     await userBalanceState.fetchWallet().catchError(_handleError);
     // Start timer
@@ -121,6 +125,13 @@ class _HomepageState extends State<Homepage>
   }
 
   // End Finpay function
+
+  void promo() {
+    pushScreen(
+      context,
+      (_) => const PromoScreen(),
+    );
+  }
 
   void initialize() async {
     bool? isFirstInstall = AppStorage.getFirstInstall();
@@ -378,6 +389,15 @@ class _HomepageState extends State<Homepage>
                     image: AppImages.logoColor,
                     height: 40,
                     fit: BoxFit.fill,
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.workspace_premium_outlined,
+                      size: 32,
+                    ),
+                    color: AppColors.black2,
+                    onPressed: promo,
                   ),
                   withBalanceProvider(CoinChip(onTap: coinScreen)),
                 ],
