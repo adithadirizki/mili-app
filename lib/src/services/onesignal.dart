@@ -15,16 +15,44 @@ class AppOnesignal {
     });
   }
 
-  static void setExternalID(String agenid) {
-    OneSignal.shared.sendTag('agenid', agenid);
+  static void setProfile({
+    required String agenid,
+    required String name,
+    double? balance = 0,
+    double? creditBalance = 0,
+    String? email,
+    required String phoneNumber,
+    required String groupName,
+    required DateTime registerDate,
+  }) {
+    phoneNumber = formatPhoneNumber(phoneNumber);
+    var tags = {
+      'agenid': agenid,
+      'name': name,
+      'balance': balance,
+      'credit_balance': creditBalance,
+      'group_name': groupName,
+      'register_date': registerDate.millisecondsSinceEpoch,
+    };
+    OneSignal.shared.setExternalUserId(agenid);
+    OneSignal.shared.setSMSNumber(smsNumber: phoneNumber);
+    if (email != null) {
+      OneSignal.shared.setEmail(email: email);
+    }
+    setTags(tags);
   }
 
-  static void setEmail(String email) {
-    OneSignal.shared.sendTag('email', email);
+  static void setDeviceInfo() async {
+    var version = await getAppVersion();
+    var appName = await getAppName();
+    var tags = {
+      'app_name': appName,
+      'version': version,
+    };
+    setTags(tags);
   }
 
-  // must start with +628
-  static void setPhoneNumber(String phoneNumber) {
+  static String formatPhoneNumber(String phoneNumber) {
     if (phoneNumber.startsWith('08')) {
       phoneNumber = phoneNumber.replaceFirst('08', '+628');
     } else if (phoneNumber.startsWith('628')) {
@@ -32,27 +60,10 @@ class AppOnesignal {
     } else if (phoneNumber.startsWith('8')) {
       phoneNumber = phoneNumber.replaceFirst('8', '+628');
     }
-    OneSignal.shared.sendTag('phone_number', phoneNumber);
+    return phoneNumber;
   }
 
-  static void setDeviceInfo() async {
-    var merk = await getDeviceInfo();
-    var os = await getOSName();
-    var version = await getAppVersion();
-    var data = {
-      'merk': merk,
-      'os': os,
-      'versi': version,
-    };
-    OneSignal.shared.sendTags(data);
-  }
-
-  static void setName(String name) {
-    OneSignal.shared.sendTag('name', name);
-  }
-
-  // GUEST, PERSONAL, PREMIUM
-  static void setGroupName(String groupName) {
-    OneSignal.shared.sendTag('group', groupName);
+  static void setTags(Map<String, dynamic> tags) {
+    OneSignal.shared.sendTags(tags);
   }
 }

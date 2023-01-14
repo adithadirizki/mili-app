@@ -33,6 +33,12 @@ Future<String> getPackageName() async {
   return packageName;
 }
 
+Future<String> getAppName() async {
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  String appName = packageInfo.appName;
+  return appName;
+}
+
 Future<String> getFullAppVersion() async {
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
