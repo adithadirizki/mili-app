@@ -27,7 +27,6 @@ class AppOnesignal {
   }) {
     phoneNumber = formatPhoneNumber(phoneNumber);
     var tags = {
-      'agenid': agenid,
       'name': name,
       'balance': balance,
       'credit_balance': creditBalance,
@@ -43,11 +42,9 @@ class AppOnesignal {
   }
 
   static void setDeviceInfo() async {
-    var version = await getAppVersion();
     var appName = await getAppName();
     var tags = {
       'app_name': appName,
-      'version': version,
     };
     setTags(tags);
   }
@@ -65,5 +62,9 @@ class AppOnesignal {
 
   static void setTags(Map<String, dynamic> tags) {
     OneSignal.shared.sendTags(tags);
+  }
+
+  static Future<Map<String, dynamic>> getTags() async {
+    return await OneSignal.shared.getTags();
   }
 }

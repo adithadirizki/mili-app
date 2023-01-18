@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:miliv2/src/api/product.dart';
+import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/vendor.dart';
 import 'package:miliv2/src/screens/contacts.dart';
 import 'package:miliv2/src/screens/payment.dart';
+import 'package:miliv2/src/services/onesignal.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -103,7 +105,7 @@ class _PurchaseTopupScreenState extends State<PurchaseTopupScreen> {
     }
   }
 
-  void onPaymentConfirmed() {
+  void onPaymentConfirmed() async {
     confirmDialog(
       context,
       title: 'Konfirmasi',
@@ -117,6 +119,18 @@ class _PurchaseTopupScreenState extends State<PurchaseTopupScreen> {
       confirmText: 'Ya',
       cancelText: 'Tidak',
     );
+
+    // track trx games
+    if (widget.vendor.group == menuGroupGame) {
+      Map<String, dynamic> tags = await AppOnesignal.getTags();
+      var _tags = {
+        'last_transaction': DateTime
+            .now()
+            .millisecondsSinceEpoch,
+        'games': parseInt(tags['games']?.toString() ?? '0') + 1,
+      };
+      AppOnesignal.setTags(_tags);
+    }
   }
 
   bool isValidDestination() {
