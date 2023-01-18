@@ -51,6 +51,7 @@ class AppImages {
   static const key = AssetImage('assets/images/key.png');
   static const favorites = AssetImage('assets/images/favorites.png');
   static const headphones = AssetImage('assets/images/headphones.png');
+  static const reward = AssetImage('assets/images/reward.png');
   static const downline = AssetImage('assets/images/downline.png');
   static const chevronsUp = AssetImage('assets/images/chevrons-up.png');
   static const checkSquare = AssetImage('assets/images/check-square.png');

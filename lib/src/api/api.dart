@@ -1263,6 +1263,27 @@ class Api {
         .catchError(_parseException);
   }
 
+  static Future<http.Response> programList() {
+    return http
+        .get(
+      Uri.parse(AppConfig.baseUrl + '/programs'),
+      headers: getRequestHeaders(),
+    )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
+  static Future<http.Response> programSummary(String id) {
+    return http
+        .get(
+      Uri.parse(AppConfig.baseUrl +
+          '/programs/summary/' +
+          id),
+      headers: getRequestHeaders(),
+    )
+        .catchError(_parseException);
+  }
+
   static Future<http.StreamedResponse> walletUpgrade({
     required String identityNo,
     required String noKK,

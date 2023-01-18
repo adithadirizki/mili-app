@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:miliv2/src/data/user_balance.dart';
+import 'package:miliv2/src/database/database.dart';
+import 'package:miliv2/src/models/program.dart';
 import 'package:miliv2/src/routing.dart';
 import 'package:miliv2/src/screens/about.dart';
 import 'package:miliv2/src/screens/change_password.dart';
@@ -13,6 +15,8 @@ import 'package:miliv2/src/screens/price_setting.dart';
 import 'package:miliv2/src/screens/printer.dart';
 import 'package:miliv2/src/screens/privacy.dart';
 import 'package:miliv2/src/screens/profile_update.dart';
+import 'package:miliv2/src/screens/reward.dart';
+import 'package:miliv2/src/screens/reward_perfomance.dart';
 import 'package:miliv2/src/screens/system_info.dart';
 import 'package:miliv2/src/screens/upgrade.dart';
 import 'package:miliv2/src/services/auth.dart';
@@ -108,6 +112,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initialize() async {
     version = await getAppVersion();
     userBalanceState.fetchData();
+    initDB();
+  }
+
+  void initDB() async {
+    await AppDB.syncProgram();
+
+    final programDB = AppDB.programDB;
+    Program? programProgram = programDB.query().build().findFirst();
+
+    if (programProgram != null) {
+      menuList2.add(AppMenu(AppImages.reward, programProgram.title, () {
+        // premium - show perfomance, direct link webview
+        // non-premium - don't show perfomance, direct link webview
+        if (programProgram.link != null) {
+          pushScreen(context, (_) {
+            if (userBalanceState.premium) {
+              return RewardPerfomanceScreen(program: programProgram);
+            } else {
+              return RewardScreen(
+                  title: programProgram.title, url: programProgram.link ?? '');
+            }
+          });
+        }
+      }));
+    }
+
+    setState(() {});
   }
 
   void logout() {

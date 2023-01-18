@@ -48,12 +48,6 @@ class UserBalanceState extends ChangeNotifier {
       var profile =
           ProfileResponse.fromJson(bodyMap['data'] as Map<String, dynamic>);
 
-      AppOnesignal.setExternalID(profile.userId);
-      AppOnesignal.setEmail(profile.email);
-      AppOnesignal.setPhoneNumber(profile.phoneNumber);
-      AppOnesignal.setName(profile.name);
-      AppOnesignal.setGroupName(profile.groupName);
-
       return UserBalanceState(0, 0, false)
         ..balance = (profile.balance ?? 0)
         ..balanceCredit = profile.balanceCredit ?? 0
@@ -99,6 +93,17 @@ class UserBalanceState extends ChangeNotifier {
     markup = profile.markup ?? 0;
     groupName = profile.groupName;
     notifyListeners();
+
+    AppOnesignal.setProfile(
+        agenid: profile.userId,
+        name: profile.name,
+        balance: profile.balance,
+        creditBalance: profile.balanceCredit,
+        phoneNumber: profile.phoneNumber,
+        email: profile.email,
+        groupName: profile.groupName,
+        registerDate: profile.registerDate
+    );
   }
 
   String? getPhotoUrl() {

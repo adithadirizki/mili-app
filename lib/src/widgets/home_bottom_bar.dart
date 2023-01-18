@@ -158,7 +158,7 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
             }),
             8,
             'Profil',
-            'Registrasi/login disini, selangkah lagi untuk menyelesaikan proses pendaftaran/login.',
+            'Aktivasi PIN, Setting harga, Setting printer dan lain-lain disini.',
             posY: TooltipVerticalPosition.TOP,
             offsetY: -10,
           ),
