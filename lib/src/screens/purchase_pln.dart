@@ -14,6 +14,7 @@ import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/vendor.dart';
 import 'package:miliv2/src/screens/contacts.dart';
 import 'package:miliv2/src/screens/payment.dart';
+import 'package:miliv2/src/services/onesignal.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -253,7 +254,7 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
     isValidDestination();
   }
 
-  void onPaymentConfirmed() {
+  void onPaymentConfirmed() async {
     confirmDialog(
       context,
       title: 'Konfirmasi',
@@ -267,6 +268,16 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
       confirmText: 'Ya',
       cancelText: 'Tidak',
     );
+
+    // track trx pln
+    Map<String, dynamic> tags = await AppOnesignal.getTags();
+    var _tags = {
+      'last_transaction': DateTime
+          .now()
+          .millisecondsSinceEpoch,
+      'pln': parseInt(tags['pln']?.toString() ?? '0') + 1,
+    };
+    AppOnesignal.setTags(_tags);
   }
 
   void openPayment() {
