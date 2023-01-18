@@ -774,14 +774,14 @@ class _HomepageState extends State<Homepage>
                     fit: BoxFit.fill,
                   ),
                   const Spacer(),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.workspace_premium_outlined,
-                      size: 32,
-                    ),
-                    color: AppColors.black2,
-                    onPressed: promo,
-                  ),
+                  // IconButton(
+                  //   icon: const Icon(
+                  //     Icons.workspace_premium_outlined,
+                  //     size: 32,
+                  //   ),
+                  //   color: AppColors.black2,
+                  //   onPressed: promo,
+                  // ),
                   withBalanceProvider(CoinChip(onTap: coinScreen)),
                 ],
               )),
