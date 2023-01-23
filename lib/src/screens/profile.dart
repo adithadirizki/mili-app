@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:miliv2/src/config/config.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/program.dart';
@@ -128,7 +129,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         if (programProgram.link != null) {
           pushScreen(context, (_) {
             if (userBalanceState.premium) {
-              return RewardPerfomanceScreen(program: programProgram);
+              return RewardScreen(
+                  title: programProgram.title,
+                  url: AppConfig.baseUrl + '/programs/summary/' + programProgram.serverId.toString()
+              );
             } else {
               return RewardScreen(
                   title: programProgram.title, url: programProgram.link ?? '');
@@ -373,7 +377,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           Positioned(
-            top: 115,
+            top: 105,
+            right: 100,
+            child: UserBalanceScope.of(context).referralCode != null
+                ? Text(
+                    'Kode Referral',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                      .textTheme
+                      .titleSmall
+                      ?.copyWith(color: AppColors.white1),)
+                : const SizedBox(),
+          ),
+          Positioned(
+            top: 130,
             right: 100,
             child: UserBalanceScope.of(context).referralCode != null
                 ? GestureDetector(

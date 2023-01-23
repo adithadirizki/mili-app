@@ -28,6 +28,7 @@ class _PrintScreenState extends State<PrintScreen> {
   List<Map<String, dynamic>>? config;
   List<List<String?>> structList = [];
   bool isLoading = false;
+  bool isPostpaid = true;
 
   @override
   void initState() {
@@ -77,8 +78,6 @@ class _PrintScreenState extends State<PrintScreen> {
       cols.removeAt(0);
       var colRight = cols.isNotEmpty ? cols.join(':').trim() : null;
 
-      bool isPostpaid = true;
-
       var bill_amount = widget.history.struct.bill_amount;
       var total_pay = widget.history.struct.total_pay;
       var user_price = widget.history.struct.user_price;
@@ -93,6 +92,7 @@ class _PrintScreenState extends State<PrintScreen> {
 
       // Replace Total Tagihan (pln, pdam, pgn, etc)
       if (colLeft.toLowerCase().contains('tagihan') && !colLeft.toLowerCase().contains('bulan')) {
+        isPostpaid = true;
         if (colRight != null) {
           if (parseDouble(textAmountController.text) > (total_pay - user_price)) {
             colRight = 'Rp. ' + NumberFormat('#,###').format(total_pay - user_price);
@@ -104,6 +104,7 @@ class _PrintScreenState extends State<PrintScreen> {
 
       // Replace Nominal Transfer / Jumlah Transfer (tf bank)
       if (colLeft.toLowerCase().contains('transfer')) {
+        isPostpaid = false;
         if (colRight != null) {
           colRight = 'Rp. ' + NumberFormat('#,###').format(bill_amount);
         }
@@ -138,8 +139,6 @@ class _PrintScreenState extends State<PrintScreen> {
         dynamic colLeft = columns[0];
         dynamic colRight = columns[indexRight];
 
-        bool isPostpaid = true;
-
         var bill_amount = widget.history.struct.bill_amount;
         var total_pay = widget.history.struct.total_pay;
         var user_price = widget.history.struct.user_price;
@@ -164,6 +163,7 @@ class _PrintScreenState extends State<PrintScreen> {
           }
 
           if (colLeft.toString().toLowerCase().contains('transfer')) {
+            isPostpaid = false;
             if (colRight != null) {
               colRight['text'] = 'Rp. ' + NumberFormat('#,###').format(bill_amount);
             }
