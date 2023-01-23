@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -37,13 +38,17 @@ class _RewardScreenState extends State<RewardScreen> {
         children: [
           WebView(
             initialUrl: widget.url,
-            zoomEnabled: true,
+            zoomEnabled: false,
             javascriptMode: JavascriptMode.unrestricted,
             onWebResourceError: (error) {
               debugPrint('RewardScreen error $error');
             },
             onWebViewCreated: (webViewController) {
               _controller.complete(webViewController);
+              webViewController.loadUrl(
+                widget.url,
+                headers: Api.getRequestHeaders(),
+              );
             },
             onPageStarted: (url) {
               setState(() {
