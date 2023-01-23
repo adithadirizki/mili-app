@@ -377,7 +377,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           Positioned(
-            top: 115,
+            top: 105,
+            right: 100,
+            child: UserBalanceScope.of(context).referralCode != null
+                ? Text(
+                    'Kode Referral',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                      .textTheme
+                      .titleSmall
+                      ?.copyWith(color: AppColors.white1),)
+                : const SizedBox(),
+          ),
+          Positioned(
+            top: 130,
             right: 100,
             child: UserBalanceScope.of(context).referralCode != null
                 ? GestureDetector(
