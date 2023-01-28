@@ -306,7 +306,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         }).catchError(_handleError);
       } else if (action == historyAction.contactCS) {
         var message =
-            '${formatDate(history.transactionDate)}|${history.productName}|${history.destination}|${history.statusDesc}';
+            'TRX|${formatDate(history.transactionDate)}|${history.productName}|${history.destination}|${history.statusDesc}';
         pushScreen(
           context,
           (_) => CustomerServiceScreen(message: message),

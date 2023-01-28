@@ -92,7 +92,7 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
                 createdAt: e.messageDate.millisecondsSinceEpoch,
                 id: e.id.toString(),
                 text: e.message,
-                status: types.Status.delivered,
+                status: e.isSeen ? types.Status.seen : types.Status.delivered,
               )
             : types.ImageMessage(
                 author: e.isOwnMessage ? _user : types.User(id: e.senderId),
@@ -101,7 +101,7 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
                 size: 100,
                 name: e.photoUrl!,
                 uri: e.photoUrl!,
-                status: types.Status.delivered,
+                status: e.isSeen ? types.Status.seen : types.Status.delivered,
               ))
         .toList(growable: true));
 

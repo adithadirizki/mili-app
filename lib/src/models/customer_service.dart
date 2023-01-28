@@ -40,4 +40,6 @@ class CustomerService {
 
   String? get photoUrl =>
       photo == null ? null : AppConfig.baseUrl + '/' + photo!;
+
+  bool get isSeen => status == 1;
 }

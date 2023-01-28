@@ -126,7 +126,7 @@ class AppDB {
 
     return Api.getAllCutoff().then((response) async {
       Map<String, dynamic> bodyMap =
-      json.decode(response.body) as Map<String, dynamic>;
+          json.decode(response.body) as Map<String, dynamic>;
       var pagingResponse = PagingResponse.fromJson(bodyMap);
 
       debugPrint('syncCutoff data length ${pagingResponse.data.length}');
@@ -137,7 +137,7 @@ class AppDB {
       for (var data in pagingResponse.data) {
         try {
           CutoffResponse res =
-          CutoffResponse.fromJson(data as Map<String, dynamic>);
+              CutoffResponse.fromJson(data as Map<String, dynamic>);
 
           Cutoff cutoff = Cutoff.fromResponse(res);
           cutoffDB.put(cutoff);
@@ -767,8 +767,8 @@ class AppDB {
 
     Map<String, String> params = {
       'limit': limit.toString(),
-      'sort': json.encode({'tanggal': 'asc'}),
-      'filter': json.encode({'tanggal': '>|$timestamp'})
+      'sort': json.encode({'updated_at': 'asc'}),
+      'filter': json.encode({'updated_at': '>|$timestamp'})
     };
 
     debugPrint('syncCustomerService with params $params');
@@ -1028,7 +1028,7 @@ class AppDB {
 
     return Api.programList().then((response) async {
       Map<String, dynamic> bodyMap =
-      json.decode(response.body) as Map<String, dynamic>;
+          json.decode(response.body) as Map<String, dynamic>;
       var pagingResponse = PagingResponse.fromJson(bodyMap);
 
       debugPrint('syncProgram data length ${pagingResponse.data.length}');
@@ -1039,7 +1039,7 @@ class AppDB {
       for (var data in pagingResponse.data) {
         try {
           ProgramResponse res =
-          ProgramResponse.fromJson(data as Map<String, dynamic>);
+              ProgramResponse.fromJson(data as Map<String, dynamic>);
 
           Program program = Program.fromResponse(res);
           programDB.put(program);
