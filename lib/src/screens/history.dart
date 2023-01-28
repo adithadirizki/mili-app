@@ -305,8 +305,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
           });
         }).catchError(_handleError);
       } else if (action == historyAction.contactCS) {
-        var message = '${history.transactionDate.toString().replaceAll('.000', '')}\n';
-        message += 'Transaksi ${history.productName} tujuan ${history.destination}';
+        var message =
+            '${formatDate(history.transactionDate)}|${history.productName}|${history.destination}|${history.statusDesc}';
         pushScreen(
           context,
           (_) => CustomerServiceScreen(message: message),
