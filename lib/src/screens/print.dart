@@ -1,13 +1,15 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:miliv2/src/api/purchase.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/services/printer.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
-import 'package:miliv2/src/widgets/button.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PrintScreen extends StatefulWidget {
   final PurchaseHistoryDetailResponse history;
@@ -23,7 +25,8 @@ class PrintScreen extends StatefulWidget {
 
 class _PrintScreenState extends State<PrintScreen> {
   final formKey = GlobalKey<FormState>();
-  final TextEditingController textAmountController = TextEditingController(text: '0');
+  final TextEditingController textAmountController =
+      TextEditingController(text: '0');
   String struct = '';
   List<Map<String, dynamic>>? config;
   List<List<String?>> structList = [];
@@ -58,15 +61,23 @@ class _PrintScreenState extends State<PrintScreen> {
 
   void printStruct() {
     if (formKey.currentState!.validate()) {
-
       confirmDialog(
         context,
         title: 'Detail Transaksi',
         msg: struct + '\nCetak Struk ?',
         confirmAction: () {
-          AppPrinter.printStruct(struct: struct, config: config, context: context);
+          AppPrinter.printStruct(
+              struct: struct, config: config, context: context);
         },
       );
+    }
+  }
+
+  void shareStruct() {
+    if (formKey.currentState!.validate()) {
+      final box = context.findRenderObject() as RenderBox?;
+      Share.share(struct,
+          sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
     }
   }
 
@@ -86,18 +97,21 @@ class _PrintScreenState extends State<PrintScreen> {
       if (colLeft.toLowerCase().contains('harga')) {
         isPostpaid = false;
         if (colRight != null) {
-          colRight = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text));
+          colRight = 'Rp. ' +
+              formatNumber(parseDouble(textAmountController.value.text));
         }
       }
 
       // Replace Total Tagihan (pln, pdam, pgn, etc)
-      if (colLeft.toLowerCase().contains('tagihan') && !colLeft.toLowerCase().contains('bulan')) {
+      if (colLeft.toLowerCase().contains('tagihan') &&
+          !colLeft.toLowerCase().contains('bulan')) {
         isPostpaid = true;
         if (colRight != null) {
-          if (parseDouble(textAmountController.text) > (total_pay - user_price)) {
-            colRight = 'Rp. ' + NumberFormat('#,###').format(total_pay - user_price);
+          if (parseDouble(textAmountController.text) >
+              (total_pay - user_price)) {
+            colRight = 'Rp. ' + formatNumber(total_pay - user_price);
           } else {
-            colRight = 'Rp. ' + NumberFormat('#,###').format(bill_amount);
+            colRight = 'Rp. ' + formatNumber(bill_amount);
           }
         }
       }
@@ -106,17 +120,23 @@ class _PrintScreenState extends State<PrintScreen> {
       if (colLeft.toLowerCase().contains('transfer')) {
         isPostpaid = false;
         if (colRight != null) {
-          colRight = 'Rp. ' + NumberFormat('#,###').format(bill_amount);
+          colRight = 'Rp. ' + formatNumber(bill_amount);
         }
       }
 
       // Replace Biaya Admin / Admin Fee / Admin Bank
       if (colLeft.toLowerCase().contains('admin')) {
         if (colRight != null) {
-          if (parseDouble(textAmountController.text) > (total_pay - user_price) && isPostpaid) {
-            colRight = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text) - (total_pay - user_price));
+          if (parseDouble(textAmountController.text) >
+                  (total_pay - user_price) &&
+              isPostpaid) {
+            colRight = 'Rp. ' +
+                formatNumber(parseDouble(textAmountController.value.text) -
+                    (total_pay - user_price));
           } else {
-            colRight = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text) - bill_amount);
+            colRight = 'Rp. ' +
+                formatNumber(
+                    parseDouble(textAmountController.value.text) - bill_amount);
           }
         }
       }
@@ -124,7 +144,8 @@ class _PrintScreenState extends State<PrintScreen> {
       // Replace Total Bayar (tf bank, pascabayar, tagihan)
       if (colLeft.toLowerCase().contains('total bayar')) {
         if (colRight != null) {
-          colRight = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text));
+          colRight = 'Rp. ' +
+              formatNumber(parseDouble(textAmountController.value.text));
         }
       }
 
@@ -147,17 +168,20 @@ class _PrintScreenState extends State<PrintScreen> {
           if (colLeft.toString().toLowerCase().contains('harga')) {
             isPostpaid = false;
             if (colRight != null) {
-              colRight['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text));
+              colRight['text'] = 'Rp. ' +
+                  formatNumber(parseDouble(textAmountController.value.text));
             }
           }
 
-          if (colLeft.toString().toLowerCase().contains('tagihan') && !colLeft.toString().toLowerCase().contains('bulan')) {
+          if (colLeft.toString().toLowerCase().contains('tagihan') &&
+              !colLeft.toString().toLowerCase().contains('bulan')) {
             isPostpaid = true;
             if (colRight != null) {
-              if (parseDouble(textAmountController.text) > (total_pay - user_price)) {
-                colRight['text'] = 'Rp. ' + NumberFormat('#,###').format(total_pay);
+              if (parseDouble(textAmountController.text) >
+                  (total_pay - user_price)) {
+                colRight['text'] = 'Rp. ' + formatNumber(total_pay);
               } else {
-                colRight['text'] = 'Rp. ' + NumberFormat('#,###').format(bill_amount);
+                colRight['text'] = 'Rp. ' + formatNumber(bill_amount);
               }
             }
           }
@@ -165,23 +189,30 @@ class _PrintScreenState extends State<PrintScreen> {
           if (colLeft.toString().toLowerCase().contains('transfer')) {
             isPostpaid = false;
             if (colRight != null) {
-              colRight['text'] = 'Rp. ' + NumberFormat('#,###').format(bill_amount);
+              colRight['text'] = 'Rp. ' + formatNumber(bill_amount);
             }
           }
 
           if (colLeft.toString().toLowerCase().contains('admin')) {
             if (colRight != null) {
-              if (parseDouble(textAmountController.text) > (total_pay - user_price) && isPostpaid) {
-                colRight['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text) - (total_pay - user_price));
+              if (parseDouble(textAmountController.text) >
+                      (total_pay - user_price) &&
+                  isPostpaid) {
+                colRight['text'] = 'Rp. ' +
+                    formatNumber(parseDouble(textAmountController.value.text) -
+                        (total_pay - user_price));
               } else {
-                colRight['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text) - bill_amount);
+                colRight['text'] = 'Rp. ' +
+                    formatNumber(parseDouble(textAmountController.value.text) -
+                        bill_amount);
               }
             }
           }
 
           if (colLeft.toString().toLowerCase().contains('bayar')) {
             if (colRight != null) {
-              colRight['text'] = 'Rp. ' + NumberFormat('#,###').format(parseDouble(textAmountController.value.text));
+              colRight['text'] = 'Rp. ' +
+                  formatNumber(parseDouble(textAmountController.value.text));
             }
           }
         }
@@ -205,14 +236,33 @@ class _PrintScreenState extends State<PrintScreen> {
       return Row(
         children: [
           Expanded(
-              child: Text(e.value[0]!, style: const TextStyle(fontFamily: 'Maven Pro', height: 1.5))
-          ),
-          e.value[1] != null ? Expanded(
-              child: Text(': ' + e.value[1]!, style: const TextStyle(fontFamily: 'Maven Pro', height: 1.5, fontWeight: FontWeight.bold))
-          ) : const SizedBox(),
+              child: Text(e.value[0]!,
+                  style:
+                      const TextStyle(fontFamily: 'Maven Pro', height: 1.5))),
+          e.value[1] != null
+              ? Expanded(
+                  child: Text(': ' + e.value[1]!,
+                      style: const TextStyle(
+                          fontFamily: 'Maven Pro',
+                          height: 1.5,
+                          fontWeight: FontWeight.bold)))
+              : const SizedBox(),
         ],
       );
     }).toList();
+  }
+
+  void setAmount(double amount) {
+    var string = formatNumber(amount);
+
+    setState(() {
+      textAmountController.value = TextEditingValue(
+        text: string,
+        selection: TextSelection.collapsed(
+          offset: string.length,
+        ),
+      );
+    });
   }
 
   @override
@@ -220,15 +270,15 @@ class _PrintScreenState extends State<PrintScreen> {
     return Scaffold(
       appBar: const SimpleAppBar(title: 'Detail Transaksi'),
       body: Container(
-        padding: const EdgeInsets.all(10),
-        width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
+          padding: const EdgeInsets.all(10),
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                    child: Column(
                   children: [
                     Card(
                         elevation: 2,
@@ -237,104 +287,205 @@ class _PrintScreenState extends State<PrintScreen> {
                         ),
                         color: const Color(0x804cc6ff),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 20),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: buildStruct(),
                           ),
-                        )
-                    ),
+                        )),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
                       child: Form(
                         key: formKey,
                         child: Column(
                           children: [
                             Row(
                               children: const [
-                                Text('Masukkan Harga Jual ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                Text(
+                                  'Masukkan Harga Jual ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
                                 Text('(opsional)'),
                               ],
                             ),
                             Row(
                               children: [
                                 const Padding(
-                                    padding: EdgeInsets.only(bottom: 5, right: 5),
-                                    child: Text('Rp', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))
-                                ),
+                                    padding:
+                                        EdgeInsets.only(bottom: 5, right: 5),
+                                    child: Text('Rp',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold))),
                                 SizedBox(
-                                    width: 150,
-                                    child: TextFormField(
-                                      controller: textAmountController,
-                                      keyboardType: TextInputType.number,
-                                      textInputAction: TextInputAction.done,
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.digitsOnly,
-                                      ],
-                                      onChanged: (string) {
-                                        var amount = parseDouble(string);
-                                        var max_markup = widget.history.struct.max_markup;
-                                        var max = widget.history.struct.total_pay + (max_markup ?? 0);
-                                        double min = 0;
+                                  width: 150,
+                                  child: TextFormField(
+                                    controller: textAmountController,
+                                    keyboardType: TextInputType.number,
+                                    textInputAction: TextInputAction.done,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                    ],
+                                    onChanged: (string) {
+                                      var amount = parseDouble(string);
+                                      var max_markup =
+                                          widget.history.struct.max_markup;
+                                      var max =
+                                          widget.history.struct.total_pay +
+                                              (max_markup ?? 0);
+                                      double min = 0;
 
-                                        if (amount < min) {
-                                          amount = min;
-                                        } else if (max_markup != null && amount > max) {
-                                          amount = max;
-                                        }
+                                      if (amount < min) {
+                                        amount = min;
+                                      } else if (max_markup != null &&
+                                          amount > max) {
+                                        amount = max;
+                                      }
 
-                                        string = formatNumber(amount);
-
-                                        setState(() {
-                                          textAmountController.value = TextEditingValue(
-                                            text: string,
-                                            selection: TextSelection.collapsed(
-                                              offset: string.length,
-                                            ),
-                                          );
-                                        });
-                                      },
-                                      validator: (value) {
-                                        double min = widget.history.struct.bill_amount + widget.history.struct.admin_fee;
-                                        var max_markup = widget.history.struct.max_markup;
-                                        var max = widget.history.struct.total_pay + (max_markup ?? 0);
-                                        if (value == null ||
-                                            value.isEmpty ||
-                                            value == '0') {
-                                          return 'Masukkan Harga Jual';
-                                        }
-                                        var amount = parseDouble(value);
-                                        if (amount < min || (max_markup != null && amount > max)) {
-                                          return 'Jumlah tidak sesuai';
-                                        }
-                                        return null;
-                                      },
-                                    )
+                                      // string = formatNumber(amount);
+                                      // setState(() {
+                                      //   textAmountController.value =
+                                      //       TextEditingValue(
+                                      //     text: string,
+                                      //     selection: TextSelection.collapsed(
+                                      //       offset: string.length,
+                                      //     ),
+                                      //   );
+                                      // });
+                                      setAmount(amount);
+                                    },
+                                    validator: (value) {
+                                      double min =
+                                          widget.history.struct.bill_amount +
+                                              widget.history.struct.admin_fee;
+                                      var max_markup =
+                                          widget.history.struct.max_markup;
+                                      var max =
+                                          widget.history.struct.total_pay +
+                                              (max_markup ?? 0);
+                                      if (value == null ||
+                                          value.isEmpty ||
+                                          value == '0') {
+                                        return 'Masukkan Harga Jual';
+                                      }
+                                      var amount = parseDouble(value);
+                                      if (amount < min ||
+                                          (max_markup != null &&
+                                              amount > max)) {
+                                        return 'Jumlah tidak sesuai';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    var amount =
+                                        parseDouble(textAmountController.text);
+                                    setAmount(amount + 500);
+                                  },
+                                  child: Text(
+                                    '+ 500',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall!
+                                        .copyWith(
+                                          color: AppColors.gradientBlue1,
+                                        ),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    var amount =
+                                        parseDouble(textAmountController.text);
+                                    setAmount(amount - 500);
+                                  },
+                                  child: Text(
+                                    '- 500',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall!
+                                        .copyWith(
+                                          color: AppColors.red1,
+                                        ),
+                                  ),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 5),
-                            const Text('* Harga Jual merupakan harga yang akan tertera di Struk Transaksi yang akan dicetak.',
-                              style: TextStyle(
-                                fontSize: 10
-                              ),
+                            const Text(
+                              '* Harga Jual merupakan harga yang akan tertera di Struk Transaksi yang akan dicetak.',
+                              style: TextStyle(fontSize: 10),
                             ),
                           ],
                         ),
                       ),
                     ),
                   ],
-                )
+                )),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: AppButton('Cetak', printStruct),
-            )
-          ],
-        )
-      ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      child: TextButton(
+                        onPressed: shareStruct,
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.share,
+                              size: 20,
+                              color: AppColors.black2,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Bagikan',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall!
+                                  .copyWith(
+                                    color: AppColors.black1,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    SizedBox(
+                      child: TextButton(
+                        onPressed: printStruct,
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.print,
+                              size: 20,
+                              color: AppColors.black2,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Cetak',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall!
+                                  .copyWith(
+                                    color: AppColors.black1,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          )),
     );
   }
 }
