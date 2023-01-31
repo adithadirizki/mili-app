@@ -79,8 +79,8 @@ void confirmDialog(BuildContext context,
                       : const Text(
                           'Ya',
                           // style: Theme.of(context).textTheme.button,
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500),
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500),
                         ),
                 )
               ],
@@ -213,8 +213,7 @@ void infoTopupRetail(BuildContext context,
         const SizedBox(
           height: 15,
         ),
-        const Text(
-            'Tunjukkan kode pembayaran ini ke kasir.')
+        const Text('Tunjukkan kode pembayaran ini ke kasir.')
       ];
     } else if (history.isSuccess) {
       return [

@@ -1184,6 +1184,16 @@ class Api {
         .catchError(_parseException);
   }
 
+  static Future<http.Response> walletTopupInfo() {
+    return http
+        .get(
+          Uri.parse(AppConfig.baseUrl + '/wallet/topupInfo'),
+          headers: getRequestHeaders(),
+        )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
+
   static Future<http.Response> walletBalance() {
     return http
         .post(
@@ -1266,9 +1276,9 @@ class Api {
   static Future<http.Response> programList() {
     return http
         .get(
-      Uri.parse(AppConfig.baseUrl + '/programs'),
-      headers: getRequestHeaders(),
-    )
+          Uri.parse(AppConfig.baseUrl + '/programs'),
+          headers: getRequestHeaders(),
+        )
         .then(_parseResponse)
         .catchError(_parseException);
   }
@@ -1276,11 +1286,9 @@ class Api {
   static Future<http.Response> programSummary(String id) {
     return http
         .get(
-      Uri.parse(AppConfig.baseUrl +
-          '/programs/summary/' +
-          id),
-      headers: getRequestHeaders(),
-    )
+          Uri.parse(AppConfig.baseUrl + '/programs/summary/' + id),
+          headers: getRequestHeaders(),
+        )
         .catchError(_parseException);
   }
 

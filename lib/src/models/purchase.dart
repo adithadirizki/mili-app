@@ -56,4 +56,11 @@ class PurchaseHistory {
   bool get isSuccess => status.toUpperCase() == 'SUCCESSED';
   bool get isFailed => status.toUpperCase() == 'FAILED';
   bool get isPending => status.toUpperCase() == 'PENDING';
+  String get statusDesc => isSuccess
+      ? 'Berhasil'
+      : isFailed
+          ? 'Gagal'
+          : isPending
+              ? 'Sedang diproses'
+              : 'Unknown';
 }

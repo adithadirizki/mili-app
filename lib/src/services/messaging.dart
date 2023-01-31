@@ -6,6 +6,7 @@ import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/transaction.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/utils/device.dart';
+import 'package:miliv2/src/utils/dialog.dart';
 
 @immutable
 class PushNotification {
@@ -132,15 +133,15 @@ class AppMessaging {
           key == 'mutasi' ||
           key == 'transfer_deposit') {
         userBalanceState.fetchData();
+      } else if (key == 'customer_service') {
+        infoDialog(
+          _context,
+          msg: message.notification!.body!,
+          title: message.notification!.title,
+          // duration: 10000,
+        );
       }
     }
-
-    // snackBarDialog(
-    //   _context,
-    //   message.notification!.body!,
-    //   title: message.notification!.title,
-    //   duration: 3000,
-    // );
 
     // If `onMessage` is triggered with a notification, construct our own
     // local notification to show to users using the created channel.

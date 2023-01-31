@@ -1,16 +1,20 @@
+import 'package:flutter/cupertino.dart';
+import 'package:miliv2/src/config/config.dart';
 import 'package:miliv2/src/utils/device.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class AppOnesignal {
+  AppOnesignal._();
+
   static Future<void> initialize() async {
     //Remove this method to stop OneSignal Debugging
     // OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
 
-    OneSignal.shared.setAppId("eabd6fde-5f8b-4b01-acd8-493fc7e094e9");
+    OneSignal.shared.setAppId(AppConfig.onesignal);
+    debugPrint("Init Onesignal ${AppConfig.onesignal}");
 
     OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
-      print("Accepted permission: $accepted");
-
+      debugPrint("Accepted permission: $accepted");
       setDeviceInfo();
     });
   }

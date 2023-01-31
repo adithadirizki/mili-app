@@ -285,14 +285,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
           Map<String, dynamic> bodyMap =
               json.decode(response.body) as Map<String, dynamic>;
           var detail = PurchaseHistoryDetailResponse.fromJson(bodyMap);
-          confirmDialog(
-            context,
-            title: 'Detail Transaksi',
-            msg: detail.invoice + '\n\nCetak struk ?',
-            confirmAction: () {
-              print(detail);
-            },
-          );
+          // confirmDialog(
+          //   context,
+          //   title: 'Detail Transaksi',
+          //   msg: detail.invoice + '\n\nCetak struk ?',
+          //   confirmAction: () {
+          //     print(detail);
+          //   },
+          // );
+
+          pushScreen(context, (ctx) {
+            return PrintScreen(history: detail);
+          });
         }).catchError(_handleError);
       } else if (action == historyAction.print) {
         await Api.getPurchaseDetail(history.serverId).then((response) {
@@ -305,8 +309,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
           });
         }).catchError(_handleError);
       } else if (action == historyAction.contactCS) {
-        var message = '${history.transactionDate.toString().replaceAll('.000', '')}\n';
-        message += 'Transaksi ${history.productName} tujuan ${history.destination}';
+        var message =
+            'Transaksi *${history.productName}* ${history.destination} ${history.statusDesc} (${formatDate(history.transactionDate)})';
         pushScreen(
           context,
           (_) => CustomerServiceScreen(message: message),
@@ -350,68 +354,47 @@ class _HistoryScreenState extends State<HistoryScreen> {
             leading: const Icon(Icons.info_outline_rounded),
             onTap: execAction(historyAction.showInvoice, history),
           ),
-          ListTile(
-            // contentPadding: EdgeInsets.all(0),
-            title: const Text(
-              'Print',
-              // style: Theme.of(context).textTheme.bodySmall,
-            ),
-            leading: const Icon(Icons.print_outlined),
-            onTap: execAction(historyAction.print, history),
-          ),
-          ListTile(
-            // contentPadding: EdgeInsets.all(0),
-            title: const Text(
-              'Share',
-              // style: Theme.of(context).textTheme.bodySmall,
-            ),
-            leading: const Icon(Icons.share_rounded),
-            onTap: execAction(historyAction.share, history),
-          ),
+          // ListTile(
+          //   // contentPadding: EdgeInsets.all(0),
+          //   title: const Text(
+          //     'Print',
+          //     // style: Theme.of(context).textTheme.bodySmall,
+          //   ),
+          //   leading: const Icon(Icons.print_outlined),
+          //   onTap: execAction(historyAction.print, history),
+          // ),
+          // ListTile(
+          //   // contentPadding: EdgeInsets.all(0),
+          //   title: const Text(
+          //     'Share',
+          //     // style: Theme.of(context).textTheme.bodySmall,
+          //   ),
+          //   leading: const Icon(Icons.share_rounded),
+          //   onTap: execAction(historyAction.share, history),
+          // ),
         ]);
       }
-      menu.addAll([
-        ListTile(
-          // contentPadding: EdgeInsets.all(0),
-          title: const Text(
-            'Hubungi CS',
-            // style: Theme.of(context).textTheme.bodySmall,
-          ),
-          leading: const Icon(Icons.messenger_outline_rounded),
-          onTap: execAction(historyAction.contactCS, history),
-        ),
-        ListTile(
-          // contentPadding: EdgeInsets.all(0),
-          title: const Text(
-            'Simpan Nomor',
-            // style: Theme.of(context).textTheme.bodySmall,
-          ),
-          leading: const Icon(Icons.favorite_border_rounded),
-          onTap: execAction(historyAction.addFavorite, history),
-        ),
-      ]);
-    } else {
-      menu.addAll([
-        ListTile(
-          // contentPadding: EdgeInsets.all(0),
-          title: const Text(
-            'Hubungi CS',
-            // style: Theme.of(context).textTheme.bodySmall,
-          ),
-          leading: const Icon(Icons.messenger_outline_rounded),
-          onTap: execAction(historyAction.contactCS, history),
-        ),
-        ListTile(
-          // contentPadding: EdgeInsets.all(0),
-          title: const Text(
-            'Simpan Nomor',
-            // style: Theme.of(context).textTheme.bodySmall,
-          ),
-          leading: const Icon(Icons.favorite_border_rounded),
-          onTap: execAction(historyAction.addFavorite, history),
-        ),
-      ]);
     }
+    menu.addAll([
+      ListTile(
+        // contentPadding: EdgeInsets.all(0),
+        title: const Text(
+          'Hubungi CS',
+          // style: Theme.of(context).textTheme.bodySmall,
+        ),
+        leading: const Icon(Icons.messenger_outline_rounded),
+        onTap: execAction(historyAction.contactCS, history),
+      ),
+      ListTile(
+        // contentPadding: EdgeInsets.all(0),
+        title: const Text(
+          'Simpan Nomor',
+          // style: Theme.of(context).textTheme.bodySmall,
+        ),
+        leading: const Icon(Icons.favorite_border_rounded),
+        onTap: execAction(historyAction.addFavorite, history),
+      ),
+    ]);
     return () {
       bottomSheetDialog<void>(
         context: context,

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
@@ -29,6 +30,7 @@ class _TopupWalletScreenState extends State<TopupWalletScreen> {
       Completer<WebViewController>();
 
   String? widgetUrl;
+  String? topupInfo;
 
   @override
   void initState() {
@@ -37,15 +39,20 @@ class _TopupWalletScreenState extends State<TopupWalletScreen> {
       WebView.platform = SurfaceAndroidWebView(); // AndroidWebView();
     }
     WidgetsBinding.instance?.addPostFrameCallback((_) {
-      getWidgetUrl();
+      initialize();
     });
   }
 
-  FutureOr<void> _handleError(dynamic e) {
-    snackBarDialog(context, e.toString());
-  }
+  void initialize() {
+    void handleResponseInfo(http.Response response) {
+      Map<String, dynamic> bodyMap =
+          json.decode(response.body) as Map<String, dynamic>;
+      topupInfo = bodyMap['data']?.toString();
+      setState(() {});
+    }
 
-  void getWidgetUrl() {
+    Api.walletTopupInfo().then(handleResponseInfo).catchError(_handleError);
+
     Api.walletTopup().then((response) {
       Map<String, dynamic> bodyMap =
           json.decode(response.body) as Map<String, dynamic>;
@@ -53,6 +60,10 @@ class _TopupWalletScreenState extends State<TopupWalletScreen> {
       widgetUrl = bodyMap['url']?.toString();
       setState(() {});
     }).catchError(_handleError);
+  }
+
+  FutureOr<void> _handleError(dynamic e) {
+    snackBarDialog(context, e.toString());
   }
 
   Widget buildWidget() {
@@ -98,6 +109,16 @@ class _TopupWalletScreenState extends State<TopupWalletScreen> {
               },
             ),
           ),
+          topupInfo != null
+              ? Container(
+                  alignment: Alignment.topLeft,
+                  padding: const EdgeInsets.all(15),
+                  child: Text(
+                    topupInfo!,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                )
+              : const SizedBox(),
         ],
       ),
     );
