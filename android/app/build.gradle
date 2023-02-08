@@ -63,7 +63,7 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
-        resValue "string", "app_name", "Mili v2"
+        resValue "string", "app_name", "MILI"
     }
 
     signingConfigs {
@@ -88,16 +88,16 @@ android {
        debug {
            applicationIdSuffix ".debug"
            versionNameSuffix "-DEBUG"
-           resValue "string", "app_name", "Mili v2 Debug"
+           resValue "string", "app_name", "MILI Debug"
        }
        release {
            signingConfig signingConfigs.release
 //           applicationIdSuffix ".beta"
 //           versionNameSuffix "-BETA"
-//           resValue "string", "app_name", "Mili v2 Beta"
+//           resValue "string", "app_name", "MILI Beta"
 //           applicationIdSuffix ".stagingv2"
 //           versionNameSuffix "-STAGING"
-//           resValue "string", "app_name", "Mili v2 Staging"
+//           resValue "string", "app_name", "MILI Staging"
            ndk {
                abiFilters 'armeabi-v7a','arm64-v8a','x86_64'
            }
