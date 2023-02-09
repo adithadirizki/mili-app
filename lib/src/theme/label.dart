@@ -56,6 +56,7 @@ class AppLabel {
   static const upgradeInputVillage = "Kelurahan / Desa";
   static const upgradeInputPostalCode = "Kode POS";
   static const upgradeInputAddress = "Alamat";
+  static const upgradePaymentMethod = "Metode Bayar";
 
   // Homepage
   static const topup = "Topup Saldo";

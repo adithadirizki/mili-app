@@ -53,6 +53,10 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
   List<CityResponse> cities = [];
   List<DistrictResponse> districts = [];
   List<VillageResponse> villages = [];
+  List<Map<String, dynamic>> paymentList = [
+    {'id': 0, 'name': 'Koin MILI', 'value': 'coin'},
+    {'id': 1, 'name': 'Saldo MILI', 'value': 'wallet'},
+  ].toList();
 
   Uint8List? photoByte;
   String? photoName;
@@ -60,6 +64,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
   int? city;
   int? district;
   int? village;
+  int paymentMethod = 0;
 
   @override
   void initState() {
@@ -157,6 +162,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
         address: address,
         photo: photoByte!,
         photoName: photoName!,
+        paymentMethod: paymentList[paymentMethod]['value'] as String,
       ).then((response) async {
         final respStr = await response.stream.bytesToString();
         final body = json.decode(respStr) as Map<String, dynamic>;
@@ -532,6 +538,34 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                       onChanged: (value) {
                         setState(() {});
                       },
+                    ),
+                    // Payment Method
+                    DropdownButtonFormField<int>(
+                      decoration: generateInputDecoration(
+                        label: AppLabel.upgradePaymentMethod,
+                      ),
+                      isExpanded: true,
+                      value: paymentMethod,
+                      validator: (value) {
+                        if (value == null) {
+                          return '${AppLabel.upgradePaymentMethod} harus dipilih';
+                        }
+                        return null;
+                      },
+                      onChanged: (newValue) {
+                        paymentMethod = newValue!;
+                        setState(() {});
+                      },
+                      items: paymentList.map<DropdownMenuItem<int>>((item) {
+                        return DropdownMenuItem<int>(
+                          value: item['id'] as int,
+                          child: Text(item['name'] as String),
+                        );
+                      }).toList(),
+                      // add extra sugar..
+                      icon: const Icon(Icons.arrow_drop_down),
+                      iconSize: 36,
+                      // underline: SizedBox(),
                     ),
                     // Button
                     Container(
