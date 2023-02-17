@@ -63,7 +63,7 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
-        resValue "string", "app_name", "Mili v2"
+        resValue "string", "app_name", "MILI"
     }
 
     signingConfigs {
