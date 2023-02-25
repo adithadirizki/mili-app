@@ -61,8 +61,8 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
 
   void onMarkupChange(String value) {
     var number = parseDouble(value);
-    if (number > 500) {
-      number = 500;
+    if (number > 100) {
+      number = 100;
     } else if (number < 0) {
       number = 0;
     }
@@ -182,8 +182,8 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
                           return 'Masukkan Markup';
                         } else if (parseDouble(value) < 0) {
                           return 'Minimal markup 0';
-                        } else if (parseDouble(value) > 500) {
-                          return 'Maximal markup 500';
+                        } else if (parseDouble(value) > 100) {
+                          return 'Maximal markup 100';
                         }
                         return null;
                       },
