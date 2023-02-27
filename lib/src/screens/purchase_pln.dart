@@ -477,7 +477,7 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
                       itemAsString: (item) {
                         return item == null
                             ? ''
-                            : '${item.productName} (${formatNumber(item.getUserPrice(userLevel))})';
+                            : '${item.productName} (${formatNumber(item.getUserPrice(userLevel, markup: userMarkup))})';
                       },
                       // showSelectedItems: true,
                       //list of dropdown items
