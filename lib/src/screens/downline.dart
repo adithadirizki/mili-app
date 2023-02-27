@@ -103,7 +103,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
     };
 
     if (value.isNotEmpty) {
-      params['filter'] = json.encode(<String, dynamic>{'nama': 'like|$value%'});
+      params['filter'] = json.encode(<String, dynamic>{'nama': 'like|%$value%'});
     }
 
     await Api.getDownline(params: params)

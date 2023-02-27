@@ -109,44 +109,62 @@ class _ProductPulsaState extends State<ProductPulsa>
   }
 
   Widget itemBuilder(Product product) {
-    return Card(
-      child: ListTile(
-        tileColor: product.promo ? Colors.greenAccent.withOpacity(.2) : null,
-        contentPadding:
+    return Stack(
+      children: [
+        Card(
+          child: ListTile(
+            tileColor: product.promo ? Colors.greenAccent.withOpacity(.2) : null,
+            contentPadding:
             const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        leading: CircleAvatar(
-          radius: 18.0,
-          backgroundImage: getProductLogo(product),
-          backgroundColor: Colors.transparent,
-        ),
-        title: Text(
-          product.productName,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        subtitle: product.description.isNotEmpty || product.status == 2 ? Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            product.description.isNotEmpty ? Text(product.description, style: Theme.of(context).textTheme.bodySmall) : SizedBox(height: 0,),
-            product.status == 2 ? Text('Sedang gangguan', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.red)) : SizedBox(height: 0,),
-          ],
-        ) : null,
-        enabled: product.status == statusOpen,
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              formatNumber(product.getUserPrice(userLevel, markup: userMarkup)),
-              style: Theme.of(context).textTheme.bodySmall,
+            leading: CircleAvatar(
+              radius: 18.0,
+              backgroundImage: getProductLogo(product),
+              backgroundColor: Colors.transparent,
             ),
-            Radio<Product>(
-              onChanged: (value) => product.status == 2 ? null : _onSelectProduct(value),
-              groupValue: selectedProduct,
-              value: product,
+            title: Text(
+              product.productName,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
-          ],
+            subtitle: product.description.isNotEmpty || product.status == 2 ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                product.description.isNotEmpty ? Text(product.description, style: Theme.of(context).textTheme.bodySmall) : SizedBox(height: 0,),
+                product.status == 2 ? Text('Sedang gangguan', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.red)) : SizedBox(height: 0,),
+              ],
+            ) : null,
+            enabled: product.status == statusOpen,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  formatNumber(product.getUserPrice(userLevel, markup: userMarkup)),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                Radio<Product>(
+                  onChanged: (value) => product.status == 2 ? null : _onSelectProduct(value),
+                  groupValue: selectedProduct,
+                  value: product,
+                ),
+                // Icon(Icons.camera_alt_outlined),
+              ],
+            ),
+            onTap: () => product.status == 2 ? null : _onSelectProduct(product),
+          ),
         ),
-        onTap: () => product.status == 2 ? null : _onSelectProduct(product),
-      ),
+        product.promo ? Positioned(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(5)
+            ),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              child: Text('PROMO', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.white),),
+            ),
+          ),
+          top: 0, right: 0,
+        ) : const SizedBox(),
+      ],
     );
   }
 
@@ -172,7 +190,7 @@ class _ProductPulsaState extends State<ProductPulsa>
               const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
           alignment: Alignment.centerLeft,
           child: Text(product.groupName,
-              style: Theme.of(context).textTheme.bodyMedium),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
         );
       } else {
         return Container();
@@ -213,7 +231,7 @@ class _ProductPulsaState extends State<ProductPulsa>
               const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
           alignment: Alignment.centerLeft,
           child: Text(product.groupName,
-              style: Theme.of(context).textTheme.bodyMedium),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
         );
       } else {
         return Container();
@@ -266,6 +284,44 @@ class _ProductPulsaState extends State<ProductPulsa>
       );
     }
 
+    return Stack(
+      children: [
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            TabBar(
+              key: const PageStorageKey<String>('tabPulsa'),
+              controller: tabController,
+              tabs: [
+                Tab(
+                  child: Text(
+                    'Pulsa',
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    'Data',
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: TabBarView(
+                controller: tabController,
+                children: [
+                  buildPulsaProduct(),
+                  buildDataProduct(),
+                ],
+              ),
+            ),
+          ],
+          // child: _buildPrepaidProduct(),
+        )
+      ],
+    );
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [

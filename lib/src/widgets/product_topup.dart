@@ -161,108 +161,125 @@ class _ProductTopupState extends State<ProductTopup>
   }
 
   Widget itemBuilder(Product product) {
-    return Card(
-      child: ListTile(
-        tileColor: product.promo ? Colors.greenAccent.withOpacity(.2) : null,
-        contentPadding: EdgeInsets.only(
-            right: 10,
-            left: (widget.vendor.getImageUrl().isNotEmpty ? 10 : 20),
-            top: 5,
-            bottom: 5),
-        leading: widget.vendor.getImageUrl().isNotEmpty
-            ? CircleAvatar(
-                radius: 18.0,
-                // backgroundImage: getProductLogo(product),
-                child: Container(
-                  width: 96,
-                  height: 96,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Color(0xffCECECE), width: 0.5),
-                    color: const Color(0xffFBFBFB),
-                    borderRadius:
-                        const BorderRadius.all(Radius.elliptical(96, 96)),
-                  ),
-                  padding: const EdgeInsets.all(0.5),
-                  child: ClipOval(
-                    child: CachedNetworkImage(
-                      imageUrl: widget.vendor.getImageUrl(),
-                      placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                        ),
+    return Stack(
+      children: [
+        Card(
+          child: ListTile(
+            tileColor: product.promo ? Colors.greenAccent.withOpacity(.2) : null,
+            contentPadding: EdgeInsets.only(
+                right: 10,
+                left: (widget.vendor.getImageUrl().isNotEmpty ? 10 : 20),
+                top: 5,
+                bottom: 5),
+            leading: widget.vendor.getImageUrl().isNotEmpty
+                ? CircleAvatar(
+              radius: 18.0,
+              // backgroundImage: getProductLogo(product),
+              child: Container(
+                width: 96,
+                height: 96,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Color(0xffCECECE), width: 0.5),
+                  color: const Color(0xffFBFBFB),
+                  borderRadius:
+                  const BorderRadius.all(Radius.elliptical(96, 96)),
+                ),
+                padding: const EdgeInsets.all(0.5),
+                child: ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: widget.vendor.getImageUrl(),
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
                       ),
-                      width: 100,
-                      imageBuilder: (context, imageProvider) => Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
-                            // colorFilter:
-                            //     ColorFilter.mode(Colors.red, BlendMode.colorBurn),
-                          ),
+                    ),
+                    width: 100,
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                          // colorFilter:
+                          //     ColorFilter.mode(Colors.red, BlendMode.colorBurn),
                         ),
                       ),
                     ),
                   ),
                 ),
-                backgroundColor: Colors.transparent,
-              )
-            : null,
-        title: Text(
-          product.productName,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        subtitle: product.description.isNotEmpty ||
+              ),
+              backgroundColor: Colors.transparent,
+            )
+                : null,
+            title: Text(
+              product.productName,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            subtitle: product.description.isNotEmpty ||
                 product.status == 2 ||
                 isClosed(cutoff)
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  product.description.isNotEmpty
-                      ? Text(product.description,
-                          style: Theme.of(context).textTheme.bodySmall)
-                      : SizedBox(
-                          height: 0,
-                        ),
-                  product.status == 2
-                      ? Text('Sedang gangguan',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: Colors.red))
-                      : isClosed(cutoff)
-                          ? Text('Sedang cut off',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(color: Colors.red))
-                          : const SizedBox(
-                              height: 0,
-                            ),
-                ],
-              )
-            : null,
-        enabled: product.status == statusOpen && isClosed(cutoff) == false,
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              formatNumber(product.getUserPrice(userLevel, markup: userMarkup)),
-              style: Theme.of(context).textTheme.bodySmall,
+                ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                product.description.isNotEmpty
+                    ? Text(product.description,
+                    style: Theme.of(context).textTheme.bodySmall)
+                    : SizedBox(
+                  height: 0,
+                ),
+                product.status == 2
+                    ? Text('Sedang gangguan',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: Colors.red))
+                    : isClosed(cutoff)
+                    ? Text('Sedang cut off',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: Colors.red))
+                    : const SizedBox(
+                  height: 0,
+                ),
+              ],
+            )
+                : null,
+            enabled: product.status == statusOpen && isClosed(cutoff) == false,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  formatNumber(product.getUserPrice(userLevel, markup: userMarkup)),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                Radio<Product>(
+                  onChanged: (value) => product.status == 2 || isClosed(cutoff)
+                      ? null
+                      : _onSelectProduct(value),
+                  groupValue: selectedProduct,
+                  value: product,
+                ),
+              ],
             ),
-            Radio<Product>(
-              onChanged: (value) => product.status == 2 || isClosed(cutoff)
-                  ? null
-                  : _onSelectProduct(value),
-              groupValue: selectedProduct,
-              value: product,
-            ),
-          ],
+            onTap: () => product.status == 2 || isClosed(cutoff)
+                ? null
+                : _onSelectProduct(product),
+          ),
         ),
-        onTap: () => product.status == 2 || isClosed(cutoff)
-            ? null
-            : _onSelectProduct(product),
-      ),
+        product.promo ? Positioned(
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(5)
+            ),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              child: Text('PROMO', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.white),),
+            ),
+          ),
+          top: 0, right: 0,
+        ) : const SizedBox()
+      ],
     );
   }
 

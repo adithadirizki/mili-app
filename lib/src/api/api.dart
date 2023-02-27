@@ -322,6 +322,7 @@ class Api {
     required String address,
     required List<int> photo,
     required String photoName,
+    required String paymentMethod,
   }) async {
     var request = http.MultipartRequest(
         'POST', Uri.parse(AppConfig.baseUrl + '/profile/upgrade'));
@@ -341,6 +342,7 @@ class Api {
       'village': village.toString(),
       'postal_code': postCode,
       'address': address,
+      'payment_method': paymentMethod,
     });
 
     return request.send();

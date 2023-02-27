@@ -92,27 +92,36 @@ class _HomeBalanceState extends State<HomeBalance> {
       child: Container(
         width: 160,
         // margin: EdgeInsets.all(15),
-        padding: const EdgeInsets.only(left: 15, top: 5, right: 10, bottom: 5),
+        padding: const EdgeInsets.all(12),
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.elliptical(18, 18)),
           color: Colors.white,
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 const Image(
                   image: AppImages.iconBalance,
-                  width: 20,
+                  width: 15,
                 ),
                 const SizedBox(width: 5),
                 Flexible(
                   child: FittedBox(
                     child: Text(
                       paymentMethodLabel[PaymentMethod.wallet]!,
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 5),
+                Flexible(
+                  child: FittedBox(
+                    child: Text(
+                      'Tap for details',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.black1),
                     ),
                   ),
                 ),
@@ -120,7 +129,6 @@ class _HomeBalanceState extends State<HomeBalance> {
             ),
             const SizedBox(height: 5),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
@@ -149,12 +157,17 @@ class _HomeBalanceState extends State<HomeBalance> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  'Tap for details',
+                  'powered by:',
                   textAlign: TextAlign.start,
                   style: Theme.of(context)
                       .textTheme
                       .bodySmall
-                      ?.copyWith(color: AppColors.black2),
+                      ?.copyWith(color: AppColors.black1, fontSize: 10),
+                ),
+                const SizedBox(width: 3),
+                const Image(
+                  image: AppImages.logoWallet,
+                  width: 25,
                 ),
               ],
             ),
@@ -167,7 +180,7 @@ class _HomeBalanceState extends State<HomeBalance> {
   Widget buildButton(AppMenu menu) {
     return ConstrainedBox(
       constraints: const BoxConstraints(
-        minWidth: 32,
+        minWidth: 28,
         // minHeight: 32,
         maxWidth: 60,
         // maxHeight: 60,
@@ -179,7 +192,7 @@ class _HomeBalanceState extends State<HomeBalance> {
             onTap: menu.action,
             child: Image(
               image: menu.icon,
-              height: 32,
+              height: 28,
             ),
           ),
           const SizedBox(height: 10),
@@ -219,14 +232,14 @@ class _HomeBalanceState extends State<HomeBalance> {
         mainAxisSize: MainAxisSize.max,
         children: [
           Expanded(
-            flex: 40,
+            flex: 45,
             child: withTooltip(buildBalanceCard(), 0, 'Saldo',
                 'Ini adalah jumlah saldo kamu untuk transaksi semua produk.'),
           ),
           const SizedBox(width: 5),
           Expanded(
             // fit: FlexFit.tight,
-            flex: 60,
+            flex: 55,
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
