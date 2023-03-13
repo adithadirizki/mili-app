@@ -43,7 +43,7 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
   // bool _valid = true;
   late AppAuth authState; // get auth state
   bool isLoading = false;
-  ProfileConfig profileConfig = ProfileConfig(0, 100);
+  ProfileConfig profileConfig = ProfileConfig();
 
   @override
   void initState() {

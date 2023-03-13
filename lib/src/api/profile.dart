@@ -79,7 +79,17 @@ class ProfileConfig {
   @JsonKey(name: 'max_markup')
   final double maxMarkup;
 
-  ProfileConfig(this.minMarkup, this.maxMarkup);
+  @JsonKey(name: 'min_voucher')
+  final int minVoucher;
+
+  @JsonKey(name: 'max_voucher')
+  final int maxVoucher;
+
+  ProfileConfig(
+      {this.minMarkup = 0,
+      this.maxMarkup = 100,
+      this.minVoucher = 1,
+      this.maxVoucher = 50});
 
   factory ProfileConfig.fromString(String body) =>
       _$ProfileConfigFromJson(json.decode(body) as Map<String, dynamic>);

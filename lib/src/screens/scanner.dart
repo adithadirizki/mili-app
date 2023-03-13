@@ -1,26 +1,22 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:miliv2/src/screens/qris_payment.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
-import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:miliv2/src/widgets/scanning_widget.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-class QrisScannerScreen extends StatefulWidget {
+class ScannerScreen extends StatefulWidget {
   final String title;
 
-  const QrisScannerScreen({Key? key, this.title = 'Scan QRIS'})
+  const ScannerScreen({Key? key, this.title = 'Scan'})
       : super(key: key);
 
   @override
-  State<QrisScannerScreen> createState() => _QrisScannerScreenState();
+  State<ScannerScreen> createState() => _ScannerScreenState();
 }
 
-class _QrisScannerScreenState extends State<QrisScannerScreen>
+class _ScannerScreenState extends State<ScannerScreen>
     with SingleTickerProviderStateMixin {
   bool isLoading = false;
 
@@ -43,24 +39,6 @@ class _QrisScannerScreenState extends State<QrisScannerScreen>
     animateScanAnimation(true);
 
     super.initState();
-  }
-
-  FutureOr<void> handleError(Object e) {
-    setState(() {
-      isLoading = false;
-    });
-    snackBarDialog(context, e.toString());
-    popScreen(context);
-  }
-
-  void paymentWidget(String paymentCode) {
-    replaceScreen(
-      context,
-      (_) => QrisPaymentScreen(
-        paymentCode: paymentCode,
-        title: 'Pembayaran QRIS',
-      ),
-    );
   }
 
   @override
@@ -119,7 +97,7 @@ class _QrisScannerScreenState extends State<QrisScannerScreen>
             ),
             const SizedBox(height: 20),
             Text(
-              'Scan Kode QR',
+              widget.title,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 20),
@@ -152,17 +130,7 @@ class _QrisScannerScreenState extends State<QrisScannerScreen>
                           _animationStopped = true;
                         });
                         final String code = barcode.rawValue!;
-                        confirmDialog(context,
-                            msg:
-                                'Kode Pembayaran berhasil terbaca, lanjutkan ?',
-                            confirmAction: () {
-                          Timer(const Duration(milliseconds: 200), () {
-                            // popScreenWithCallback<String>(context, code);
-                            paymentWidget(code);
-                          });
-                        }, cancelAction: () {
-                          popScreen(context);
-                        });
+                        Navigator.pop(context, code);
                       }
                     },
                   ),

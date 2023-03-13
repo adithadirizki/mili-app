@@ -597,6 +597,7 @@ class Api {
       {required String trxId,
       required String productCode,
       required String destination,
+      int? totalVcr,
       required PaymentMethod method}) {
     Map<String, Object> body = <String, Object>{
       'transaction_id': trxId,
@@ -606,6 +607,9 @@ class Api {
           ? 'wallet'
           : (method == PaymentMethod.creditBalance ? 'credit' : 'balance')
     };
+    if (totalVcr != null) {
+      body['total_voucher'] = totalVcr;
+    }
     debugPrint('purchaseProduct $body');
     return http
         .post(

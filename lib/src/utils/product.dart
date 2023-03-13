@@ -5,6 +5,7 @@ import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/vendor.dart';
+import 'package:miliv2/src/screens/purchase_aktivasi.dart';
 import 'package:miliv2/src/screens/purchase_denom.dart';
 import 'package:miliv2/src/screens/purchase_payment.dart';
 import 'package:miliv2/src/screens/purchase_payment_product.dart';
@@ -135,6 +136,13 @@ void openPurchaseScreen(
             productCode: productCode, destination: destination));
   } else if (vendor != null) {
     if (vendor.productType == vendorTypeTopup) {
+      if (vendor.group == menuGroupAct) {
+        pushScreen(
+          context,
+              (_) => PurchaseAktivasiScreen(vendor: vendor!, destination: destination),
+        );
+        return;
+      }
       pushScreen(
         context,
         (_) => PurchaseTopupScreen(vendor: vendor!, destination: destination),
