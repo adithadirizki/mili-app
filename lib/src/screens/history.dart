@@ -55,6 +55,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
   int pendingTotal = 0;
   double totalTransaction = 0;
 
+  String searchValue = '';
+  bool openSearch = false;
+  Timer? delayed;
+
   @override
   void initState() {
     super.initState();
@@ -92,7 +96,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
   }
 
-  Future<void> initDB({bool sync = false}) async {
+  Future<void> initDB({bool sync = false, bool search = false}) async {
     setState(() {
       isLoading = true;
     });
@@ -102,6 +106,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
       currentPage = 0;
       items = [];
       await countSummary();
+    } else if (search) {
+      currentPage = 0;
+      items = [];
     }
 
     Condition<PurchaseHistory> filterDate = PurchaseHistory_.transactionDate
@@ -113,9 +120,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
     Condition<PurchaseHistory> filterUser =
         PurchaseHistory_.userId.equals(userBalanceState.userId);
 
+    Condition<PurchaseHistory> filterDestination =
+    PurchaseHistory_.destination.contains(searchValue, caseSensitive: false);
+
+    Condition<PurchaseHistory> filterProducName =
+    PurchaseHistory_.productName.contains(searchValue, caseSensitive: false);
+
     final purchaseHistoryDB = AppDB.purchaseHistoryDB;
     QueryBuilder<PurchaseHistory> qb = purchaseHistoryDB
-        .query(filterDate.and(filterUser))
+        .query(filterDate.and(filterUser).and(filterDestination.or(filterProducName)))
       ..order(PurchaseHistory_.transactionDate, flags: Order.descending);
 
     var query = qb.build()
@@ -420,6 +433,20 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
   }
 
+  void toggleSearch() async {
+    openSearch = !openSearch;
+    if (!openSearch) searchValue = '';
+    setState(() {});
+    initDB(search: true);
+  }
+
+  Future<void> onSearch(String value) async {
+    setState(() {
+      searchValue = value;
+    });
+    initDB(search: true);
+  }
+
   Widget buildItems(BuildContext context) {
     if (isLoading && items.isEmpty) {
       return const Center(
@@ -471,18 +498,37 @@ class _HistoryScreenState extends State<HistoryScreen> {
       appBar: SimpleAppBar(
         title: widget.title,
         elevation: 0,
-        actions: <Widget>[
-          // TextButton(
-          //   child: Text(
-          //     '${formatDate(dateRange.start, format: 'd MMM')} - ${formatDate(dateRange.end, format: 'd MMM')}',
-          //     // style: Theme.of(context).textTheme.button,
-          //     style: Theme.of(context)
-          //         .textTheme
-          //         .bodySmall
-          //         ?.copyWith(color: AppColors.black1),
-          //   ),
-          //   onPressed: openFilterDate,
-          // ),
+        widget: openSearch
+            ? Container(
+          alignment: Alignment.centerLeft,
+          color: Colors.white,
+          child: TextField(
+            onChanged: (value) {
+              if (delayed != null) delayed!.cancel();
+              delayed = Timer(const Duration(milliseconds: 500), () {
+                onSearch(value);
+              });
+            },
+            decoration: generateInputDecoration(
+              hint: 'Cari Transaksi',
+              suffixIcon: IconButton(
+                color: AppColors.blue6,
+                icon: const Icon(Icons.close),
+                onPressed: toggleSearch,
+              ),
+            ),
+          ),
+        )
+            : null,
+        actions: openSearch
+            ? []
+            : <Widget>[
+          IconButton(
+            onPressed: toggleSearch,
+            icon: const Image(
+              image: AppImages.search,
+            ),
+          ),
           IconButton(
             onPressed: openFilterDate,
             icon: const Image(

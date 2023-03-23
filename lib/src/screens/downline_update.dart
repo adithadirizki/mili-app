@@ -4,8 +4,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/downline.dart';
+import 'package:miliv2/src/api/profile.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/services/auth.dart';
+import 'package:miliv2/src/services/storage.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
@@ -41,10 +43,18 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
   bool _valid = true;
   late AppAuth authState; // get auth state
   bool isLoading = false;
+  ProfileConfig profileConfig = ProfileConfig();
 
   @override
   void initState() {
     super.initState();
+
+    var userProfile = AppStorage.getUserProfile(); // Cache
+    if (userProfile.isNotEmpty) {
+      Map<String, dynamic> userProfileMap = json.decode(userProfile) as Map<String, dynamic>;
+      profileConfig = ProfileConfig.fromJson(userProfileMap['config'] as Map<String, dynamic>);
+    }
+
     _nameController.text = widget.downline.name;
     _phoneController.text = widget.downline.phoneNumber;
     _emailController.text = widget.downline.email;
@@ -61,10 +71,10 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
 
   void onMarkupChange(String value) {
     var number = parseDouble(value);
-    if (number > 100) {
-      number = 100;
-    } else if (number < 0) {
-      number = 0;
+    if (number > profileConfig.maxMarkup) {
+      number = profileConfig.maxMarkup;
+    } else if (number < profileConfig.minMarkup) {
+      number = profileConfig.minMarkup;
     }
     //
     value = formatNumber(number);
@@ -180,10 +190,10 @@ class _DownlineUpdateScreenState extends State<DownlineUpdateScreen> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Masukkan Markup';
-                        } else if (parseDouble(value) < 0) {
-                          return 'Minimal markup 0';
-                        } else if (parseDouble(value) > 100) {
-                          return 'Maximal markup 100';
+                        } else if (parseDouble(value) < profileConfig.minMarkup) {
+                          return 'Minimal markup ' + profileConfig.minMarkup.toInt().toString();
+                        } else if (parseDouble(value) > profileConfig.maxMarkup) {
+                          return 'Maximal markup ' + profileConfig.maxMarkup.toInt().toString();
                         }
                         return null;
                       },

@@ -70,3 +70,32 @@ class ProfileResponse {
 
   Map<String, dynamic> toJson() => _$ProfileResponseToJson(this);
 }
+
+@JsonSerializable()
+class ProfileConfig {
+  @JsonKey(name: 'min_markup')
+  final double minMarkup;
+
+  @JsonKey(name: 'max_markup')
+  final double maxMarkup;
+
+  @JsonKey(name: 'min_voucher')
+  final int minVoucher;
+
+  @JsonKey(name: 'max_voucher')
+  final int maxVoucher;
+
+  ProfileConfig(
+      {this.minMarkup = 0,
+      this.maxMarkup = 100,
+      this.minVoucher = 1,
+      this.maxVoucher = 50});
+
+  factory ProfileConfig.fromString(String body) =>
+      _$ProfileConfigFromJson(json.decode(body) as Map<String, dynamic>);
+
+  factory ProfileConfig.fromJson(Map<String, dynamic> json) =>
+      _$ProfileConfigFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProfileConfigToJson(this);
+}

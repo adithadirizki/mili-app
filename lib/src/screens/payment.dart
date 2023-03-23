@@ -24,6 +24,7 @@ class SummaryItems {
 class PaymentScreen extends StatefulWidget {
   final String purchaseCode;
   final String destination;
+  final int? totalVcr;
   final String description;
   final double total;
   final List<SummaryItems> items;
@@ -33,6 +34,7 @@ class PaymentScreen extends StatefulWidget {
     Key? key,
     required this.purchaseCode,
     required this.destination,
+    this.totalVcr,
     required this.description,
     required this.items,
     required this.onPaymentConfirmed,
@@ -100,6 +102,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       trxId: trxId,
       productCode: widget.purchaseCode,
       destination: widget.destination,
+      totalVcr: widget.totalVcr,
       method: selectedPayment,
     ).then((_) async {
       setState(() {
@@ -198,10 +201,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const Text('Detail'),
+                          const Text('Detail', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 5),
                           Text(
                             widget.description,
-                            style: Theme.of(context).textTheme.bodySmall,
+                            style: const TextStyle(fontSize: 14, height: 1.5),
                           ),
                         ],
                       ),

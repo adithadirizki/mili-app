@@ -597,6 +597,7 @@ class Api {
       {required String trxId,
       required String productCode,
       required String destination,
+      int? totalVcr,
       required PaymentMethod method}) {
     Map<String, Object> body = <String, Object>{
       'transaction_id': trxId,
@@ -606,10 +607,15 @@ class Api {
           ? 'wallet'
           : (method == PaymentMethod.creditBalance ? 'credit' : 'balance')
     };
+    bool isBulk = false;
+    if (totalVcr != null) {
+      isBulk = true;
+      body['total_voucher'] = totalVcr;
+    }
     debugPrint('purchaseProduct $body');
     return http
         .post(
-          Uri.parse(AppConfig.baseUrl + '/purchase'),
+          Uri.parse(AppConfig.baseUrl + '/purchase' + (isBulk ? '/bulk' : '')),
           headers: getRequestHeaders(),
           body: json.encode(body),
         )

@@ -30,6 +30,8 @@ class UserBalanceState extends ChangeNotifier {
   String? outletType;
   double markup = 0;
   String groupName = '';
+  double minMarkup = 0;
+  double maxMarkup = 0;
 
   UserBalanceState(this.balance, this.balanceCredit, this.isLoading);
 
@@ -47,6 +49,8 @@ class UserBalanceState extends ChangeNotifier {
       Map<String, dynamic> bodyMap = json.decode(body) as Map<String, dynamic>;
       var profile =
           ProfileResponse.fromJson(bodyMap['data'] as Map<String, dynamic>);
+      var profileConfig =
+          ProfileConfig.fromJson(bodyMap['config'] as Map<String, dynamic>);
 
       return UserBalanceState(0, 0, false)
         ..balance = (profile.balance ?? 0)
@@ -66,7 +70,9 @@ class UserBalanceState extends ChangeNotifier {
         // Wallet
         ..walletBalance = ((walletCache['data'] as num?)?.toDouble()) ?? 0
         ..walletActive = walletCache['status'] == 1
-        ..walletPremium = walletCache['type'] != 'BASIC';
+        ..walletPremium = walletCache['type'] != 'BASIC'
+        ..minMarkup = profileConfig.minMarkup
+        ..maxMarkup = profileConfig.maxMarkup;
     } catch (e) {
       return UserBalanceState(0, 0, false);
     }
@@ -78,6 +84,8 @@ class UserBalanceState extends ChangeNotifier {
         json.decode(response.body) as Map<String, dynamic>;
     var profile =
         ProfileResponse.fromJson(bodyMap['data'] as Map<String, dynamic>);
+    var profileConfig =
+        ProfileConfig.fromJson(bodyMap['config'] as Map<String, dynamic>);
     balance = profile.balance ?? 0;
     balanceCredit = profile.balanceCredit ?? 0;
     level = profile.level;
@@ -92,6 +100,8 @@ class UserBalanceState extends ChangeNotifier {
     outletType = profile.outletType;
     markup = profile.markup ?? 0;
     groupName = profile.groupName;
+    minMarkup = profileConfig.minMarkup;
+    maxMarkup = profileConfig.maxMarkup;
     notifyListeners();
 
     AppOnesignal.setProfile(
