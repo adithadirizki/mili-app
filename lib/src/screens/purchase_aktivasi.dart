@@ -9,9 +9,10 @@ import 'package:miliv2/src/widgets/product_topup.dart';
 
 class PurchaseAktivasiScreen extends StatefulWidget {
   final Vendor vendor;
+  final String? productCode;
   final String? destination;
 
-  const PurchaseAktivasiScreen({Key? key, required this.vendor, this.destination})
+  const PurchaseAktivasiScreen({Key? key, required this.vendor, this.productCode, this.destination})
       : super(key: key);
 
   @override
@@ -47,6 +48,7 @@ class _PurchaseAktivasiScreenState extends State<PurchaseAktivasiScreen> {
       destination: widget.destination ?? '',
       onProductSelected: onProductSelected,
       vendor: widget.vendor,
+      selectedProductCode: widget.productCode
     );
   }
 
