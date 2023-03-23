@@ -15,12 +15,14 @@ import 'package:objectbox/internal.dart';
 
 class ProductTopup extends StatefulWidget {
   final String destination;
+  final String? selectedProductCode;
   final Function(Product?) onProductSelected;
   final Vendor vendor;
 
   const ProductTopup({
     Key? key,
     required this.onProductSelected,
+    this.selectedProductCode,
     required this.destination,
     required this.vendor,
   }) : super(key: key);
@@ -112,6 +114,9 @@ class _ProductTopupState extends State<ProductTopup>
     productTopup = queryProduct.build().find();
 
     debugPrint('ProductTopup product size ${productTopup.length}');
+
+    selectedProduct = productTopup.firstWhere((e) => e.code == widget.selectedProductCode);
+    widget.onProductSelected(selectedProduct);
 
     isLoading = false;
     setState(() {});

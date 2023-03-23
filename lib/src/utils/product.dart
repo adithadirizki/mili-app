@@ -139,7 +139,7 @@ void openPurchaseScreen(
       if (vendor.group == menuGroupAct) {
         pushScreen(
           context,
-              (_) => PurchaseAktivasiScreen(vendor: vendor!, destination: destination),
+              (_) => PurchaseAktivasiScreen(vendor: vendor!, productCode: productCode, destination: destination),
         );
         return;
       }
