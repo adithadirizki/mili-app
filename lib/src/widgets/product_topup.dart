@@ -115,8 +115,11 @@ class _ProductTopupState extends State<ProductTopup>
 
     debugPrint('ProductTopup product size ${productTopup.length}');
 
-    selectedProduct = productTopup.firstWhere((e) => e.code == widget.selectedProductCode);
-    widget.onProductSelected(selectedProduct);
+    if (widget.selectedProductCode != null) {
+      selectedProduct =
+          productTopup.firstWhere((e) => e.code == widget.selectedProductCode);
+      widget.onProductSelected(selectedProduct);
+    }
 
     isLoading = false;
     setState(() {});
