@@ -11,9 +11,10 @@ class CoinChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.yellow1,
-        borderRadius: BorderRadius.horizontal(
+      decoration: BoxDecoration(
+        color: AppColors.white1,
+        border: Border.all(color: AppColors.yellow1, width: 2),
+        borderRadius: const BorderRadius.horizontal(
             left: Radius.circular(20.0), right: Radius.circular(20.0)),
       ),
       constraints: const BoxConstraints(
@@ -37,7 +38,7 @@ class CoinChip extends StatelessWidget {
             Row(
               children: const [
                 Image(
-                  image: AppImages.coinWhite,
+                  image: AppImages.coinYellow,
                   height: 20,
                   fit: BoxFit.fill,
                 ),
@@ -49,7 +50,7 @@ class CoinChip extends StatelessWidget {
               softWrap: false,
               maxLines: 1,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.white1, fontWeight: FontWeight.bold),
+                  color: AppColors.black1, fontWeight: FontWeight.w900),
             ),
           ],
         ),
