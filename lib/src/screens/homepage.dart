@@ -317,11 +317,27 @@ class _HomepageState extends State<Homepage>
         }
       } else if (data['key_page'] == pageAktivasi) {
         if (data['key_subpage'] == null) {
+          String title = 'Aktivasi';
+          String? productCode;
+          Map<String, String> providerList = {
+            'actAxis': 'Aktivasi Axis',
+            'actIndosat': 'Aktivasi Indosat',
+            'actSmartfren': 'Aktivasi Smartfren',
+            'actTelkomsel': 'Aktivasi Telkomsel',
+            'actXL': 'Aktivasi XL',
+          };
+
+          if (data['key_provider'] != null) {
+            productCode = data['key_provider'] as String;
+            title = providerList[productCode] ?? title;
+          }
+
           pushScreen(
             context,
-            (_) => const VendorScreen(
-              title: 'Aktivasi',
+            (_) => VendorScreen(
+              title: title,
               groupName: menuGroupAct,
+              productCode: productCode,
             ),
           );
         } else {
@@ -331,7 +347,7 @@ class _HomepageState extends State<Homepage>
               .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(),
                   caseSensitive: false)));
           Vendor? vendor = queryVendor.build().findFirst();
-          if (vendor != null) openPurchaseScreen(context, vendor: vendor);
+          if (vendor != null) openPurchaseScreen(context, vendor: vendor, productCode: data['key_productcode'] as String?);
         }
       } else if (data['key_page'] == pageKeretaApi) {
         pushScreen(

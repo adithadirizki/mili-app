@@ -9,9 +9,11 @@ import 'package:miliv2/src/api/purchase.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/user_config.dart';
 import 'package:miliv2/src/services/printer.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:miliv2/src/widgets/screen.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class PrinterScreen extends StatefulWidget {
   const PrinterScreen({Key? key}) : super(key: key);
@@ -31,8 +33,10 @@ class _PrinterScreenState extends State<PrinterScreen> {
   String tips = 'Langkah-langkah koneksi Printer Bluetooth \n\n'
       '1. Nyalakan Printer & aktifkan Bluetooth \n'
       '2. Buka menu Setting -> Bluetooth kemudian pilih Printer, pastikan berhasil terhubung \n'
-      '3. Pilih printer yang muncul pada halaman dibawah \n'
-      '4. Lakukan setting Header atau Footer dan lakukan test print \n'
+      '3. Aktifkan Lokasi & izinkan aplikasi MILI mengakses lokasi \n'
+      '4. Izinkan aplikasi MILI mengakses perangkat terdekat \n'
+      '5. Pilih printer yang muncul pada halaman dibawah \n'
+      '6. Lakukan setting Header atau Footer dan lakukan test print \n'
       '\n** Untuk info lebih lanjut silahkan ikuti petunjuk di Buku Manual Printer Anda';
 
   final formKey = GlobalKey<FormState>();
@@ -64,6 +68,12 @@ class _PrinterScreenState extends State<PrinterScreen> {
   }
 
   Future<void> initBluetooth() async {
+    await Permission.location.request();
+    await Permission.bluetoothScan.request();
+    await Permission.bluetoothConnect.request();
+    bool location = await Permission.location.serviceStatus.isEnabled;
+    if (!location) await AppSettings.openLocationSettings();
+
     bluetoothActive = await AppPrinter.bluetoothActive;
     deviceAddress = AppPrinter.printerAddress;
     connected = deviceAddress != null;
@@ -265,7 +275,7 @@ class _PrinterScreenState extends State<PrinterScreen> {
                   tips,
                   overflow: TextOverflow.visible,
                   maxLines: 10,
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(height: 1.5),
                 ),
               ),
             ),
@@ -284,49 +294,46 @@ class _PrinterScreenState extends State<PrinterScreen> {
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: onRefresh,
-      child: initialized
-          ? StreamBuilder<List<BluetoothDevice>>(
-              stream: AppPrinter.streamer,
-              initialData: const [],
-              builder: (c, snapshot) {
-                return snapshot.data != null && snapshot.data!.isNotEmpty
-                    ? ListView(
-                        children: snapshot.data!
-                            .map((d) => ListTile(
-                                  title: Text(
-                                    d.name ?? '',
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
-                                  ),
-                                  subtitle: Text(
-                                    d.address!,
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                  onTap: selectPrinter(d),
-                                  trailing: deviceAddress != null &&
-                                          (deviceAddress == d.address)
-                                      ? const Icon(
-                                          Icons.check,
-                                          color: Colors.green,
-                                        )
-                                      : null,
-                                ))
-                            .toList(),
-                      )
-                    : Center(
-                        child: Text(
-                          'Tidak ada printer',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      );
-              },
-            )
-          : const Center(
-              child: Text('Please wait'),
+    return initialized
+        ? StreamBuilder<List<BluetoothDevice>>(
+      stream: AppPrinter.streamer,
+      initialData: const [],
+      builder: (c, snapshot) {
+        return snapshot.data != null && snapshot.data!.isNotEmpty
+            ? ListView(
+          children: snapshot.data!
+              .map((d) => ListTile(
+            title: Text(
+              d.name ?? '',
+              style:
+              Theme.of(context).textTheme.bodyMedium,
             ),
+            subtitle: Text(
+              d.address!,
+              style:
+              Theme.of(context).textTheme.bodySmall,
+            ),
+            onTap: selectPrinter(d),
+            trailing: deviceAddress != null &&
+                (deviceAddress == d.address)
+                ? const Icon(
+              Icons.check,
+              color: Colors.green,
+            )
+                : null,
+          ))
+              .toList(),
+        )
+            : Center(
+          child: Text(
+            'Tidak ada printer',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        );
+      },
+    )
+        : const Center(
+      child: Text('Please wait'),
     );
   }
 
@@ -360,6 +367,11 @@ class _PrinterScreenState extends State<PrinterScreen> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.refresh),
+        onPressed: onRefresh,
+        backgroundColor: AppColors.blue5,
       ),
     );
   }

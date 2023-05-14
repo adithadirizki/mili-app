@@ -6,6 +6,7 @@ import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/vendor.dart';
 import 'package:miliv2/src/theme.dart';
+import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/product.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -13,8 +14,9 @@ import 'package:url_launcher/url_launcher.dart';
 class VendorScreen extends StatefulWidget {
   final String title;
   final String groupName;
+  final String? productCode;
 
-  const VendorScreen({Key? key, required this.groupName, required this.title})
+  const VendorScreen({Key? key, required this.groupName, required this.title, this.productCode})
       : super(key: key);
 
   @override
@@ -137,6 +139,61 @@ class _VendorScreenState extends State<VendorScreen> {
           strokeWidth: 2,
         ),
       );
+    }
+
+    if (isAct) {
+      if (widget.productCode == null) {
+        List<Map<String, dynamic>> providerList = [
+          <String, dynamic>{'name': 'Axis', 'productCode': 'actAxis', 'image': AppImages.logoAxis},
+          <String, dynamic>{'name': 'Indosat', 'productCode': 'actIndosat', 'image': AppImages.logoIndosat},
+          <String, dynamic>{'name': 'Smartfren', 'productCode': 'actSmartfren', 'image': AppImages.logoSmartfren},
+          <String, dynamic>{'name': 'Three', 'productCode': 'actThree', 'image': AppImages.logoTri},
+          <String, dynamic>{'name': 'XL', 'productCode': 'actXL', 'image': AppImages.logoXL},
+        ];
+
+        return Column(
+          children: providerList.map((e) => Card(
+            child: ListTile(
+              contentPadding:
+              const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+              leading: CircleAvatar(
+                radius: 18.0,
+                backgroundColor: Colors.transparent,
+                child: Container(
+                  width: 96,
+                  height: 96,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Color(0xffCECECE), width: 0.5),
+                    color: const Color(0xffFBFBFB),
+                    borderRadius: const BorderRadius.all(Radius.elliptical(96, 96)),
+                  ),
+                  padding: const EdgeInsets.all(0.5),
+                  child: ClipOval(
+                    child: Image(image: e['image'] as AssetImage),
+                  ),
+                ),
+              ),
+              title: Text(
+                e['name'] as String,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              enabled: true,
+              onTap: () {
+                pushScreen(
+                  context,
+                      (_) => VendorScreen(
+                    title: 'Aktivasi ' + (e['name'] as String),
+                    groupName: menuGroupAct,
+                    productCode: e['productCode'] as String,
+                  ),
+                );
+              },
+            ),
+          )).toList(),
+        );
+      } else {
+        vendorList = vendorList.where((e) => e.productCode.contains(widget.productCode!)).toList();
+      }
     }
 
     if (vendorList.isEmpty) {
