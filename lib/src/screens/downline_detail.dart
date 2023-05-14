@@ -143,9 +143,9 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
 
   Widget buildHistoryItem(PurchaseHistoryResponse history) {
     return Card(
-      child: Container(
-        padding: const EdgeInsets.all(15),
-        child: Column(
+      child: ListTile(
+        leading: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -158,7 +158,13 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
             ),
           ],
         ),
-      ),
+        trailing: Text(
+          'Rp ${formatNumber(history.price)}',
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            color: history.status == 'FAILED' ? Colors.red : null,
+          ),
+        ),
+      )
     );
   }
 
