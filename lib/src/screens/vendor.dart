@@ -147,6 +147,7 @@ class _VendorScreenState extends State<VendorScreen> {
           <String, dynamic>{'name': 'Axis', 'productCode': 'actAxis', 'image': AppImages.logoAxis},
           <String, dynamic>{'name': 'Indosat', 'productCode': 'actIndosat', 'image': AppImages.logoIndosat},
           <String, dynamic>{'name': 'Smartfren', 'productCode': 'actSmartfren', 'image': AppImages.logoSmartfren},
+          <String, dynamic>{'name': 'Telkomsel', 'productCode': 'actTelkomsel', 'image': AppImages.logoTelkomsel},
           <String, dynamic>{'name': 'Three', 'productCode': 'actThree', 'image': AppImages.logoTri},
           <String, dynamic>{'name': 'XL', 'productCode': 'actXL', 'image': AppImages.logoXL},
         ];
