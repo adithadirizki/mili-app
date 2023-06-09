@@ -86,7 +86,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   }
 
   FutureOr<void> _handleError(Object e) {
-    simpleSnackBarDialog(context, e.toString());
+    // FIX show top snackbar
+    snackBarDialog(context, e.toString());
   }
 
   void beginTimer() {
@@ -112,8 +113,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
 
   void requestOTP(OTPType type) {
     stopTimer();
+    Navigator.pop(context);
     Api.requestOTP(type).then((response) {
-      Navigator.pop(context);
       simpleSnackBarDialog(context, 'OTP Terkirim');
       beginTimer();
     }).catchError(_handleError);
