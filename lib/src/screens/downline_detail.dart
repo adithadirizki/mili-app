@@ -27,6 +27,8 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
   List<PurchaseHistoryResponse> items = [];
   double totalAmount = 0;
   double totalTrx = 0;
+  double totalTrxSuccess = 0;
+  double totalTrxFailed = 0;
   double totalBonus = 0;
 
   late DateTime firstDate;
@@ -101,6 +103,14 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
           json.decode(response.body) as Map<String, dynamic>;
       totalTrx =
           bodyMap.containsKey('trx') ? (bodyMap['trx']! as int).toDouble() : 0;
+      totalTrxSuccess =
+      bodyMap.containsKey('summary')
+          ? (bodyMap['summary']['trx_success']! as int).toDouble()
+          : 0;
+      totalTrxFailed =
+      bodyMap.containsKey('summary')
+          ? (bodyMap['summary']['trx_failed']! as int).toDouble()
+          : 0;
       totalAmount = bodyMap.containsKey('total')
           ? (bodyMap['total']! as int).toDouble()
           : 0;
@@ -122,7 +132,7 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
         initial: dateRange, firstDate: firstDate);
     if (range != null) {
       debugPrint('Date range $range');
-      
+
       if (range.end.isBefore(range.start.add(const Duration(days: 30)))) {
         setState(() {
           dateRange = range;
@@ -158,11 +168,41 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
             ),
           ],
         ),
-        trailing: Text(
-          'Rp ${formatNumber(history.price)}',
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: history.status == 'FAILED' ? Colors.red : null,
-          ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              'Rp ${formatNumber(history.price)}',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontSize: 12,
+              ),
+            ),
+            const SizedBox(height: 5),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
+              decoration: BoxDecoration(
+                color: history.status == 'FAILED'
+                    ? Colors.redAccent
+                    : (history.status == 'SUCCESSED'
+                      ? Colors.greenAccent
+                      : Colors.blueAccent),
+                borderRadius: BorderRadius.circular(10)
+              ),
+              child: Text(
+                history.status == 'FAILED'
+                    ? 'Gagal'
+                    : (history.status == 'SUCCESSED'
+                      ? 'Berhasil'
+                      : 'Refund'),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          ],
         ),
       )
     );
@@ -273,15 +313,23 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
               'Statistik',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Column(children: [
                   Text(
-                    'Transaksi',
+                    'Berhasil',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
-                  Text(formatNumber(totalTrx)),
+                  Text(formatNumber(totalTrxSuccess)),
+                ]),
+                Column(children: [
+                  Text(
+                    'Gagal',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  Text(formatNumber(totalTrxFailed)),
                 ]),
                 // Column(children: [
                 //   const Text('Jumlah'),

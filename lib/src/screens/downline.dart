@@ -34,6 +34,8 @@ class _DownlineScreenState extends State<DownlineScreen> {
   List<DownlineResponse> items = [];
   double totalDownline = 0;
   double totalTrx = 0;
+  double totalTrxSuccess = 0;
+  double totalTrxFailed = 0;
   double totalBonus = 0;
 
   late DateTime firstDate;
@@ -156,6 +158,12 @@ class _DownlineScreenState extends State<DownlineScreen> {
       Map<String, dynamic> bodyMap =
           json.decode(response.body) as Map<String, dynamic>;
       debugPrint('Summary API ${bodyMap}');
+      totalTrxSuccess = bodyMap.containsKey('summary')
+          ? (bodyMap['summary']['trx_success'] as int).toDouble()
+          : 0;
+      totalTrxFailed = bodyMap.containsKey('summary')
+          ? (bodyMap['summary']['trx_failed'] as int).toDouble()
+          : 0;
       totalTrx =
           bodyMap.containsKey('trx') ? (bodyMap['trx']! as int).toDouble() : 0;
       totalBonus = bodyMap.containsKey('bonus')
@@ -505,7 +513,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.elliptical(18, 18)),
             ),
-            child: Text('Statistik Bulanan', style: Theme.of(context).textTheme.headline6?.copyWith(color: AppColors.white1, fontWeight: FontWeight.bold),),
+            child: Text('Statistik', style: Theme.of(context).textTheme.headline6?.copyWith(color: AppColors.white1, fontWeight: FontWeight.bold),),
           ),
           const SizedBox(height: 10),
           Row(
@@ -514,23 +522,31 @@ class _DownlineScreenState extends State<DownlineScreen> {
             children: [
               const SizedBox(width: 0),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('Transaksi', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white1)),
-                  Text(formatNumber(totalTrx), style: Theme.of(context).textTheme.headline6?.copyWith(color: AppColors.white1, fontWeight: FontWeight.bold)),
+                  Text('Berhasil', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white1)),
+                  Text(formatNumber(totalTrxSuccess), style: Theme.of(context).textTheme.headline6?.copyWith(color: AppColors.white1, fontWeight: FontWeight.bold)),
                 ],
               ),
               const SizedBox(width: 20),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('Total', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white1)),
+                  Text('Gagal', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white1)),
+                  Text(formatNumber(totalTrxFailed), style: Theme.of(context).textTheme.headline6?.copyWith(color: AppColors.white1, fontWeight: FontWeight.bold)),
+                ],
+              ),
+              const SizedBox(width: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text('Downline', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white1)),
                   Text(formatNumber(totalDownline), style: Theme.of(context).textTheme.headline6?.copyWith(color: AppColors.white1, fontWeight: FontWeight.bold)),
                 ],
               ),
               const SizedBox(width: 20),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text('Komisi', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.white1)),
                   Text(formatNumber(totalBonus), style: Theme.of(context).textTheme.headline6?.copyWith(color: AppColors.white1, fontWeight: FontWeight.bold)),
