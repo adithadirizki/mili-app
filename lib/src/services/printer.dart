@@ -13,28 +13,21 @@ import 'package:miliv2/src/utils/formatter.dart';
 
 /// See https://pub.dev/packages/bluetooth_print for detail
 class AppPrinter {
-  static bool _initialized = false;
   static bool _connected = false;
-  static late final BluetoothPrint _printer;
+  static final BluetoothPrint _printer = BluetoothPrint.instance;
   static String? _printerAddress;
 
   AppPrinter._();
 
   static Future<void> initialize() async {
-    if (_initialized) return;
-
-    _printer = BluetoothPrint.instance;
-    _connected = await _printer.isConnected ?? false;
-    _printerAddress = AppStorage.getPrinterAddress();
-
     _printer.state.listen((state) {
       switch (state) {
         case BluetoothPrint.CONNECTED:
           debugPrint('AppPrinter state Connected');
-          _connected = true;
           break;
         case BluetoothPrint.DISCONNECTED:
           debugPrint('AppPrinter state Disconnected');
+          _printerAddress = null;
           _connected = false;
           break;
         default:
@@ -43,8 +36,6 @@ class AppPrinter {
     });
 
     debugPrint('AppPrinter connected $_connected');
-
-    _initialized = true;
   }
 
   static Future<UserConfig?> getPrinterConfig() async {
@@ -94,8 +85,10 @@ class AppPrinter {
   }
 
   static Future<void> disconnect() async {
-    await _printer.disconnect();
+    _printer.disconnect();
     AppStorage.setPrinterAddress(null);
+    _printerAddress = null;
+    _connected = false;
   }
 
   static Future<void> _print(List<LineText> rows,
