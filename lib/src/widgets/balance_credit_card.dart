@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/data/user_balance.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/images.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 
@@ -17,7 +18,7 @@ class BalanceCreditCard extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: [Color(0xff0196DD), Color(0xff01C9D0)],
+          colors: [AppColors.main3, AppColors.main4],
         ),
       ),
       child: Stack(

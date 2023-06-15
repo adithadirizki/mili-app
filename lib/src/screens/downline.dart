@@ -434,7 +434,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
                   decoration: generateInputDecoration(
                     hint: 'Cari Downline',
                     suffixIcon: IconButton(
-                      color: AppColors.blue6,
+                      color: AppColors.main6,
                       icon: const Icon(Icons.close),
                       onPressed: toggleSearch,
                     ),
@@ -460,7 +460,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
                 ),
                 IconButton(
                   onPressed: toggleSearch,
-                  icon: const Icon(Icons.search, size: 32),
+                  icon: const Icon(Icons.search, color: AppColors.main3, size: 32),
                 ),
               ],
       ),
@@ -480,7 +480,7 @@ class _DownlineScreenState extends State<DownlineScreen> {
       floatingActionButton: FloatingActionButton(
         isExtended: false,
         onPressed: onRegisterDownline,
-        backgroundColor: const Color(0xffFFCC40),
+        backgroundColor: AppColors.main2,
         child: Container(
           margin: const EdgeInsets.all(1.0),
           padding: const EdgeInsets.all(12),

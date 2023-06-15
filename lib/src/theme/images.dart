@@ -5,9 +5,9 @@ class AppImages {
 
   static const splashBg1 = AssetImage('assets/images/splash_bg1.png');
   static const splashBg2 = AssetImage('assets/images/splash_bg2.png');
-  static const logoWhite = AssetImage('assets/images/mili_logo_white.png');
-  static const logoColor = AssetImage('assets/images/mili_logo_color.png');
-  static const logo = AssetImage('assets/images/Logomili180x1801.png');
+  static const logoWhite = AssetImage('assets/images/moro_logo_white.png');
+  static const logoColor = AssetImage('assets/images/moro_logo_color.png');
+  static const logo = AssetImage('assets/images/Logomoro180x1801.png');
   static const logonavbar = AssetImage('assets/images/logonavbar.png');
   static const note = AssetImage('assets/images/note.png');
   static const back = AssetImage('assets/images/back.png');

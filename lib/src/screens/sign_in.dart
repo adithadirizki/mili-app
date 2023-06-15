@@ -55,8 +55,8 @@ class _SignInScreenState extends State<SignInScreen> {
               begin: Alignment(-5, -1),
               end: Alignment(0, 2),
               colors: [
-                Color.fromRGBO(0, 255, 193, 1),
-                Color.fromRGBO(0, 10, 255, 0.9938945174217224)
+                AppColors.main4,
+                AppColors.main3
               ]),
         ),
         child: Column(
@@ -70,7 +70,7 @@ class _SignInScreenState extends State<SignInScreen> {
               children: const [
                 Image(
                   image: AppImages.logoWhite,
-                  height: 77,
+                  height: 40,
                   fit: BoxFit.fill,
                 ),
               ],

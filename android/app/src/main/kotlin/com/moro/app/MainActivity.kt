@@ -1,4 +1,4 @@
-package com.sridata.mili
+package com.moro.app
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine

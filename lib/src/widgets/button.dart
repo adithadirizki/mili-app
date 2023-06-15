@@ -20,7 +20,7 @@ class AppButton extends ElevatedButton {
               fontWeight: FontWeight.w900,
               overflow: TextOverflow.fade,
             ),
-            primary: AppColors.button,
+            primary: AppColors.main6,
             minimumSize: size ?? const Size(200, 50),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),

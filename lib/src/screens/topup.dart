@@ -136,7 +136,7 @@ class _TopupScreenState extends State<TopupScreen> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.list_alt, size: 32),
-            color: AppColors.blue5,
+            color: AppColors.main5,
             onPressed: openHistory,
           ),
         ],

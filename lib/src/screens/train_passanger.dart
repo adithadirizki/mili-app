@@ -166,7 +166,7 @@ class _TrainPassangerScreenState extends State<TrainPassangerScreen> {
                                 .textTheme
                                 .titleLarge!
                                 .copyWith(
-                                  color: AppColors.blue4,
+                                  color: AppColors.main4,
                                   fontWeight: FontWeight.bold,
                                 ),
                           ),

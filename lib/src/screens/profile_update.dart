@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/user_balance.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
@@ -34,7 +35,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
   final _addressController = TextEditingController();
 
   List<String> outletTypes = [];
-  String? outletType;
+  String? outletType = 'Lainnya';
   bool isLoading = false;
 
   @override
@@ -136,7 +137,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                       controller: _nameController,
                       textInputAction: TextInputAction.next,
                       maxLength: 50,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.main3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputName,
                       ),
@@ -153,7 +154,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                       controller: _phoneController,
                       maxLength: 50,
                       textInputAction: TextInputAction.next,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.main3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputPhone,
                       ),
@@ -169,7 +170,7 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                       controller: _emailController,
                       maxLength: 50,
                       textInputAction: TextInputAction.next,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.main3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputEmail,
                       ),
@@ -181,38 +182,38 @@ class _ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                       },
                     ),
                     // Jenis Toko
-                    DropdownButtonFormField<String>(
-                      decoration: generateInputDecoration(
-                        label: AppLabel.registrationInputMerchantType,
-                      ),
-                      isExpanded: true,
-                      value: outletType,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Pilih Jenis Toko';
-                        }
-                        return null;
-                      },
-                      onChanged: (newValue) =>
-                          setState(() => outletType = newValue),
-                      items: outletTypes.map<DropdownMenuItem<String>>((value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      // add extra sugar..
-                      icon: const Icon(Icons.arrow_drop_down),
-                      iconSize: 36,
-                      // underline: SizedBox(),
-                    ),
+                    // DropdownButtonFormField<String>(
+                    //   decoration: generateInputDecoration(
+                    //     label: AppLabel.registrationInputMerchantType,
+                    //   ),
+                    //   isExpanded: true,
+                    //   value: outletType,
+                    //   validator: (value) {
+                    //     if (value == null || value.isEmpty) {
+                    //       return 'Pilih Jenis Toko';
+                    //     }
+                    //     return null;
+                    //   },
+                    //   onChanged: (newValue) =>
+                    //       setState(() => outletType = newValue),
+                    //   items: outletTypes.map<DropdownMenuItem<String>>((value) {
+                    //     return DropdownMenuItem<String>(
+                    //       value: value,
+                    //       child: Text(value),
+                    //     );
+                    //   }).toList(),
+                    //   // add extra sugar..
+                    //   icon: const Icon(Icons.arrow_drop_down),
+                    //   iconSize: 36,
+                    //   // underline: SizedBox(),
+                    // ),
                     // Address
                     TextFormField(
                       controller: _addressController,
                       textInputAction: TextInputAction.next,
                       maxLength: 200,
                       maxLines: 2,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.main3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputAddress,
                       ),

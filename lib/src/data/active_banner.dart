@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/banner.dart';
+import 'package:miliv2/src/consts/consts.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class ActiveBannerState extends ChangeNotifier {
   List<BannerResponse> bannerList = [];
@@ -24,12 +26,18 @@ class ActiveBannerState extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<String> getPackageName() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String packageName = packageInfo.packageName;
+    return packageName;
+  }
+
   FutureOr<void> _handleError(Object e) {
     debugPrint('Fetch ActiveBannerState error $e');
     throw e;
   }
 
-  Future<void> fetchData() {
+  Future<void> fetchData() async {
     isLoading = true;
     notifyListeners();
     return Api.getActiveBanner().then(_handleResponse).catchError(_handleError);

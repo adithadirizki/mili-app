@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/services/auth.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
@@ -36,7 +37,7 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
   final _markupController = TextEditingController();
 
   List<String> outletTypes = [];
-  String? outletType;
+  String? outletType = 'Lainnya';
 
   // bool _valid = true;
   late AppAuth authState; // get auth state
@@ -137,7 +138,7 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                       controller: _nameController,
                       textInputAction: TextInputAction.next,
                       maxLength: 50,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.main3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputName,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
@@ -160,7 +161,7 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
                       ],
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.main3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputPhone,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
@@ -180,7 +181,7 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                       maxLength: 100,
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.emailAddress,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.main3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputEmail,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
@@ -203,7 +204,7 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
                       ],
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.main3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputMarkup,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,
@@ -221,39 +222,39 @@ class _DownlineRegisterScreenState extends State<DownlineRegisterScreen> {
                       onChanged: onMarkupChange,
                     ),
                     // Jenis Toko
-                    DropdownButtonFormField<String>(
-                      decoration: generateInputDecoration(
-                        label: AppLabel.registrationInputMerchantType,
-                        // errorMsg: !_valid ? AppLabel.errorRequired : null,
-                      ),
-                      isExpanded: true,
-                      value: outletType,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Pilih Jenis Toko';
-                        }
-                        return null;
-                      },
-                      onChanged: (newValue) =>
-                          setState(() => outletType = newValue),
-                      items: outletTypes.map<DropdownMenuItem<String>>((value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      // add extra sugar..
-                      icon: const Icon(Icons.arrow_drop_down),
-                      iconSize: 36,
-                      // underline: SizedBox(),
-                    ),
+                    // DropdownButtonFormField<String>(
+                    //   decoration: generateInputDecoration(
+                    //     label: AppLabel.registrationInputMerchantType,
+                    //     // errorMsg: !_valid ? AppLabel.errorRequired : null,
+                    //   ),
+                    //   isExpanded: true,
+                    //   value: outletType,
+                    //   validator: (value) {
+                    //     if (value == null || value.isEmpty) {
+                    //       return 'Pilih Jenis Toko';
+                    //     }
+                    //     return null;
+                    //   },
+                    //   onChanged: (newValue) =>
+                    //       setState(() => outletType = newValue),
+                    //   items: outletTypes.map<DropdownMenuItem<String>>((value) {
+                    //     return DropdownMenuItem<String>(
+                    //       value: value,
+                    //       child: Text(value),
+                    //     );
+                    //   }).toList(),
+                    //   // add extra sugar..
+                    //   icon: const Icon(Icons.arrow_drop_down),
+                    //   iconSize: 36,
+                    //   // underline: SizedBox(),
+                    // ),
                     // Address
                     TextFormField(
                       controller: _addressController,
                       textInputAction: TextInputAction.next,
                       maxLength: 200,
                       maxLines: 2,
-                      cursorColor: Colors.blueAccent,
+                      cursorColor: AppColors.main3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputAddress,
                         // errorMsg: !_valid ? AppLabel.errorRequired : null,

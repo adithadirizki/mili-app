@@ -169,7 +169,7 @@ class _TrainScheduleScreenState extends State<TrainScheduleScreen> {
                           'Rp. ${formatNumber(schedule.detail.adultPrice)}',
                           style:
                               Theme.of(context).textTheme.titleLarge!.copyWith(
-                                    color: AppColors.blue4,
+                                    color: AppColors.main4,
                                     fontWeight: FontWeight.bold,
                                   ),
                         ),

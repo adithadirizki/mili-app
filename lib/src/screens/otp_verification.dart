@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/login.dart';
 import 'package:miliv2/src/consts/consts.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
@@ -159,7 +160,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
             AppLabel.otpHeader,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Color.fromRGBO(1, 132, 225, 1),
+              color: AppColors.main2,
               // fontFamily: 'Montserrat',
               fontSize: 24,
               letterSpacing:
@@ -180,32 +181,32 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                   keyboardType: TextInputType.phone,
                   textInputAction: TextInputAction.next,
                   maxLength: 50,
-                  style: const TextStyle(color: Colors.blueAccent),
-                  cursorColor: Colors.blueAccent,
+                  style: const TextStyle(color: AppColors.main3),
+                  cursorColor: AppColors.main3,
                   decoration: generateInputDecoration(
                     label: AppLabel.otpInput,
-                    color: Colors.blueAccent,
+                    color: AppColors.main3,
                     errorMsg: !_valid ? AppLabel.errorRequired : null,
                   ),
                   // style: Theme.of(context).textTheme.button,
-                  // cursorColor: Colors.blueAccent,
+                  // cursorColor: AppColors.main3,
                   // decoration: InputDecoration(
                   //   labelText: AppLabel.otpInput,
                   //   errorText: !_valid ? AppLabel.errorRequired : null,
                   //   counterText: "",
                   //   enabledBorder: const UnderlineInputBorder(
-                  //     borderSide: BorderSide(color: Colors.blueAccent),
+                  //     borderSide: BorderSide(color: AppColors.main3),
                   //   ),
                   //   focusedBorder: const UnderlineInputBorder(
-                  //     borderSide: BorderSide(color: Colors.blueAccent),
+                  //     borderSide: BorderSide(color: AppColors.main3),
                   //   ),
                   //   border: const UnderlineInputBorder(
-                  //     borderSide: BorderSide(color: Colors.blueAccent),
+                  //     borderSide: BorderSide(color: AppColors.main3),
                   //   ),
                   //   labelStyle: const TextStyle(
-                  //       color: Colors.blueAccent, fontFamily: 'Montserrat'),
+                  //       color: AppColors.main3, fontFamily: 'Montserrat'),
                   //   hintStyle: const TextStyle(
-                  //       color: Colors.blueAccent, fontFamily: 'Montserrat'),
+                  //       color: AppColors.main3, fontFamily: 'Montserrat'),
                   //   //hintText: _hintLogin,
                   // ),
                   onChanged: (value) => {

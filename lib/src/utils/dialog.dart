@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:miliv2/src/routing.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/theme.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -318,7 +319,7 @@ Future<DateTimeRange?> dateRangeDialog(BuildContext context,
     builder: (context, child) {
       return Theme(
         data: lightTheme.copyWith(
-          appBarTheme: const AppBarTheme(backgroundColor: Colors.blue),
+          appBarTheme: const AppBarTheme(backgroundColor: AppColors.main3),
         ),
         child: child!,
       );
@@ -348,7 +349,7 @@ Future<void> Function() showLoaderDialog(BuildContext context,
     content: Row(
       children: [
         const CircularProgressIndicator(
-          // color: AppColors.blue4,
+          // color: AppColors.main4,
           strokeWidth: 2,
         ),
         Container(

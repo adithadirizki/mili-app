@@ -11,6 +11,8 @@ const Map<PaymentMethod, String> paymentMethodLabel = {
   PaymentMethod.creditBalance: 'Saldo Kredit',
 };
 
+const partnerId = '13';
+
 // const List<String> outletTypes = [
 //   'Counter HP',
 //   'Toko Kelontong',

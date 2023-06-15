@@ -159,7 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void playStore() async {
     const url =
-        'https://play.google.com/store/apps/details?id=com.sridata.mili';
+        'https://play.google.com/store/apps/details?id=com.moro.app';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -223,7 +223,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget buildHeader(BuildContext context) {
     return Container(
-      color: AppColors.blue5,
+      color: AppColors.main5,
       alignment: Alignment.center,
       child: Stack(
         // fit: StackFit.expand,
@@ -248,10 +248,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           Positioned(
             top: 40,
-            left: MediaQuery.of(context).size.width / 2 - 40,
+            left: MediaQuery.of(context).size.width / 2 - 50,
             child: const Image(
               image: AppImages.logoWhite,
-              width: 80,
+              width: 110,
             ),
           ),
           Positioned(
@@ -289,7 +289,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         width: 22,
                         height: 22,
                         padding: const EdgeInsets.all(4),
-                        color: AppColors.yellow1,
+                        color: AppColors.brown1,
                         child: const Image(
                           image: AppImages.edit,
                           width: 10,
@@ -314,7 +314,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: Theme.of(context)
                   .textTheme
                   .titleLarge
-                  ?.copyWith(color: AppColors.yellow1),
+                  ?.copyWith(color: AppColors.white1),
               // style: const TextStyle(
               //     color: Color.fromRGBO(255, 199, 0, 1),
               //     fontFamily: 'Montserrat',
@@ -482,7 +482,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         onPressed: premium,
                         style: ElevatedButton.styleFrom(
-                          primary: AppColors.yellow1,
+                          primary: AppColors.brown1,
                           minimumSize: const Size(200, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
@@ -511,7 +511,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         onPressed: about,
                         style: ElevatedButton.styleFrom(
-                          primary: AppColors.blue5,
+                          primary: AppColors.main5,
                           minimumSize: const Size(200, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
@@ -540,7 +540,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         onPressed: privacy,
                         style: ElevatedButton.styleFrom(
-                          primary: AppColors.blue5,
+                          primary: AppColors.main5,
                           minimumSize: const Size(200, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
@@ -571,7 +571,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         onPressed: playStore,
                         style: ElevatedButton.styleFrom(
-                          primary: AppColors.blue5,
+                          primary: AppColors.main5,
                           minimumSize: const Size(200, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),

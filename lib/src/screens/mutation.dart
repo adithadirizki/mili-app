@@ -6,6 +6,7 @@ import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/mutation.dart';
 import 'package:miliv2/src/theme.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
@@ -177,7 +178,7 @@ class _MutationScreenState extends State<MutationScreen> {
                     ? formatNumber(data.debitAmount)
                     : formatNumber(data.creditAmount),
                 style: Theme.of(context).textTheme.caption!.copyWith(
-                    color: isDebit ? Colors.redAccent : Colors.blueAccent),
+                    color: isDebit ? Colors.redAccent : AppColors.main3),
               ),
               Text(
                 ' = ${formatNumber(data.endBalance)}',
@@ -236,7 +237,7 @@ class _MutationScreenState extends State<MutationScreen> {
                     ? formatNumber(data.debitAmount)
                     : formatNumber(data.creditAmount),
                 style: Theme.of(context).textTheme.caption!.copyWith(
-                    color: isDebit ? Colors.redAccent : Colors.blueAccent),
+                    color: isDebit ? Colors.redAccent : AppColors.main3),
               ),
               Text(
                 ' = ${formatNumber(data.endBalance)}',

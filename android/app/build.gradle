@@ -49,7 +49,7 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -57,13 +57,13 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.sridata.mili"
+        applicationId "com.moro.app"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
-        resValue "string", "app_name", "Mili v2"
+        resValue "string", "app_name", "Moro"
     }
 
     signingConfigs {
@@ -88,7 +88,7 @@ android {
        debug {
            applicationIdSuffix ".debug"
            versionNameSuffix "-DEBUG"
-           resValue "string", "app_name", "Mili v2 Debug"
+           resValue "string", "app_name", "Moro Debug"
        }
        release {
            signingConfig signingConfigs.release
@@ -120,7 +120,7 @@ android {
             def versionCode = variant.versionCode
             def date = new Date()
             def formattedDate = date.format('yyyyMMdd')
-            outputFileName = "MILI-v${versionName}-${formattedDate}.apk"
+            outputFileName = "Moro -v${versionName}-${formattedDate}.apk"
         }
     }
 }

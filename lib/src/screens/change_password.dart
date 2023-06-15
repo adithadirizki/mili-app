@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/services/auth.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
@@ -107,8 +108,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       textInputAction: TextInputAction.next,
                       maxLength: 50,
                       obscureText: true,
-                      style: const TextStyle(color: Colors.blueAccent),
-                      cursorColor: Colors.blueAccent,
+                      style: const TextStyle(color: AppColors.main3),
+                      cursorColor: AppColors.main3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputCurrentPassword,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
@@ -126,8 +127,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       textInputAction: TextInputAction.next,
                       maxLength: 50,
                       obscureText: true,
-                      style: const TextStyle(color: Colors.blueAccent),
-                      cursorColor: Colors.blueAccent,
+                      style: const TextStyle(color: AppColors.main3),
+                      cursorColor: AppColors.main3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputNewPassword,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,
@@ -145,8 +146,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       textInputAction: TextInputAction.next,
                       maxLength: 50,
                       obscureText: true,
-                      style: const TextStyle(color: Colors.blueAccent),
-                      cursorColor: Colors.blueAccent,
+                      style: const TextStyle(color: AppColors.main3),
+                      cursorColor: AppColors.main3,
                       decoration: generateInputDecoration(
                         label: AppLabel.registrationInputConfirmPassword,
                         errorMsg: !_valid ? AppLabel.errorRequired : null,

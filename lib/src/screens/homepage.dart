@@ -13,6 +13,7 @@ import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/services/biometry.dart';
 import 'package:miliv2/src/services/messaging.dart';
 import 'package:miliv2/src/services/storage.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/images.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/home_bottom_bar.dart';
@@ -202,8 +203,8 @@ class _HomepageState extends State<Homepage>
           onInvalid: (_) {
             confirmPinState.currentState!.clearOtp();
           },
-          topColor: const Color.fromRGBO(0, 255, 193, 1),
-          bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
+          topColor: AppColors.main4,
+          bottomColor: AppColors.main2,
           themeColor: Colors.white,
           titleColor: Colors.white,
           // icon: Image.asset(
@@ -227,8 +228,8 @@ class _HomepageState extends State<Homepage>
           validateOtp: setNewPIN,
           onValidateSuccess: step2,
           onInvalid: (_) {},
-          topColor: const Color.fromRGBO(0, 255, 193, 1),
-          bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
+          topColor: AppColors.main4,
+          bottomColor: AppColors.main2,
           themeColor: Colors.white,
           titleColor: Colors.white,
           // icon: Image.asset(
@@ -288,8 +289,8 @@ class _HomepageState extends State<Homepage>
         onInvalid: (_) {
           verifyPinState.currentState!.clearOtp();
         },
-        topColor: const Color.fromRGBO(0, 255, 193, 1),
-        bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
+        topColor: AppColors.main4,
+        bottomColor: AppColors.main2,
         themeColor: Colors.white,
         titleColor: Colors.white,
         action: TextButton(
@@ -318,8 +319,8 @@ class _HomepageState extends State<Homepage>
             alignment: Alignment.center,
             child: const Image(
               image: AppImages.logoColor,
-              height: 40,
-              fit: BoxFit.fill,
+              // height: 60,
+              // fit: BoxFit.fill,
             ),
           ),
         ),

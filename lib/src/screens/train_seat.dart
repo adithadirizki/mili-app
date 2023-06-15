@@ -67,7 +67,7 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: currentWagon == wagon ? AppColors.black1 : AppColors.yellow1,
+          color: currentWagon == wagon ? AppColors.black1 : AppColors.main5,
           borderRadius: const BorderRadius.all(
             Radius.circular(10),
           ),
@@ -113,7 +113,7 @@ class _TrainSeatScreenState extends State<TrainSeatScreen> {
                 color: currentPassenger != null &&
                         currentPassenger!.passengerId == passenger.passengerId
                     ? AppColors.red1
-                    : AppColors.blue6,
+                    : AppColors.main6,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(10),
                 ),

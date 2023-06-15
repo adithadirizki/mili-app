@@ -11,6 +11,7 @@ import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/login.dart';
 import 'package:miliv2/src/services/biometry.dart';
 import 'package:miliv2/src/services/storage.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/pin_verification.dart';
 
@@ -230,8 +231,8 @@ class AppAuth extends ChangeNotifier {
         onInvalid: (_) {
           verifyPinState.currentState!.clearOtp();
         },
-        topColor: const Color.fromRGBO(0, 255, 193, 1),
-        bottomColor: const Color.fromRGBO(0, 10, 255, 0.9938945174217224),
+        topColor: AppColors.main4,
+        bottomColor: AppColors.main2,
         themeColor: Colors.white,
         titleColor: Colors.white,
         // icon: Image.asset(

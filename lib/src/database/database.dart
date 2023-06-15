@@ -12,6 +12,7 @@ import 'package:miliv2/src/api/topup.dart';
 import 'package:miliv2/src/api/train.dart';
 import 'package:miliv2/src/api/user_config.dart';
 import 'package:miliv2/src/config/config.dart';
+import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/models/customer_service.dart';
 import 'package:miliv2/src/models/mutation.dart';
 import 'package:miliv2/src/models/notification.dart';
@@ -642,7 +643,8 @@ class AppDB {
     Map<String, String> params = {
       'limit': limit.toString(),
       'sort': json.encode({'tanggal': 'asc'}),
-      'filter': json.encode({'tanggal': '>|$timestamp'})
+      'filter': json.encode({'tanggal': '>|$timestamp'}),
+      'partner_id': partnerId
     };
 
     debugPrint('syncCustomerService with params $params');
