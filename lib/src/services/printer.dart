@@ -176,7 +176,7 @@ class AppPrinter {
     // build LineText from config
     LineText buildRow(Map<String, dynamic> config, bool newLine) {
       var align = LineText.ALIGN_LEFT;
-      int? width, height;
+      int? width, height, weight, fontZoom;
       int? linefeed = newLine ? 1 : null;
       if (config.containsKey('align')) {
         switch (config['align'].toString().toUpperCase()) {
@@ -200,8 +200,17 @@ class AppPrinter {
           (config['config'] as Map<String, dynamic>).containsKey('height')) {
         height = config['config']['height'] as int?;
       }
+      if (config.containsKey('config') &&
+          (config['config'] as Map<String, dynamic>).containsKey('weight')) {
+        width = config['config']['weight'] as int?;
+      }
+      if (config.containsKey('config') &&
+          (config['config'] as Map<String, dynamic>).containsKey('fontZoom')) {
+        height = config['config']['fontZoom'] as int?;
+      }
       return LineText(
-        weight: 0,
+        fontZoom: fontZoom,
+        weight: weight,
         type: LineText.TYPE_TEXT,
         align: align,
         content: config['text'].toString(),
@@ -211,14 +220,67 @@ class AppPrinter {
       );
     }
 
+    // build LineText from config
+    LineText buildRows(List<dynamic> columns) {
+      var align = LineText.ALIGN_LEFT;
+      int? width, height, weight, fontZoom;
+      String content = '';
+      for (var config in columns) {
+        config as Map<String, dynamic>;
+        if (config.containsKey('align')) {
+          switch (config['align'].toString().toUpperCase()) {
+            case 'LEFT':
+              align = LineText.ALIGN_LEFT;
+              break;
+            case 'CENTER':
+              align = LineText.ALIGN_CENTER;
+              break;
+            case 'RIGHT':
+              align = LineText.ALIGN_RIGHT;
+              break;
+          }
+        }
+        // Max character
+        // if (config.containsKey('width')) {
+        //   width = config['width'] as int?;
+        // }
+        if (config.containsKey('config') &&
+            (config['config'] as Map<String, dynamic>).containsKey('width')) {
+          width = config['config']['width'] as int?;
+        }
+        if (config.containsKey('config') &&
+            (config['config'] as Map<String, dynamic>).containsKey('height')) {
+          height = config['config']['height'] as int?;
+        }
+        if (config.containsKey('config') &&
+            (config['config'] as Map<String, dynamic>).containsKey('weight')) {
+          width = config['config']['weight'] as int?;
+        }
+        if (config.containsKey('config') &&
+            (config['config'] as Map<String, dynamic>).containsKey('fontZoom')) {
+          height = config['config']['fontZoom'] as int?;
+        }
+        content += config['text'].toString();
+        content += ' ';
+      }
+
+      return LineText(
+        fontZoom: fontZoom,
+        weight: weight,
+        type: LineText.TYPE_TEXT,
+        align: align,
+        content: content,
+        width: width,
+        height: height,
+        linefeed: 1,
+      );
+    }
+
     // FIXME printConfig by column
     for (var config in configs) {
       if (config.containsKey('columns')) {
         var columns = config['columns'] as List<dynamic>;
-        for (var col in columns) {
-          rows.add(buildRow(col as Map<String, dynamic>,
-              columns.indexOf(col) == columns.length - 1));
-        }
+        rows.add(buildRows(columns));
       } else if (config.containsKey('text')) {
         rows.add(buildRow(config, true));
       }
