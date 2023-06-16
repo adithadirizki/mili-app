@@ -531,7 +531,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
                     color: Colors.grey,
                   )
                 : WebView(
-                    initialUrl: 'https://www.mymili.id/upgrade-premium/',
+                    initialUrl: AppConfig.webUrl + '/upgrade-premium/',
                     zoomEnabled: true,
                     onWebResourceError: (error) {
                       debugPrint('PrivacyScreen error $error');

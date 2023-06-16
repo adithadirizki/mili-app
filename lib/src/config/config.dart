@@ -5,6 +5,10 @@ class AppConfig {
 
   static bool get devMode => kDebugMode;
 
+  static String get webUrl {
+    return 'https://mymoro.id';
+  }
+
   static String get baseUrl {
     if (kReleaseMode) {
       return 'https://mroapi.miliapps.sridata.net';

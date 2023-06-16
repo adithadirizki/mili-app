@@ -37,7 +37,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                   color: Colors.grey,
                 )
               : WebView(
-                  initialUrl: 'https://www.mymili.id/syarat-ketentuan/',
+                  initialUrl: AppConfig.webUrl + '/syarat-ketentuan/',
                   zoomEnabled: true,
                   onWebResourceError: (error) {
                     debugPrint('PrivacyScreen error $error');

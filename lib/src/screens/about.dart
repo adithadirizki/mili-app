@@ -34,7 +34,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   color: Colors.grey,
                 )
               : WebView(
-                  initialUrl: 'https://www.mymili.id/tentang-aplikasi/',
+                  initialUrl: AppConfig.webUrl + '/tentang-aplikasi/',
                   zoomEnabled: true,
                   onWebResourceError: (error) {
                     debugPrint('AboutScreen error $error');
