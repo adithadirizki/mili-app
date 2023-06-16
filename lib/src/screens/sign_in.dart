@@ -70,7 +70,7 @@ class _SignInScreenState extends State<SignInScreen> {
               children: const [
                 Image(
                   image: AppImages.logoWhite,
-                  height: 40,
+                  height: 80,
                   fit: BoxFit.fill,
                 ),
               ],

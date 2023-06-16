@@ -319,8 +319,8 @@ class _HomepageState extends State<Homepage>
             alignment: Alignment.center,
             child: const Image(
               image: AppImages.logoColor,
-              // height: 60,
-              // fit: BoxFit.fill,
+              height: 60,
+              fit: BoxFit.fill,
             ),
           ),
         ),

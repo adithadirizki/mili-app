@@ -144,19 +144,18 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
             onPressed: () {
               gotoPage(0);
             },
-            backgroundColor: AppColors.white1,
+            backgroundColor: const Color(0xFF54D6CA),
             tooltip: "Home",
             child: Container(
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
-                border: Border.all(color: AppColors.main3, width: 2.5),
+                border: Border.all(color: Colors.white, width: 3),
                 borderRadius: const BorderRadius.all(Radius.circular(40)),
               ),
-              clipBehavior: Clip.antiAlias,
+              // clipBehavior: Clip.antiAlias,
               child: const Image(
                 image: AppImages.logonavbar,
-                width: 80,
-                height: 80,
+                width: 100,
               ),
             ),
             elevation: 2.0,
