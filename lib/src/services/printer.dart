@@ -202,11 +202,11 @@ class AppPrinter {
       }
       if (config.containsKey('config') &&
           (config['config'] as Map<String, dynamic>).containsKey('weight')) {
-        width = config['config']['weight'] as int?;
+        weight = config['config']['weight'] as int?;
       }
       if (config.containsKey('config') &&
           (config['config'] as Map<String, dynamic>).containsKey('fontZoom')) {
-        height = config['config']['fontZoom'] as int?;
+        fontZoom = config['config']['fontZoom'] as int?;
       }
       return LineText(
         fontZoom: fontZoom,
@@ -254,11 +254,11 @@ class AppPrinter {
         }
         if (config.containsKey('config') &&
             (config['config'] as Map<String, dynamic>).containsKey('weight')) {
-          width = config['config']['weight'] as int?;
+          weight = config['config']['weight'] as int?;
         }
         if (config.containsKey('config') &&
             (config['config'] as Map<String, dynamic>).containsKey('fontZoom')) {
-          height = config['config']['fontZoom'] as int?;
+          fontZoom = config['config']['fontZoom'] as int?;
         }
         content += config['text'].toString();
         content += ' ';
