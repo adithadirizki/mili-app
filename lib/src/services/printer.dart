@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bluetooth_print/bluetooth_print.dart';
 import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,7 +17,7 @@ import 'package:miliv2/src/utils/formatter.dart';
 class AppPrinter {
   static bool _connected = false;
   static final BluetoothPrint _printer = BluetoothPrint.instance;
-  static String? _printerAddress;
+  static BluetoothDevice? _printerDevice;
 
   AppPrinter._();
 
@@ -27,13 +29,19 @@ class AppPrinter {
           break;
         case BluetoothPrint.DISCONNECTED:
           debugPrint('AppPrinter state Disconnected');
-          _printerAddress = null;
           _connected = false;
           break;
         default:
           break;
       }
     });
+
+    String? printerDevice = AppStorage.getPrinterDevice();
+    if (printerDevice != null) {
+      Map<String, dynamic> _device = jsonDecode(printerDevice) as Map<String, dynamic>;
+      BluetoothDevice device = BluetoothDevice.fromJson(_device);
+      connect(device, null);
+    }
 
     debugPrint('AppPrinter connected $_connected');
   }
@@ -65,8 +73,8 @@ class AppPrinter {
     return _connected;
   }
 
-  static String? get printerAddress {
-    return _printerAddress;
+  static BluetoothDevice? get printerDevice {
+    return _printerDevice;
   }
 
   static Stream<List<BluetoothDevice>> get streamer {
@@ -74,21 +82,21 @@ class AppPrinter {
   }
 
   static Future<void> connect(
-      BluetoothDevice device, BuildContext context) async {
+      BluetoothDevice device, BuildContext? context) async {
     debugPrint('Printer connecting ${device.address}');
-    simpleSnackBarDialog(context, 'Menghubungkan printer ...');
+    if (context != null) simpleSnackBarDialog(context, 'Menghubungkan printer ...');
     await _printer.connect(device);
-    _printerAddress = device.address;
+    _printerDevice = device;
     _connected = true;
-    AppStorage.setPrinterAddress(device.address!);
-    simpleSnackBarDialog(context, 'Berhasil menghubungkan printer ...');
+    AppStorage.setPrinterDevice(jsonEncode(device.toJson()));
+    if (context != null) simpleSnackBarDialog(context, 'Berhasil menghubungkan printer ...');
   }
 
   static Future<void> disconnect() async {
     _printer.disconnect();
-    AppStorage.setPrinterAddress(null);
-    _printerAddress = null;
+    _printerDevice = null;
     _connected = false;
+    AppStorage.setPrinterDevice(null);
   }
 
   static Future<void> _print(List<LineText> rows,
