@@ -23,10 +23,10 @@ class PrinterScreen extends StatefulWidget {
 }
 
 class _PrinterScreenState extends State<PrinterScreen> {
-  bool initialized = false;
   bool isLoading = false;
   bool bluetoothActive = false;
-  late BluetoothPrint bluetoothPrint;
+  BluetoothDevice? deviceSelected;
+  BluetoothPrint? bluetoothPrint;
 
   bool connected = false;
   String? deviceAddress;
@@ -36,7 +36,8 @@ class _PrinterScreenState extends State<PrinterScreen> {
       '3. Aktifkan Lokasi & izinkan aplikasi MILI mengakses lokasi \n'
       '4. Izinkan aplikasi MILI mengakses perangkat terdekat \n'
       '5. Pilih printer yang muncul pada halaman dibawah \n'
-      '6. Lakukan setting Header atau Footer dan lakukan test print \n'
+      '6. Lalu klik tombol Connect untuk menghubungkan printer \n'
+      '7. Lakukan setting Header atau Footer dan lakukan test print \n'
       '\n** Untuk info lebih lanjut silahkan ikuti petunjuk di Buku Manual Printer Anda';
 
   final formKey = GlobalKey<FormState>();
@@ -74,15 +75,15 @@ class _PrinterScreenState extends State<PrinterScreen> {
     bool location = await Permission.location.serviceStatus.isEnabled;
     if (!location) await AppSettings.openLocationSettings();
 
+    await AppPrinter.initialize();
     bluetoothActive = await AppPrinter.bluetoothActive;
     deviceAddress = AppPrinter.printerAddress;
-    connected = deviceAddress != null;
+    connected = AppPrinter.connected;
     debugPrint(
         'initBluetooth address $deviceAddress active $bluetoothActive connected $connected');
     if (bluetoothActive) {
       AppPrinter.scanDevices();
     }
-    initialized = true;
     setState(() {});
   }
 
@@ -239,12 +240,27 @@ class _PrinterScreenState extends State<PrinterScreen> {
     return initBluetooth();
   }
 
+  Future<void> connectPrinter() async {
+    await AppPrinter.connect(deviceSelected!, context);
+    setState(() {
+      deviceAddress = AppPrinter.printerAddress;
+      connected = AppPrinter.connected;
+    });
+  }
+
+  Future<void> disconnectPrinter() async {
+    await AppPrinter.disconnect();
+    setState(() {
+      deviceSelected = null;
+      deviceAddress = AppPrinter.printerAddress;
+      connected = AppPrinter.connected;
+    });
+  }
+
   VoidCallback selectPrinter(BluetoothDevice d) {
-    return () async {
-      await AppPrinter.connect(d, context);
+    return () {
       setState(() {
-        deviceAddress = d.address;
-        connected = true;
+        deviceSelected = d;
       });
     };
   }
@@ -265,8 +281,8 @@ class _PrinterScreenState extends State<PrinterScreen> {
             activeColor: Colors.lightBlueAccent,
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+        Column(
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Flexible(
               child: Padding(
@@ -278,6 +294,43 @@ class _PrinterScreenState extends State<PrinterScreen> {
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(height: 1.5),
                 ),
               ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  style: OutlinedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: (deviceSelected != null && connected == false)
+                        ? Colors.blue
+                        : Colors.blue.shade200,
+                  ),
+                  onPressed: (deviceSelected != null && connected == false) ? connectPrinter : null,
+                  child: const Text(
+                    'Connect',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  style: OutlinedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: connected ? Colors.red : Colors.red.shade200,
+                  ),
+                  onPressed: connected ? disconnectPrinter : null,
+                  child: const Text(
+                    'Disconnect',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         )
@@ -294,8 +347,7 @@ class _PrinterScreenState extends State<PrinterScreen> {
       );
     }
 
-    return initialized
-        ? StreamBuilder<List<BluetoothDevice>>(
+    return StreamBuilder<List<BluetoothDevice>>(
       stream: AppPrinter.streamer,
       initialData: const [],
       builder: (c, snapshot) {
@@ -314,13 +366,31 @@ class _PrinterScreenState extends State<PrinterScreen> {
               Theme.of(context).textTheme.bodySmall,
             ),
             onTap: selectPrinter(d),
-            trailing: deviceAddress != null &&
-                (deviceAddress == d.address)
-                ? const Icon(
-              Icons.check,
-              color: Colors.green,
-            )
-                : null,
+            trailing: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                (deviceAddress == d.address || deviceSelected?.address == d.address)
+                    ? const Icon(
+                        Icons.check,
+                        color: Colors.green
+                      )
+                    : const SizedBox(),
+                (deviceAddress == d.address && connected) ? Container(
+                  padding: EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(20)
+                  ),
+                  child: const Text('Terhubung', style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  )),
+
+                ) : const SizedBox(),
+              ],
+            ),
+            enabled: !connected,
           ))
               .toList(),
         )
@@ -331,9 +401,6 @@ class _PrinterScreenState extends State<PrinterScreen> {
           ),
         );
       },
-    )
-        : const Center(
-      child: Text('Please wait'),
     );
   }
 
