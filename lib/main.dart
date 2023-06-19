@@ -42,7 +42,7 @@ void main() async {
   await AppStorage.initialize();
   await AppAnalytic.initialize();
   await AppMessaging.initialize();
-  // await AppPrinter.initialize();
+  await AppPrinter.initialize();
   await AppDB.initialize();
   await AppOnesignal.initialize();
 

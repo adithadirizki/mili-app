@@ -18,6 +18,7 @@ class AppStorage {
   static const String _biometricEnable = "_biometricEnable";
   static const String _transactionPIN = "_transactionPIN";
   static const String _printerAddress = "_printerAddress";
+  static const String _printerDevice = "_printerDevice";
   static const String _paymentMethod = "_paymentMethod";
 
   static late final SharedPreferences _engine;
@@ -183,6 +184,18 @@ class AppStorage {
 
   static String? getPrinterAddress() {
     return _engine.getString(_printerAddress);
+  }
+
+  static void setPrinterDevice(String? value) {
+    if (null != value) {
+      _engine.setString(_printerDevice, value);
+    } else {
+      _engine.remove(_printerDevice);
+    }
+  }
+
+  static String? getPrinterDevice() {
+    return _engine.getString(_printerDevice);
   }
 
   static void setPaymentMethod(PaymentMethod? value) {

@@ -29,7 +29,7 @@ class _PrinterScreenState extends State<PrinterScreen> {
   BluetoothPrint? bluetoothPrint;
 
   bool connected = false;
-  String? deviceAddress;
+  BluetoothDevice? printerDevice;
   String tips = 'Langkah-langkah koneksi Printer Bluetooth \n\n'
       '1. Nyalakan Printer & aktifkan Bluetooth \n'
       '2. Buka menu Setting -> Bluetooth kemudian pilih Printer, pastikan berhasil terhubung \n'
@@ -77,10 +77,10 @@ class _PrinterScreenState extends State<PrinterScreen> {
 
     await AppPrinter.initialize();
     bluetoothActive = await AppPrinter.bluetoothActive;
-    deviceAddress = AppPrinter.printerAddress;
+    printerDevice = AppPrinter.printerDevice;
     connected = AppPrinter.connected;
     debugPrint(
-        'initBluetooth address $deviceAddress active $bluetoothActive connected $connected');
+        'initBluetooth address ${printerDevice?.address} active $bluetoothActive connected $connected');
     if (bluetoothActive) {
       AppPrinter.scanDevices();
     }
@@ -243,7 +243,7 @@ class _PrinterScreenState extends State<PrinterScreen> {
   Future<void> connectPrinter() async {
     await AppPrinter.connect(deviceSelected!, context);
     setState(() {
-      deviceAddress = AppPrinter.printerAddress;
+      printerDevice = AppPrinter.printerDevice;
       connected = AppPrinter.connected;
     });
   }
@@ -252,7 +252,7 @@ class _PrinterScreenState extends State<PrinterScreen> {
     await AppPrinter.disconnect();
     setState(() {
       deviceSelected = null;
-      deviceAddress = AppPrinter.printerAddress;
+      printerDevice = AppPrinter.printerDevice;
       connected = AppPrinter.connected;
     });
   }
@@ -369,14 +369,14 @@ class _PrinterScreenState extends State<PrinterScreen> {
             trailing: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                (deviceAddress == d.address || deviceSelected?.address == d.address)
+                (printerDevice?.address == d.address || deviceSelected?.address == d.address)
                     ? const Icon(
                         Icons.check,
                         color: Colors.green
                       )
                     : const SizedBox(),
-                (deviceAddress == d.address && connected) ? Container(
-                  padding: EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+                (printerDevice?.address == d.address && connected) ? Container(
+                  padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
                   decoration: BoxDecoration(
                     color: Colors.blue,
                     borderRadius: BorderRadius.circular(20)
