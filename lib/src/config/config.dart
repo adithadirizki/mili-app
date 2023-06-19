@@ -8,8 +8,8 @@ class AppConfig {
   static String get baseUrl {
     if (kReleaseMode) {
       return 'https://api0.mili.co.id'; // LIVE / BETA
-      // return 'http://api.mili-dev.sridata.net'; // Staging
-      // return 'https://thanos.sridata.net'; // LIVE / BETA (OLD)
+      // return 'https://stgapi.miliapps.sridata.net'; // Staging
+      // return 'http://api.mili-dev.sridata.net'; // Dev
     }
     return 'http://api.mili-dev.sridata.net';
     // return 'http://192.168.72.91:8100/0';
