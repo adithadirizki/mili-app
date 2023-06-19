@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bluetooth_print/bluetooth_print.dart';
 import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,25 +15,17 @@ import 'package:miliv2/src/utils/formatter.dart';
 
 /// See https://pub.dev/packages/bluetooth_print for detail
 class AppPrinter {
-  static bool _initialized = false;
   static bool _connected = false;
-  static late final BluetoothPrint _printer;
-  static String? _printerAddress;
+  static final BluetoothPrint _printer = BluetoothPrint.instance;
+  static BluetoothDevice? _printerDevice;
 
   AppPrinter._();
 
   static Future<void> initialize() async {
-    if (_initialized) return;
-
-    _printer = BluetoothPrint.instance;
-    _connected = await _printer.isConnected ?? false;
-    _printerAddress = AppStorage.getPrinterAddress();
-
     _printer.state.listen((state) {
       switch (state) {
         case BluetoothPrint.CONNECTED:
           debugPrint('AppPrinter state Connected');
-          _connected = true;
           break;
         case BluetoothPrint.DISCONNECTED:
           debugPrint('AppPrinter state Disconnected');
@@ -42,9 +36,14 @@ class AppPrinter {
       }
     });
 
-    debugPrint('AppPrinter connected $_connected');
+    String? printerDevice = AppStorage.getPrinterDevice();
+    if (printerDevice != null) {
+      Map<String, dynamic> _device = jsonDecode(printerDevice) as Map<String, dynamic>;
+      BluetoothDevice device = BluetoothDevice.fromJson(_device);
+      connect(device, null);
+    }
 
-    _initialized = true;
+    debugPrint('AppPrinter connected $_connected');
   }
 
   static Future<UserConfig?> getPrinterConfig() async {
@@ -74,8 +73,8 @@ class AppPrinter {
     return _connected;
   }
 
-  static String? get printerAddress {
-    return _printerAddress;
+  static BluetoothDevice? get printerDevice {
+    return _printerDevice;
   }
 
   static Stream<List<BluetoothDevice>> get streamer {
@@ -83,19 +82,21 @@ class AppPrinter {
   }
 
   static Future<void> connect(
-      BluetoothDevice device, BuildContext context) async {
+      BluetoothDevice device, BuildContext? context) async {
     debugPrint('Printer connecting ${device.address}');
-    simpleSnackBarDialog(context, 'Menghubungkan printer ...');
+    if (context != null) simpleSnackBarDialog(context, 'Menghubungkan printer ...');
     await _printer.connect(device);
-    _printerAddress = device.address;
+    _printerDevice = device;
     _connected = true;
-    AppStorage.setPrinterAddress(device.address!);
-    simpleSnackBarDialog(context, 'Berhasil menghubungkan printer ...');
+    AppStorage.setPrinterDevice(jsonEncode(device.toJson()));
+    if (context != null) simpleSnackBarDialog(context, 'Berhasil menghubungkan printer ...');
   }
 
   static Future<void> disconnect() async {
-    await _printer.disconnect();
-    AppStorage.setPrinterAddress(null);
+    _printer.disconnect();
+    _printerDevice = null;
+    _connected = false;
+    AppStorage.setPrinterDevice(null);
   }
 
   static Future<void> _print(List<LineText> rows,
@@ -287,6 +288,27 @@ class AppPrinter {
     }
 
     await _print(rows, context: context, config: config);
+  }
+
+  static Future<void> printStruct({required String struct, List<Map<String, dynamic>>? config, required BuildContext context}) async {
+    if (config == null) {
+      List<LineText> rows = [];
+      rows.add(LineText(
+        type: LineText.TYPE_TEXT,
+        content: struct,
+        weight: 0,
+        align: LineText.ALIGN_LEFT,
+        linefeed: 1,
+      ));
+
+      rows.add(LineText(
+        linefeed: 1,
+      ));
+
+      await _print(rows, context: context);
+    } else {
+      await _printByConfig(config, context: context);
+    }
   }
 
   static Future<void> printPurchaseHistory(PurchaseHistoryDetailResponse data,
