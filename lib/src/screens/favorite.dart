@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/favorite.dart';
 import 'package:miliv2/src/theme.dart';
+import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/product.dart';
@@ -22,9 +23,14 @@ class FavoriteScreen extends StatefulWidget {
 
 class _FavoriteScreenState extends State<FavoriteScreen> {
   List<FavoriteResponse> items = [];
+  List<FavoriteResponse> _items = [];
   bool isLoading = true;
 
   final _favoriteNameController = TextEditingController();
+
+  String searchValue = '';
+  bool openSearch = false;
+  Timer? delayed;
 
   @override
   void initState() {
@@ -53,6 +59,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             .map((dynamic e) =>
                 FavoriteResponse.fromJson(e as Map<String, dynamic>))
             .toList(growable: false);
+        _items = items;
       }
     }).catchError(_handleError);
 
@@ -76,6 +83,24 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       }
     }).catchError(_handleError);
     _favoriteNameController.clear();
+  }
+
+  void toggleSearch() async {
+    openSearch = !openSearch;
+    if (!openSearch) searchValue = '';
+    onSearch();
+    setState(() {});
+  }
+
+  Future<void> onSearch() async {
+    setState(() {
+      _items = items.where((e) =>
+          (e.name ?? '').toLowerCase().contains(searchValue.toLowerCase())
+          || e.destination.toLowerCase().contains(searchValue.toLowerCase())
+          || (e.productName ?? '').toLowerCase().contains(searchValue.toLowerCase())
+          || (e.groupName ?? '').toLowerCase().contains(searchValue.toLowerCase())
+      ).toList();
+    });
   }
 
   void renameFavorite(FavoriteResponse fav) async {
@@ -263,7 +288,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   }
 
   Widget buildItems(BuildContext context) {
-    if (isLoading && items.isEmpty) {
+    if (isLoading && _items.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(
           strokeWidth: 2,
@@ -273,10 +298,10 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
     return RefreshIndicator(
       onRefresh: onRefresh,
-      child: items.isNotEmpty
+      child: _items.isNotEmpty
           ? ListView(
               children: [
-                for (var history in items) buildFavoriteItem(history),
+                for (var history in _items) buildFavoriteItem(history),
               ],
             )
           : const Center(
@@ -290,8 +315,41 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const SimpleAppBar2(
+      appBar: SimpleAppBar(
         title: 'Nomor Favorit',
+        widget: openSearch
+            ? Container(
+          alignment: Alignment.centerLeft,
+          color: Colors.white,
+          child: TextField(
+            onChanged: (value) {
+              if (delayed != null) delayed!.cancel();
+              delayed = Timer(const Duration(milliseconds: 500), () {
+                searchValue = value;
+                onSearch();
+              });
+            },
+            decoration: generateInputDecoration(
+              hint: 'Cari Nama/Nomor/Produk',
+              suffixIcon: IconButton(
+                color: AppColors.blue6,
+                icon: const Icon(Icons.close),
+                onPressed: toggleSearch,
+              ),
+            ),
+          ),
+        )
+            : null,
+        actions: openSearch
+            ? []
+            : <Widget>[
+          IconButton(
+            onPressed: toggleSearch,
+            icon: const Image(
+              image: AppImages.search,
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
