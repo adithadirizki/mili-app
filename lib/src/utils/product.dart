@@ -16,6 +16,7 @@ import 'package:miliv2/src/screens/purchase_voucher.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
+import 'package:objectbox/internal.dart';
 
 AssetImage getProductLogo(Product product) {
   // FIXME apa memungkinan menggunakan prefix checking ??
@@ -113,7 +114,9 @@ void openPurchaseScreen(
   if (vendor == null && groupName != null) {
     await AppDB.syncVendor();
     QueryBuilder<Vendor> queryBuilder =
-        AppDB.vendorDB.query(Vendor_.productGroupNameList.contains(groupName));
+        AppDB.vendorDB.query(Vendor_.productGroupNameList.contains(groupName))
+          ..order(Vendor_.weight, flags: 1)
+          ..order(Vendor_.name);
     vendor = queryBuilder.build().findFirst();
   }
 
@@ -204,4 +207,41 @@ bool isClosed(Cutoff? cutoff) {
   }
 
   return false;
+}
+
+QueryDoubleProperty<Product> getPriceLevel(int userLevel) {
+  QueryDoubleProperty<Product> priceLevel = Product_.priceLevel4;
+  switch (userLevel) {
+    case 1:
+      priceLevel = Product_.priceLevel1;
+      break;
+    case 2:
+      priceLevel = Product_.priceLevel2;
+      break;
+    case 3:
+      priceLevel = Product_.priceLevel3;
+      break;
+    case 4:
+      priceLevel = Product_.priceLevel4;
+      break;
+    case 5:
+      priceLevel = Product_.priceLevel5;
+      break;
+    case 6:
+      priceLevel = Product_.priceLevel6;
+      break;
+    case 7:
+      priceLevel = Product_.priceLevel7;
+      break;
+    case 8:
+      priceLevel = Product_.priceLevel8;
+      break;
+    case 9:
+      priceLevel = Product_.priceLevel9;
+      break;
+    case 10:
+      priceLevel = Product_.priceLevel10;
+      break;
+  }
+  return priceLevel;
 }

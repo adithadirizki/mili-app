@@ -27,6 +27,7 @@ class Product {
   int productGroup; // kelompok
   bool promo;
   String prefix;
+  int? weight;
   @Property(uid: 7091024253216099436, type: PropertyType.date)
   DateTime updatedDate;
 
@@ -54,6 +55,7 @@ class Product {
       required this.productGroup,
       this.promo = false,
       this.prefix = '',
+      this.weight = 0,
       required this.updatedDate,
       this.priceSetting});
 
@@ -67,6 +69,7 @@ class Product {
         productGroup: response.productGroup,
         promo: response.promo,
         prefix: response.prefix ?? '',
+        weight: response.weight,
         nominal: response.nominal,
         // userPrice: response.price,
         markup: response.markup,

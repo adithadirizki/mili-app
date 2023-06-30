@@ -67,8 +67,9 @@ class _ProductPulsaState extends State<ProductPulsa>
         .and(Product_.status
             .equals(statusOpen)
             .or(Product_.status.equals(statusClosed))))
+      ..order(Product_.weight, flags: 1)
       ..order(Product_.groupName)
-      ..order(Product_.nominal)
+      ..order(getPriceLevel(userLevel))
       ..order(Product_.productName);
     productPulsa = queryPulsa.build().find();
     // Product Data
@@ -77,8 +78,9 @@ class _ProductPulsaState extends State<ProductPulsa>
         .and(Product_.status
             .equals(statusOpen)
             .or(Product_.status.equals(statusClosed))))
+      ..order(Product_.weight, flags: 1)
       ..order(Product_.groupName)
-      ..order(Product_.nominal)
+      ..order(getPriceLevel(userLevel))
       ..order(Product_.productName);
     productData = queryData.build().find();
 

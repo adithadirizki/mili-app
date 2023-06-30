@@ -45,7 +45,9 @@ class _VendorScreenState extends State<VendorScreen> {
   Future<void> initDB() async {
     await AppDB.syncVendor();
     QueryBuilder<Vendor> queryVendor =
-        AppDB.vendorDB.query(Vendor_.group.equals(widget.groupName));
+        AppDB.vendorDB.query(Vendor_.group.equals(widget.groupName))
+          ..order(Vendor_.weight, flags: 1)
+          ..order(Vendor_.name);
     vendorList = queryVendor.build().find();
     // vendorList = vendorList
     //     .where((element) =>

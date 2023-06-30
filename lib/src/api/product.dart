@@ -74,6 +74,9 @@ class ProductResponse {
   @JsonKey(name: 'prefix')
   late String? prefix;
 
+  @JsonKey(name: 'weight')
+  late int? weight;
+
   @JsonKey(name: 'updated_at')
   late DateTime updatedAt;
 
@@ -162,6 +165,9 @@ class VendorResponse {
 
   @JsonKey(name: 'product_type')
   late int productType;
+
+  @JsonKey(name: 'weight')
+  late int? weight;
 
   @JsonKey(name: 'updated_at')
   late DateTime updatedAt;
