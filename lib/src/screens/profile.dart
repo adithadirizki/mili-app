@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:miliv2/src/config/config.dart';
 import 'package:miliv2/src/data/user_balance.dart';
-import 'package:miliv2/src/database/database.dart';
-import 'package:miliv2/src/models/program.dart';
 import 'package:miliv2/src/routing.dart';
 import 'package:miliv2/src/screens/about.dart';
 import 'package:miliv2/src/screens/change_password.dart';
@@ -16,8 +13,7 @@ import 'package:miliv2/src/screens/price_setting.dart';
 import 'package:miliv2/src/screens/printer.dart';
 import 'package:miliv2/src/screens/privacy.dart';
 import 'package:miliv2/src/screens/profile_update.dart';
-import 'package:miliv2/src/screens/reward.dart';
-import 'package:miliv2/src/screens/reward_perfomance.dart';
+import 'package:miliv2/src/screens/program.dart';
 import 'package:miliv2/src/screens/system_info.dart';
 import 'package:miliv2/src/screens/upgrade.dart';
 import 'package:miliv2/src/services/auth.dart';
@@ -72,6 +68,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }));
     //
+    menuList2.add(AppMenu(AppImages.reward, 'Program Reward', () {
+      pushScreen(
+          context, (_) => const ProgramScreen(),
+      );
+    }, trailing: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(5)
+      ),
+      child: const Text(
+        'New',
+        style: TextStyle(
+            color: Colors.white,
+            fontSize: 10,
+            fontWeight: FontWeight.bold
+        ),
+      ),
+    )));
     menuList2.add(AppMenu(AppImages.key, 'Ubah Password', () {
       pushScreen(
         context,
@@ -113,36 +128,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initialize() async {
     version = await getAppVersion();
     userBalanceState.fetchData();
-    initDB();
-  }
-
-  void initDB() async {
-    await AppDB.syncProgram();
-
-    final programDB = AppDB.programDB;
-    Program? programProgram = programDB.query().build().findFirst();
-
-    if (programProgram != null) {
-      menuList2.add(AppMenu(AppImages.reward, programProgram.title, () {
-        // premium - show perfomance, direct link webview
-        // non-premium - don't show perfomance, direct link webview
-        if (programProgram.link != null) {
-          pushScreen(context, (_) {
-            if (userBalanceState.premium) {
-              return RewardScreen(
-                  title: programProgram.title,
-                  url: AppConfig.baseUrl + '/programs/summary/' + programProgram.serverId.toString()
-              );
-            } else {
-              return RewardScreen(
-                  title: programProgram.title, url: programProgram.link ?? '');
-            }
-          });
-        }
-      }));
-    }
-
-    setState(() {});
   }
 
   void logout() {
@@ -262,6 +247,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         color: const Color(0xFF8C8C8C),
         width: 24,
       ),
+      trailing: menu.trailing,
       onTap: menu.action,
     );
   }
@@ -699,6 +685,7 @@ class AppMenu {
   final AssetImage icon;
   final String label;
   final VoidCallback action;
+  final Widget? trailing;
 
-  const AppMenu(this.icon, this.label, this.action);
+  const AppMenu(this.icon, this.label, this.action, {this.trailing});
 }

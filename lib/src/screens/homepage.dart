@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/api/api.dart';
@@ -32,6 +30,7 @@ import 'package:miliv2/src/screens/printer.dart';
 import 'package:miliv2/src/screens/profile.dart';
 import 'package:miliv2/src/screens/profile_update.dart';
 import 'package:miliv2/src/screens/profile_wallet.dart';
+import 'package:miliv2/src/screens/program.dart';
 import 'package:miliv2/src/screens/promo.dart';
 import 'package:miliv2/src/screens/purchase_payment.dart';
 import 'package:miliv2/src/screens/purchase_pln.dart';
@@ -52,7 +51,6 @@ import 'package:miliv2/src/services/auth.dart';
 import 'package:miliv2/src/services/biometry.dart';
 import 'package:miliv2/src/services/messaging.dart';
 import 'package:miliv2/src/services/storage.dart';
-import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/images.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/product.dart';
@@ -376,6 +374,8 @@ class _HomepageState extends State<Homepage>
         pushScreen(context, (_) => const NotificationScreen());
       } else if (data['key_page'] == pageCustomerService) {
         pushScreen(context, (_) => const CustomerServiceScreen());
+      } else if (data['key_page'] == pageProgram) {
+        pushScreen(context, (_) => ProgramScreen(code: data['key_subpage'] as String?));
       }
     }, onError: (dynamic error) {
       print('InitSesseion error: ${error.toString()}');
@@ -572,6 +572,7 @@ class _HomepageState extends State<Homepage>
     tooltipController.dispose();
     mainScreenScrollController.removeListener(scrollListener);
     tabController.dispose();
+    streamSubscription?.cancel();
     if (_timer != null) _timer!.cancel();
     super.dispose();
   }

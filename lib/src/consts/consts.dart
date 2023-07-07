@@ -70,6 +70,7 @@ const pageDownline = 'downline';
 const pageTambahDownline = 'tambah_downline';
 const pageUpgradePremium = 'upgrade_premium';
 const pageUpdateProfile = 'update_profile';
+const pageProgram = 'program';
 
 const pagePulsaData = 'pulsa_data';
 const pageListrik = 'listrik';

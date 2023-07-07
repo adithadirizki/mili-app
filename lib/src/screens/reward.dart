@@ -18,11 +18,10 @@ class RewardScreen extends StatefulWidget {
 
 class _RewardScreenState extends State<RewardScreen> {
   var loadingPercentage = 0;
-  var termAccepted = false;
-  var step = 1;
-
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
+  late WebViewController _webViewController;
+  bool _canGoBack = false;
 
   @override
   void initState() {
@@ -40,15 +39,26 @@ class _RewardScreenState extends State<RewardScreen> {
             initialUrl: widget.url,
             zoomEnabled: false,
             javascriptMode: JavascriptMode.unrestricted,
-            onWebResourceError: (error) {
-              debugPrint('RewardScreen error $error');
-            },
             onWebViewCreated: (webViewController) {
+              _webViewController = webViewController;
               _controller.complete(webViewController);
               webViewController.loadUrl(
                 widget.url,
                 headers: Api.getRequestHeaders(),
               );
+            },
+            gestureNavigationEnabled: true,
+            navigationDelegate: (request) {
+              _webViewController.loadUrl(
+                request.url,
+                headers: Api.getRequestHeaders(),
+              );
+              return NavigationDecision.prevent;
+            },
+            onPageFinished: (url) async {
+              _canGoBack = await _webViewController.canGoBack();
+              loadingPercentage = 100;
+              setState(() {});
             },
             onPageStarted: (url) {
               setState(() {
@@ -60,16 +70,12 @@ class _RewardScreenState extends State<RewardScreen> {
                 loadingPercentage = progress;
               });
             },
-            onPageFinished: (url) {
-              setState(() {
-                loadingPercentage = 100;
-              });
-            },
           ),
           if (loadingPercentage < 100)
             LinearProgressIndicator(
               value: loadingPercentage / 100.0,
             ),
+          // if (isLoading) const Center(child: CircularProgressIndicator()),
         ],
       ),
     );
@@ -77,11 +83,20 @@ class _RewardScreenState extends State<RewardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: SimpleAppBar2(
-        title: widget.title,
+    return WillPopScope(
+      child: Scaffold(
+        appBar: SimpleAppBar2(
+          title: widget.title,
+        ),
+        body: buildContent(context),
       ),
-      body: buildContent(context),
+      onWillPop: () async {
+        if (_canGoBack) {
+          _webViewController.goBack();
+          return false;
+        }
+        return true;
+      },
     );
   }
 }
