@@ -202,6 +202,7 @@ class AppDB {
               prev.productGroup = res.productGroup;
               prev.promo = res.promo;
               prev.prefix = res.prefix ?? '';
+              prev.weight = res.weight;
               prev.nominal = res.nominal;
               // prev.userPrice = res.price;
               prev.markup = res.markup;
@@ -302,6 +303,7 @@ class AppDB {
           prev.config = json.encode(res.config);
           prev.productGroupNameList = res.productGroupNameList;
           prev.productType = res.productType;
+          prev.weight = res.weight;
           prev.updatedAt = res.updatedAt;
           vendorDB.put(prev);
 
