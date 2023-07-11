@@ -12,6 +12,7 @@ import 'package:miliv2/src/models/vendor.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
+import 'package:miliv2/src/utils/product.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:objectbox/objectbox.dart';
 
@@ -97,7 +98,10 @@ class _PriceProductScreenState extends State<PriceProductScreen>
         .and(Product_.status
             .equals(statusOpen)
             .or(Product_.status.equals(statusClosed))))
-      ..order(Product_.groupName);
+      ..order(Product_.weight, flags: 1)
+      ..order(Product_.groupName)
+      ..order(getPriceLevel(userLevel))
+      ..order(Product_.productName);
     productPulsa = queryPulsa.build().find();
 
     // // Product Data
@@ -322,7 +326,7 @@ class _PriceProductScreenState extends State<PriceProductScreen>
           const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
           alignment: Alignment.centerLeft,
           child: Text(product.groupName,
-              style: Theme.of(context).textTheme.bodyMedium),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
         );
       } else {
         return Container();

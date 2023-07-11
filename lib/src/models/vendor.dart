@@ -19,6 +19,7 @@ class Vendor {
   String? config;
   List<String>? productGroupNameList;
   int productType;
+  int? weight;
   @Property(uid: 4045970178139976307, type: PropertyType.date)
   DateTime updatedAt;
 
@@ -36,6 +37,7 @@ class Vendor {
     this.config,
     this.productGroupNameList,
     required this.productType,
+    this.weight,
     required this.updatedAt,
   });
 
@@ -60,6 +62,7 @@ class Vendor {
         config: json.encode(response.config),
         productGroupNameList: response.productGroupNameList,
         productType: response.productType,
+        weight: response.weight,
         updatedAt: response.updatedAt,
       );
 
