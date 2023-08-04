@@ -6,6 +6,7 @@ import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/product.dart';
 import 'package:miliv2/src/api/purchase.dart';
 import 'package:miliv2/src/consts/consts.dart';
+import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/vendor.dart';
@@ -49,9 +50,12 @@ class _PurchasePaymentProductScreenState
 
   VendorConfigResponse? vendorConfig;
 
+  late final int userLevel;
+
   @override
   void initState() {
     super.initState();
+    userLevel = userBalanceState.level;
     destinationNumber = widget.destination ?? '';
     textController.text = widget.destination ?? '';
     vendorConfig = widget.vendor.configMap;
@@ -107,8 +111,8 @@ class _PurchasePaymentProductScreenState
 
     // Product Pulsa
     QueryBuilder<Product> queryPulsa = productDB.query(dbCriteria)
+      ..order(Product_.weight, flags: 1)
       ..order(Product_.groupName)
-      ..order(Product_.nominal)
       ..order(Product_.productName);
     productPulsa = queryPulsa.build().find();
 

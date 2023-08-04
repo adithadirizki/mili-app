@@ -108,8 +108,9 @@ class _ProductTopupState extends State<ProductTopup>
 
     // Product Pulsa
     QueryBuilder<Product> queryProduct = productDB.query(dbCriteria)
+      ..order(Product_.weight, flags: 1)
       ..order(Product_.groupName)
-      ..order(Product_.nominal)
+      ..order(getPriceLevel(userLevel))
       ..order(Product_.productName);
     productTopup = queryProduct.build().find();
 
