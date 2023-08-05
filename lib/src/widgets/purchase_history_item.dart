@@ -36,18 +36,20 @@ class PurchaseHistoryItem extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      history.groupName,
-                      // style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    Text(
-                      formatDate(history.transactionDate),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        history.groupName,
+                        // style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      Text(
+                        formatDate(history.transactionDate),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
                 ),
                 const Spacer(),
                 Row(
@@ -90,88 +92,88 @@ class PurchaseHistoryItem extends StatelessWidget {
             ),
             const Divider(),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Text(
-                          history.productName,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(width: 10),
-                        Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 4,
-                            horizontal: 10,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        history.productName,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 5),
+                      SelectableText(
+                        history.destination,
+                        // style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 5),
+                      history.isSuccess
+                          ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Total',
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
-                          decoration: BoxDecoration(
-                            color: history.isSuccess
-                                ? Colors.greenAccent
-                                : history.isFailed
-                                    ? Colors.redAccent
-                                    : Colors.yellow,
-                            borderRadius: const BorderRadius.all(
-                                Radius.elliptical(15, 15)),
+                          Text(
+                            'Rp. ${formatNumber(history.price)}',
+                            // style: Theme.of(context)
+                            //     .textTheme
+                            //     .bodySmall!
+                            //     .copyWith(fontWeight: FontWeight.bold),
                           ),
-                          child: Text(
-                            history.isSuccess
-                                ? 'Berhasil'
-                                : history.isFailed
-                                    ? 'Gagal'
-                                    : history.isPending
-                                        ? 'Sedang diproses'
-                                        : history.status,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SelectableText(
-                      history.destination,
-                      // style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(height: 10),
-                    history.isSuccess
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Total',
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                              Text(
-                                'Rp. ${formatNumber(history.price)}',
-                                // style: Theme.of(context)
-                                //     .textTheme
-                                //     .bodySmall!
-                                //     .copyWith(fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          )
-                        : const SizedBox(),
-                  ],
+                        ],
+                      )
+                          : const SizedBox(),
+                    ],
+                  ),
                 ),
-                const Spacer(),
-                AppButton(
-                  history.isFailed
-                      ? 'Ulang'
-                      : history.productCode.startsWith('PAY')
+                const SizedBox(width: 10),
+                Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: history.isSuccess
+                            ? Colors.greenAccent
+                            : history.isFailed
+                            ? Colors.redAccent
+                            : Colors.yellow,
+                        borderRadius: const BorderRadius.all(
+                            Radius.elliptical(15, 15)),
+                      ),
+                      child: Text(
+                        history.isSuccess
+                            ? 'Berhasil'
+                            : history.isFailed
+                            ? 'Gagal'
+                            : history.isPending
+                            ? 'Sedang diproses'
+                            : history.status,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    AppButton(
+                      history.isFailed
+                          ? 'Ulang'
+                          : history.productCode.startsWith('PAY')
                           ? 'Bayar'
                           : 'Beli',
-                  execAction(historyAction.purchase, history),
-                  size: const Size(80, 30),
+                      execAction(historyAction.purchase, history),
+                      size: const Size(80, 30),
+                    ),
+                  ],
                 ),
               ],
             ),
