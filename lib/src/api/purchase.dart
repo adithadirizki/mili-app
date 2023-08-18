@@ -140,6 +140,9 @@ class StructDetailResponse {
   @JsonKey(name: 'struct')
   final String struct;
 
+  @JsonKey(name: 'fine_bill')
+  final double fine_bill;
+
   @JsonKey(name: 'bill_amount')
   final double bill_amount;
 
@@ -156,7 +159,7 @@ class StructDetailResponse {
   final double? max_markup;
 
   StructDetailResponse(this.struct, this.bill_amount, this.admin_fee,
-      this.user_price, this.total_pay, this.max_markup);
+      this.user_price, this.total_pay, this.max_markup, this.fine_bill);
 
   factory StructDetailResponse.fromString(String body) =>
       _$StructDetailResponseFromJson(
@@ -179,7 +182,14 @@ class PurchaseHistoryDetailResponse {
   @JsonKey(name: 'struct_detail')
   final StructDetailResponse struct;
 
-  PurchaseHistoryDetailResponse(this.invoice, this.config, this.struct);
+  @JsonKey(name: 'max_width_column')
+  final int maxWidthColumn;
+
+  @JsonKey(name: 'mapping_column')
+  final Map<String, String> mappingColumn;
+
+  PurchaseHistoryDetailResponse(this.invoice, this.config, this.struct,
+      this.maxWidthColumn, this.mappingColumn);
 
   factory PurchaseHistoryDetailResponse.fromString(String body) =>
       _$PurchaseHistoryDetailResponseFromJson(

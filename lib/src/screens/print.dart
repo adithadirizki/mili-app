@@ -59,13 +59,39 @@ class _PrintScreenState extends State<PrintScreen> {
     });
   }
 
+  String _buildStruct() {
+    var _struct = '';
+
+    for (var value in structList) {
+      // left
+      _struct += value[0]!;
+
+      // right add ':' when multi column
+      if (value[1] == null) {
+        _struct += '';
+      } else {
+        _struct += ': ${value[1]!}';
+      }
+
+      // add new line
+      _struct += '\n';
+    }
+
+    return _struct;
+  }
+
   void printStruct() {
     if (formKey.currentState!.validate()) {
+      // remove multiple space
+      String _struct = struct.replaceAll(RegExp(r' {2,}'), ' ');
+
       confirmDialog(
         context,
         title: 'Detail Transaksi',
-        msg: struct + '\nCetak Struk ?',
+        msg: _struct + '\nCetak Struk ?',
         confirmAction: () {
+          AppPrinter.maxWidthColumn = widget.history.maxWidthColumn;
+          AppPrinter.mappingColumn = widget.history.mappingColumn;
           AppPrinter.printStruct(
               struct: struct, config: config, context: context);
         },
@@ -75,23 +101,27 @@ class _PrintScreenState extends State<PrintScreen> {
 
   void shareStruct() {
     if (formKey.currentState!.validate()) {
+      // remove multiple space
+      String _struct = struct.replaceAll(RegExp(r' {2,}'), ' ');
+
       final box = context.findRenderObject() as RenderBox?;
-      Share.share(struct,
+      Share.share(_struct,
           sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
     }
   }
 
   List<Widget> buildStruct() {
-    var structList = widget.history.invoice.split('\n').map((e) {
-      var row = e;
-      var cols = row.split(':');
-      var colLeft = cols[0].trim();
+    structList = widget.history.invoice.split('\n').map((e) {
+      String row = e;
+      List<String> cols = row.split(':');
+      String colLeft = cols[0].trim();
       cols.removeAt(0);
-      var colRight = cols.isNotEmpty ? cols.join(':').trim() : null;
+      String? colRight = cols.isNotEmpty ? cols.join(':').trim() : null;
 
-      var bill_amount = widget.history.struct.bill_amount;
-      var total_pay = widget.history.struct.total_pay;
-      var user_price = widget.history.struct.user_price;
+      double fineBill = widget.history.struct.fine_bill;
+      double billAmount = widget.history.struct.bill_amount;
+      double totalPay = widget.history.struct.total_pay;
+      double userPrice = widget.history.struct.user_price;
 
       // Replace Harga (pulsa, data, ewallet, prabayar)
       if (colLeft.toLowerCase().contains('harga')) {
@@ -107,11 +137,10 @@ class _PrintScreenState extends State<PrintScreen> {
           !colLeft.toLowerCase().contains('bulan')) {
         isPostpaid = true;
         if (colRight != null) {
-          if (parseDouble(textAmountController.text) >
-              (total_pay - user_price)) {
-            colRight = 'Rp. ' + formatNumber(total_pay - user_price);
+          if (parseDouble(textAmountController.text) > (totalPay - userPrice)) {
+            colRight = 'Rp. ' + formatNumber(totalPay - userPrice - fineBill);
           } else {
-            colRight = 'Rp. ' + formatNumber(bill_amount);
+            colRight = 'Rp. ' + formatNumber(billAmount);
           }
         }
       }
@@ -120,23 +149,22 @@ class _PrintScreenState extends State<PrintScreen> {
       if (colLeft.toLowerCase().contains('transfer')) {
         isPostpaid = false;
         if (colRight != null) {
-          colRight = 'Rp. ' + formatNumber(bill_amount);
+          colRight = 'Rp. ' + formatNumber(billAmount);
         }
       }
 
       // Replace Biaya Admin / Admin Fee / Admin Bank
       if (colLeft.toLowerCase().contains('admin')) {
         if (colRight != null) {
-          if (parseDouble(textAmountController.text) >
-                  (total_pay - user_price) &&
+          if (parseDouble(textAmountController.text) > (totalPay - userPrice) &&
               isPostpaid) {
             colRight = 'Rp. ' +
                 formatNumber(parseDouble(textAmountController.value.text) -
-                    (total_pay - user_price));
+                    (totalPay - userPrice));
           } else {
             colRight = 'Rp. ' +
-                formatNumber(
-                    parseDouble(textAmountController.value.text) - bill_amount);
+                formatNumber(parseDouble(textAmountController.value.text) -
+                    (billAmount + fineBill));
           }
         }
       }
@@ -149,86 +177,77 @@ class _PrintScreenState extends State<PrintScreen> {
         }
       }
 
+      // pad space
+      if (colRight != null) {
+        colLeft = colLeft.padRight(widget.history.maxWidthColumn);
+      }
+
       return [colLeft, colRight];
     }).toList();
 
     var configList = widget.history.config?.map((e) {
       if (e['columns'] != null) {
-        dynamic columns = e['columns'];
-        int colsLength = columns.length as int;
+        List columns = e['columns'] as List;
+        int colsLength = columns.length;
         int indexRight = colsLength - 1;
-        dynamic colLeft = columns[0];
-        dynamic colRight = columns[indexRight];
+        Map colLeft = columns[0] as Map;
+        Map colRight = columns[indexRight] as Map;
 
-        var bill_amount = widget.history.struct.bill_amount;
-        var total_pay = widget.history.struct.total_pay;
-        var user_price = widget.history.struct.user_price;
+        double fineBill = widget.history.struct.fine_bill;
+        double billAmount = widget.history.struct.bill_amount;
+        double totalPay = widget.history.struct.total_pay;
+        double userPrice = widget.history.struct.user_price;
 
-        if (colLeft != null) {
-          if (colLeft.toString().toLowerCase().contains('harga')) {
-            isPostpaid = false;
-            if (colRight != null) {
-              colRight['text'] = 'Rp. ' +
-                  formatNumber(parseDouble(textAmountController.value.text));
-            }
-          }
+        if (colLeft.toString().toLowerCase().contains('harga')) {
+          isPostpaid = false;
+          colRight['text'] = 'Rp. ' +
+              formatNumber(parseDouble(textAmountController.value.text));
+        }
 
-          if (colLeft.toString().toLowerCase().contains('tagihan') &&
-              !colLeft.toString().toLowerCase().contains('bulan')) {
-            isPostpaid = true;
-            if (colRight != null) {
-              if (parseDouble(textAmountController.text) >
-                  (total_pay - user_price)) {
-                colRight['text'] = 'Rp. ' + formatNumber(total_pay);
-              } else {
-                colRight['text'] = 'Rp. ' + formatNumber(bill_amount);
-              }
-            }
-          }
-
-          if (colLeft.toString().toLowerCase().contains('transfer')) {
-            isPostpaid = false;
-            if (colRight != null) {
-              colRight['text'] = 'Rp. ' + formatNumber(bill_amount);
-            }
-          }
-
-          if (colLeft.toString().toLowerCase().contains('admin')) {
-            if (colRight != null) {
-              if (parseDouble(textAmountController.text) >
-                      (total_pay - user_price) &&
-                  isPostpaid) {
-                colRight['text'] = 'Rp. ' +
-                    formatNumber(parseDouble(textAmountController.value.text) -
-                        (total_pay - user_price));
-              } else {
-                colRight['text'] = 'Rp. ' +
-                    formatNumber(parseDouble(textAmountController.value.text) -
-                        bill_amount);
-              }
-            }
-          }
-
-          if (colLeft.toString().toLowerCase().contains('bayar')) {
-            if (colRight != null) {
-              colRight['text'] = 'Rp. ' +
-                  formatNumber(parseDouble(textAmountController.value.text));
-            }
+        if (colLeft.toString().toLowerCase().contains('tagihan') &&
+            !colLeft.toString().toLowerCase().contains('bulan')) {
+          isPostpaid = true;
+          if (parseDouble(textAmountController.text) > (totalPay - userPrice)) {
+            colRight['text'] =
+                ': Rp. ' + formatNumber(totalPay - userPrice - fineBill);
+          } else {
+            colRight['text'] = 'Rp. ' + formatNumber(billAmount);
           }
         }
+
+        if (colLeft.toString().toLowerCase().contains('transfer')) {
+          isPostpaid = false;
+          colRight['text'] = 'Rp. ' + formatNumber(billAmount);
+        }
+
+        if (colLeft.toString().toLowerCase().contains('admin')) {
+          if (parseDouble(textAmountController.text) > (totalPay - userPrice) &&
+              isPostpaid) {
+            colRight['text'] = 'Rp. ' +
+                formatNumber(parseDouble(textAmountController.value.text) -
+                    (totalPay - userPrice));
+          } else {
+            colRight['text'] = 'Rp. ' +
+                formatNumber(parseDouble(textAmountController.value.text) -
+                    (billAmount + fineBill));
+          }
+        }
+
+        if (colLeft.toString().toLowerCase().contains('bayar')) {
+          colRight['text'] = 'Rp. ' +
+              formatNumber(parseDouble(textAmountController.value.text));
+        }
+
+        // padding
+        colLeft['text'] =
+            colLeft['text'].padRight(widget.history.maxWidthColumn);
       }
+
       return e;
     }).toList();
 
     setState(() {
-      var _struct = '';
-      for (var value in structList) {
-        _struct += value[0]!;
-        _struct += value[1] == null ? '' : ': ${value[1]!}';
-        _struct += '\n';
-      }
-
-      struct = _struct;
+      struct = _buildStruct();
       config = configList;
     });
 
@@ -360,6 +379,7 @@ class _PrintScreenState extends State<PrintScreen> {
                                     validator: (value) {
                                       double min =
                                           widget.history.struct.bill_amount +
+                                              widget.history.struct.fine_bill +
                                               widget.history.struct.admin_fee;
                                       var max_markup =
                                           widget.history.struct.max_markup;

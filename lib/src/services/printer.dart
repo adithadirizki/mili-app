@@ -18,6 +18,8 @@ class AppPrinter {
   static bool _connected = false;
   static final BluetoothPrint _printer = BluetoothPrint.instance;
   static BluetoothDevice? _printerDevice;
+  static int maxWidthColumn = 13;
+  static Map<String, String> mappingColumn = {};
 
   AppPrinter._();
 
@@ -176,7 +178,7 @@ class AppPrinter {
 
     // build LineText from config
     LineText buildRow(Map<String, dynamic> config, bool newLine) {
-      var align = LineText.ALIGN_LEFT;
+      int align = LineText.ALIGN_LEFT;
       int? width, height, weight, fontZoom;
       int? linefeed = newLine ? 1 : null;
       if (config.containsKey('align')) {
@@ -185,7 +187,12 @@ class AppPrinter {
             align = LineText.ALIGN_CENTER;
             break;
           case 'RIGHT':
+            // doesn't support left & right alignment in one line
+            // expect: ABC    123; result:    ABC 123;
             align = LineText.ALIGN_RIGHT;
+            break;
+          case 'LEFT':
+            align = LineText.ALIGN_LEFT;
             break;
         }
       }
@@ -209,6 +216,9 @@ class AppPrinter {
           (config['config'] as Map<String, dynamic>).containsKey('fontZoom')) {
         fontZoom = config['config']['fontZoom'] as int?;
       }
+
+      config['text'] = _mappingColumnByConfig(config['text'].toString());
+
       return LineText(
         fontZoom: fontZoom,
         weight: weight,
@@ -223,21 +233,23 @@ class AppPrinter {
 
     // build LineText from config
     LineText buildRows(List<dynamic> columns) {
-      var align = LineText.ALIGN_LEFT;
+      int align = LineText.ALIGN_LEFT;
       int? width, height, weight, fontZoom;
       String content = '';
       for (var config in columns) {
         config as Map<String, dynamic>;
         if (config.containsKey('align')) {
           switch (config['align'].toString().toUpperCase()) {
-            case 'LEFT':
-              align = LineText.ALIGN_LEFT;
-              break;
             case 'CENTER':
               align = LineText.ALIGN_CENTER;
               break;
             case 'RIGHT':
+              // doesn't support left & right alignment in one line
+              // expect: ABC    123; result:    ABC 123;
               align = LineText.ALIGN_RIGHT;
+              break;
+            case 'LEFT':
+              align = LineText.ALIGN_LEFT;
               break;
           }
         }
@@ -261,6 +273,9 @@ class AppPrinter {
             (config['config'] as Map<String, dynamic>).containsKey('fontZoom')) {
           fontZoom = config['config']['fontZoom'] as int?;
         }
+
+        config['text'] = _mappingColumn(config['text'].toString());
+
         content += config['text'].toString();
         content += ' ';
       }
@@ -293,6 +308,9 @@ class AppPrinter {
   static Future<void> printStruct({required String struct, List<Map<String, dynamic>>? config, required BuildContext context}) async {
     if (config == null) {
       List<LineText> rows = [];
+
+      struct = _mappingColumn(struct);
+
       rows.add(LineText(
         type: LineText.TYPE_TEXT,
         content: struct,
@@ -343,29 +361,21 @@ class AppPrinter {
     rows.add(LineText(
       type: LineText.TYPE_TEXT,
       content:
-          'Tanggal : ${formatDate(data.createdDatetime, format: 'dd/MM/yyyy HH:mm')}',
+          'Tanggal      : ${formatDate(data.createdDatetime, format: 'dd/MM/yyyy HH:mm')}',
       weight: 0,
       align: LineText.ALIGN_LEFT,
       linefeed: 1,
     ));
     rows.add(LineText(
       type: LineText.TYPE_TEXT,
-      content: 'Kereta : ${data.trainName}',
+      content: 'Kereta       : ${data.trainName}',
       weight: 0,
       align: LineText.ALIGN_LEFT,
       linefeed: 1,
     ));
     rows.add(LineText(
       type: LineText.TYPE_TEXT,
-      content: 'No : ${data.trainNo}',
-      weight: 0,
-      align: LineText.ALIGN_LEFT,
-      linefeed: 1,
-    ));
-    rows.add(LineText(
-      type: LineText.TYPE_TEXT,
-      content:
-          'Stasiun : ${data.departure.stationName} (${data.departure.code})',
+      content: 'No           : ${data.trainNo}',
       weight: 0,
       align: LineText.ALIGN_LEFT,
       linefeed: 1,
@@ -373,7 +383,7 @@ class AppPrinter {
     rows.add(LineText(
       type: LineText.TYPE_TEXT,
       content:
-          'Tanggal : ${formatDate(data.departureDatetime, format: 'EEEE, dd MMMM yyyy HH:mm')}',
+          'Stasiun      : ${data.departure.stationName} (${data.departure.code})',
       weight: 0,
       align: LineText.ALIGN_LEFT,
       linefeed: 1,
@@ -381,7 +391,7 @@ class AppPrinter {
     rows.add(LineText(
       type: LineText.TYPE_TEXT,
       content:
-          'Penumpang : Dewasa (x${data.adultNum}) ${data.childNum > 0 ? ', Anak (x${data.childNum})' : ''}',
+          'Tanggal      : ${formatDate(data.departureDatetime, format: 'EEEE, dd MMMM yyyy HH:mm')}',
       weight: 0,
       align: LineText.ALIGN_LEFT,
       linefeed: 1,
@@ -389,35 +399,43 @@ class AppPrinter {
     rows.add(LineText(
       type: LineText.TYPE_TEXT,
       content:
-          'Tujuan : ${data.destination.stationName} (${data.destination.code})',
+          'Penumpang    : Dewasa (x${data.adultNum}) ${data.childNum > 0 ? ', Anak (x${data.childNum})' : ''}',
       weight: 0,
       align: LineText.ALIGN_LEFT,
       linefeed: 1,
     ));
     rows.add(LineText(
       type: LineText.TYPE_TEXT,
-      content: 'Waktu : ${data.estimationTime()}',
+      content:
+          'Tujuan       : ${data.destination.stationName} (${data.destination.code})',
       weight: 0,
       align: LineText.ALIGN_LEFT,
       linefeed: 1,
     ));
     rows.add(LineText(
       type: LineText.TYPE_TEXT,
-      content: 'Reff ID : ${data.bookingNumber}',
+      content: 'Waktu        : ${data.estimationTime()}',
       weight: 0,
       align: LineText.ALIGN_LEFT,
       linefeed: 1,
     ));
     rows.add(LineText(
       type: LineText.TYPE_TEXT,
-      content: 'Total : ${formatNumber(data.totalPrice)}',
+      content: 'Reff ID      : ${data.bookingNumber}',
       weight: 0,
       align: LineText.ALIGN_LEFT,
       linefeed: 1,
     ));
     rows.add(LineText(
       type: LineText.TYPE_TEXT,
-      content: 'Admin : ${formatNumber(data.totalAdmin)}',
+      content: 'Total        : ${formatNumber(data.totalPrice)}',
+      weight: 0,
+      align: LineText.ALIGN_LEFT,
+      linefeed: 1,
+    ));
+    rows.add(LineText(
+      type: LineText.TYPE_TEXT,
+      content: 'Admin        : ${formatNumber(data.totalAdmin)}',
       weight: 0,
       align: LineText.ALIGN_LEFT,
       linefeed: 1,
@@ -425,7 +443,7 @@ class AppPrinter {
     if (data.totalDiscount > 0) {
       rows.add(LineText(
         type: LineText.TYPE_TEXT,
-        content: 'Potongan : ${formatNumber(data.totalDiscount)}',
+        content: 'Potongan     : ${formatNumber(data.totalDiscount)}',
         weight: 0,
         align: LineText.ALIGN_LEFT,
         linefeed: 1,
@@ -433,7 +451,7 @@ class AppPrinter {
     }
     rows.add(LineText(
       type: LineText.TYPE_TEXT,
-      content: 'Bayar : ${formatNumber(data.grandTotal)}',
+      content: 'Bayar        : ${formatNumber(data.grandTotal)}',
       weight: 0,
       align: LineText.ALIGN_LEFT,
       linefeed: 1,
@@ -470,5 +488,33 @@ class AppPrinter {
     ));
 
     await _print(rows, context: context, config: config);
+  }
+
+  static String _mappingColumn(String column) {
+    mappingColumn.forEach((key, val) {
+      if (column.toString().toLowerCase().contains(key)) {
+        // truncate and padding
+        val = val.padRight(
+            key.length > maxWidthColumn ? maxWidthColumn : key.length);
+        // short column name
+        column = column.replaceAll(RegExp(key, caseSensitive: false), val);
+      }
+    });
+
+    return column;
+  }
+
+  static String _mappingColumnByConfig(String column) {
+    mappingColumn.forEach((key, val) {
+      if (column.toString().toLowerCase().contains(key)) {
+        // short column name
+        column = column.replaceAll(RegExp(key, caseSensitive: false), val);
+        // truncate and padding
+        column = column.padRight(
+            column.length > maxWidthColumn ? maxWidthColumn : column.length);
+      }
+    });
+
+    return column;
   }
 }
