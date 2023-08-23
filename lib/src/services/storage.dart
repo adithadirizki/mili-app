@@ -20,6 +20,8 @@ class AppStorage {
   static const String _printerAddress = "_printerAddress";
   static const String _printerDevice = "_printerDevice";
   static const String _paymentMethod = "_paymentMethod";
+  static const String _viewedPopupBanner = "_viewedPopupBanner";
+  static const String _dontShowAgainPopupBanner = "_dontShowAgainPopupBanner";
 
   static late final SharedPreferences _engine;
 
@@ -225,5 +227,47 @@ class AppStorage {
     String? value = _engine.getString(_referralCodeKey);
     setReferralCode(null);
     return value;
+  }
+
+  static void setViewedPopupBanner(String? value) {
+    if (null != value) {
+      if (hasViewedPopupBanner(value) == false) {
+        var oldValue = _engine.getStringList(_viewedPopupBanner) ?? [];
+        oldValue.add(value);
+
+        _engine.setStringList(_viewedPopupBanner, oldValue);
+      }
+    } else {
+      _engine.remove(_viewedPopupBanner);
+    }
+  }
+
+  static List<String>? getViewedPopupBanner() {
+    return _engine.getStringList(_viewedPopupBanner);
+  }
+
+  static bool hasViewedPopupBanner(String? value) {
+    return getViewedPopupBanner()?.contains(value) ?? false;
+  }
+
+  static void setDontShowAgainPopupBanner(String? value) {
+    if (null != value) {
+      if (hasDontShowAgainPopupBanner(value) == false) {
+        var oldValue = _engine.getStringList(_dontShowAgainPopupBanner) ?? [];
+        oldValue.add(value);
+
+        _engine.setStringList(_dontShowAgainPopupBanner, oldValue);
+      }
+    } else {
+      _engine.remove(_dontShowAgainPopupBanner);
+    }
+  }
+
+  static List<String>? getDontShowAgainPopupBanner() {
+    return _engine.getStringList(_dontShowAgainPopupBanner);
+  }
+
+  static bool hasDontShowAgainPopupBanner(String? value) {
+    return getDontShowAgainPopupBanner()?.contains(value) ?? false;
   }
 }
