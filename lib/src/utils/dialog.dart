@@ -1,11 +1,15 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:miliv2/src/api/api.dart';
+import 'package:miliv2/src/api/popup_banner.dart';
 import 'package:miliv2/src/models/topup_retail.dart';
 import 'package:miliv2/src/routing.dart';
+import 'package:miliv2/src/services/storage.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/theme.dart';
 import 'package:miliv2/src/utils/formatter.dart';
+import 'package:miliv2/src/widgets/popup_banner.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 void confirmDialog(BuildContext context,
@@ -660,4 +664,41 @@ void confirmSignin(BuildContext context) {
     confirmText: 'Ya, lanjutkan',
     cancelText: 'Batal',
   );
+}
+
+void showPopupBanner(BuildContext context) {
+  Api.getPopupBanner().then((response) {
+    Map<String, dynamic> bodyMap =
+    json.decode(response.body) as Map<String, dynamic>;
+    var pagingResponse = PagingResponse.fromJson(bodyMap);
+
+    List<PopupBannerResponse> popupBanners = [];
+
+    for (var data in pagingResponse.data) {
+      PopupBannerResponse popupBanner =
+      PopupBannerResponse.fromJson(data as Map<String, dynamic>);
+
+      bool hasViewed =
+      AppStorage.hasViewedPopupBanner(popupBanner.id.toString());
+      bool hasDontShowAgain =
+      AppStorage.hasDontShowAgainPopupBanner(popupBanner.id.toString());
+
+      if (!hasViewed || popupBanner.schedule == 'forever') {
+        if (!hasDontShowAgain) {
+          popupBanners.add(popupBanner);
+          AppStorage.setViewedPopupBanner(popupBanner.id.toString());
+        }
+      }
+    }
+
+    if (popupBanners.isNotEmpty) {
+      showDialog<void>(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return PopupBanner(data: popupBanners);
+        },
+      );
+    }
+  });
 }
