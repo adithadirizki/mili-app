@@ -1333,6 +1333,16 @@ class Api {
 
     return request.send();
   }
+
+  static Future<http.Response> getPopupBanner() {
+    return http
+        .get(
+      Uri.parse(AppConfig.baseUrl + '/popup-banner'),
+      headers: getRequestHeaders(),
+    )
+        .then(_parseResponse)
+        .catchError(_parseException);
+  }
 }
 
 @JsonSerializable()

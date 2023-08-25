@@ -154,14 +154,19 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
   Widget buildHistoryItem(PurchaseHistoryResponse history) {
     return Card(
       child: ListTile(
-        leading: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 10,
+          horizontal: 15,
+        ),
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               history.productName,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
+            const SizedBox(height: 5),
             Text(
               formatDate(history.transactionDate),
               style: Theme.of(context).textTheme.bodySmall,
@@ -178,7 +183,7 @@ class _DownlineDetailScreenState extends State<DownlineDetailScreen> {
                 fontSize: 12,
               ),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 10),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
               decoration: BoxDecoration(

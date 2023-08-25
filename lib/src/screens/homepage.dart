@@ -108,6 +108,8 @@ class _HomepageState extends State<Homepage>
     });
     tooltipController.onDone(() {
       AppStorage.setFirstInstall(false);
+
+      showPopupBanner(context);
     });
 
     // // FIXME debug mode
@@ -551,6 +553,9 @@ class _HomepageState extends State<Homepage>
       synchronized = true;
       await closeLoader();
     }
+
+    showPopupBanner(context);
+
     debugPrint('Completed initialize');
   }
 
