@@ -11,7 +11,7 @@ class AppConfig {
       // return 'https://stgapi.miliapps.sridata.net'; // Staging
       // return 'http://api.mili-dev.sridata.net'; // Dev
     }
-    return 'http://api.mili-dev.sridata.net';
+    return 'http://api.mili-dev.sridata.net'; // Debug / Local
     // return 'http://192.168.72.91:8100/0';
   }
 
