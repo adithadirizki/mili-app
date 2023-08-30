@@ -107,11 +107,11 @@ class _HomeMenuState extends State<HomeMenu> {
         ),
       );
     }));
-    menuList.add(AppMenu(AppImages.menuBank, 'Transfer Bank', () {
+    menuList.add(AppMenu(AppImages.menuBank, 'Topup Bank', () {
       pushScreen(
         context,
         (_) => const VendorScreen(
-          title: 'Transfer Bank',
+          title: 'Topup Bank',
           groupName: menuGroupBank,
         ),
       );

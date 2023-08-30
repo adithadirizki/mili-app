@@ -284,7 +284,7 @@ class _HomepageState extends State<Homepage>
           pushScreen(
             context,
             (_) => const VendorScreen(
-              title: 'Transfer Bank',
+              title: 'Topup Bank',
               groupName: menuGroupBank,
             ),
           );
