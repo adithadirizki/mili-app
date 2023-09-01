@@ -99,21 +99,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
         (_) => const FavoriteScreen(),
       );
     }));
-    menuList2.add(AppMenu(AppImages.downline, 'Downline', () {
-      if (userBalanceState.premium) {
-        pushScreen(
-          context,
-          (_) => const DownlineScreen(),
-        );
-      } else {
-        pushScreen(
-          context,
-              (_) => const UpgradeScreen(
-            title: 'Upgrade Akun',
-          ),
-        );
-      }
-    }));
+    if (userBalanceState.premium) {
+      menuList2.add(AppMenu(AppImages.downline, 'Downline', () {
+        if (userBalanceState.premium) {
+          pushScreen(
+            context,
+            (_) => const DownlineScreen(),
+          );
+        } else {
+          pushScreen(
+            context,
+                (_) => const UpgradeScreen(
+              title: 'Upgrade Akun',
+            ),
+          );
+        }
+      }));
+    }
     menuList2.add(AppMenu(AppImages.headphones, 'Customer Service', () {
       pushScreen(
         context,
@@ -510,37 +512,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      OutlinedButton(
-                        child: Row(
-                          children: [
-                            const Image(
-                              image: AppImages.chevronsUp,
-                              color: Color(0xFFFFFFFF),
-                              width: 24,
-                            ),
-                            const SizedBox(width: 20),
-                            Text(
-                              userBalanceState.premium
-                                  ? 'Akun Premium'
-                                  : 'Upgrade Premium',
-                              // style: const TextStyle(color: Colors.white),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(color: AppColors.white1),
-                            ),
-                          ],
-                        ),
-                        onPressed: premium,
-                        style: ElevatedButton.styleFrom(
-                          primary: AppColors.yellow1,
-                          minimumSize: const Size(200, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
+                      // hide
+                      // OutlinedButton(
+                      //   child: Row(
+                      //     children: [
+                      //       const Image(
+                      //         image: AppImages.chevronsUp,
+                      //         color: Color(0xFFFFFFFF),
+                      //         width: 24,
+                      //       ),
+                      //       const SizedBox(width: 20),
+                      //       Text(
+                      //         userBalanceState.premium
+                      //             ? 'Akun Premium'
+                      //             : 'Upgrade Premium',
+                      //         // style: const TextStyle(color: Colors.white),
+                      //         style: Theme.of(context)
+                      //             .textTheme
+                      //             .bodyMedium
+                      //             ?.copyWith(color: AppColors.white1),
+                      //       ),
+                      //     ],
+                      //   ),
+                      //   onPressed: premium,
+                      //   style: ElevatedButton.styleFrom(
+                      //     primary: AppColors.yellow1,
+                      //     minimumSize: const Size(200, 50),
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(30),
+                      //     ),
+                      //   ),
+                      // ),
+                      // const SizedBox(height: 10),
                       OutlinedButton(
                         child: Row(
                           children: [
