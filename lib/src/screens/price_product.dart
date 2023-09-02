@@ -334,8 +334,14 @@ class _PriceProductScreenState extends State<PriceProductScreen>
     }
 
     if (filteredProduct.isEmpty) {
-      return const Center(
-        child: Text('-- produk kosong --'),
+      return Center(
+        child: Text(
+          'Layanan tidak tersedia',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
       );
     }
     return ListView.builder(

@@ -109,8 +109,11 @@ class _PriceSettingScreenState extends State<PriceSettingScreen> {
     if (menuList.isEmpty) {
       return Center(
         child: Text(
-          '-- tidak ada data --',
-          style: Theme.of(context).textTheme.caption!.copyWith(),
+          'Layanan tidak tersedia',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontWeight: FontWeight.bold),
         ),
       );
     }

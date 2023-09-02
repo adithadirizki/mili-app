@@ -200,8 +200,14 @@ class _ProductPulsaState extends State<ProductPulsa>
     }
 
     if (filteredProduct.isEmpty) {
-      return const Center(
-        child: Text('-- produk kosong --'),
+      return Center(
+        child: Text(
+          'Layanan tidak tersedia',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
       );
     }
     return ListView.builder(
@@ -241,8 +247,14 @@ class _ProductPulsaState extends State<ProductPulsa>
     }
 
     if (filteredProduct.isEmpty) {
-      return const Center(
-        child: Text('-- produk kosong --'),
+      return Center(
+        child: Text(
+          'Layanan tidak tersedia',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
       );
     }
     return ListView.builder(

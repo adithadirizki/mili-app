@@ -202,8 +202,11 @@ class _VendorScreenState extends State<VendorScreen> {
     if (vendorList.isEmpty) {
       return Center(
         child: Text(
-          '-- tidak ada data --',
-          style: Theme.of(context).textTheme.caption!.copyWith(),
+          'Layanan tidak tersedia',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontWeight: FontWeight.bold),
         ),
       );
     }
