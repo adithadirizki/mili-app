@@ -5,6 +5,7 @@ import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/vendor.dart';
+import 'package:miliv2/src/screens/purchase_topup_bank.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/product.dart';
@@ -29,7 +30,7 @@ class _VendorScreenState extends State<VendorScreen> {
   Vendor? selectedVendor;
   bool isAct = false;
   bool isGroupBank = false;
-  String _keyGroupBank = 'TOPUPLAINNYA';
+  String keyGroupBank = 'TOPUPLAINNYA';
 
   @override
   void initState() {
@@ -40,7 +41,7 @@ class _VendorScreenState extends State<VendorScreen> {
     }
 
     if (widget.groupName == menuGroupEmoney) {
-      if (widget.productCode == _keyGroupBank) {
+      if (widget.productCode == keyGroupBank) {
         isGroupBank = true;
       }
     }
@@ -64,7 +65,7 @@ class _VendorScreenState extends State<VendorScreen> {
 
     // Menu E-Wallet
     if (widget.groupName == menuGroupEmoney) {
-      bool isMenuGroupBank = widget.productCode == _keyGroupBank;
+      bool isMenuGroupBank = widget.productCode == keyGroupBank;
 
       vendorList = vendorList.where((vendor) {
         bool isProductBank = vendor.productType == groupVoucher;
@@ -92,8 +93,8 @@ class _VendorScreenState extends State<VendorScreen> {
           group: menuGroupEmoney,
           name: 'Topup Lainnya',
           title: 'Topup Lainnya',
-          inquiryCode: _keyGroupBank,
-          paymentCode: _keyGroupBank,
+          inquiryCode: keyGroupBank,
+          paymentCode: keyGroupBank,
           weight: 0,
         );
         vendorList.add(newVendor);
@@ -105,16 +106,14 @@ class _VendorScreenState extends State<VendorScreen> {
   }
 
   void onVendorSelected(Vendor? value) {
-    // create new screen for Topup lainnya
-    if (value?.paymentCode == _keyGroupBank ||
-        value?.inquiryCode == _keyGroupBank) {
-      debugPrint('================= selected ${_keyGroupBank}');
+    // create new screen TopupBank
+    if (value?.paymentCode == keyGroupBank ||
+        value?.inquiryCode == keyGroupBank) {
       pushScreen(
         context,
-            (_) => VendorScreen(
+        (_) => PurchaseTopupBank(
           title: value!.name,
           groupName: menuGroupEmoney,
-          productCode: _keyGroupBank,
         ),
       );
       return;
