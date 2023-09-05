@@ -40,6 +40,7 @@ import 'package:miliv2/src/screens/sign_up.dart';
 import 'package:miliv2/src/screens/topup.dart';
 import 'package:miliv2/src/screens/topup_history.dart';
 import 'package:miliv2/src/screens/topup_wallet.dart';
+import 'package:miliv2/src/screens/tos_finpay.dart';
 import 'package:miliv2/src/screens/train_home.dart';
 import 'package:miliv2/src/screens/transfer.dart';
 import 'package:miliv2/src/screens/transfer_widget_wallet.dart';
@@ -386,7 +387,11 @@ class _HomepageState extends State<Homepage>
 
   void profileWalletScreen() {
     if (!userBalanceState.walletActive) {
-      pushScreen(context, (_) => const ActivationWalletScreen());
+      pushScreen(context, (_) => TosFinpayScreen(
+        title: 'Aktivasi Saldo MILI',
+        walletActive: userBalanceState.walletActive,
+        walletPremium: userBalanceState.walletPremium,
+      ));
       return;
     }
     pushScreen(context, (_) => const ProfileWalletScreen());
@@ -394,7 +399,11 @@ class _HomepageState extends State<Homepage>
 
   void topupWalletScreen() {
     if (!userBalanceState.walletActive) {
-      pushScreen(context, (_) => const ActivationWalletScreen());
+      pushScreen(context, (_) => TosFinpayScreen(
+        title: 'Aktivasi Saldo MILI',
+        walletActive: userBalanceState.walletActive,
+        walletPremium: userBalanceState.walletPremium,
+      ));
       return;
     }
     pushScreen(context, (_) => const TopupWalletScreen());
@@ -402,11 +411,11 @@ class _HomepageState extends State<Homepage>
 
   void transferWalletScreen() {
     if (!userBalanceState.walletActive) {
-      pushScreen(context, (_) => const ActivationWalletScreen());
-      return;
-    } else if (!userBalanceState.walletPremium) {
-      pushScreen(context,
-          (_) => const UpgradeWalletScreen(title: 'Upgrade Saldo MILI'));
+      pushScreen(context, (_) => TosFinpayScreen(
+        title: 'Aktivasi Saldo MILI',
+        walletActive: userBalanceState.walletActive,
+        walletPremium: userBalanceState.walletPremium,
+      ));
       return;
     }
     pushScreen(
@@ -415,7 +424,11 @@ class _HomepageState extends State<Homepage>
 
   void mutationWalletScreen() {
     if (!userBalanceState.walletActive) {
-      pushScreen(context, (_) => const ActivationWalletScreen());
+      pushScreen(context, (_) => TosFinpayScreen(
+        title: 'Aktivasi Saldo MILI',
+        walletActive: userBalanceState.walletActive,
+        walletPremium: userBalanceState.walletPremium,
+      ));
       return;
     }
     pushScreen(context, (_) => const MutationWalletScreen());
@@ -423,7 +436,11 @@ class _HomepageState extends State<Homepage>
 
   void qrisScreen() {
     if (!userBalanceState.walletActive) {
-      pushScreen(context, (_) => const ActivationWalletScreen());
+      pushScreen(context, (_) => TosFinpayScreen(
+        title: 'Aktivasi Saldo MILI',
+        walletActive: userBalanceState.walletActive,
+        walletPremium: userBalanceState.walletPremium,
+      ));
       return;
     }
     pushScreen(context, (_) => const QrisScannerScreen());
