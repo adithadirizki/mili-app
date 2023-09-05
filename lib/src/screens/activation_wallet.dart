@@ -41,15 +41,15 @@ class _ActivationWalletScreenState extends State<ActivationWalletScreen> {
   }
 
   void initialize() {
-    confirmDialog(context,
-        title: 'Aktivasi Saldo MILI',
-        msg:
-            'Finpay adalah dompet digital yang sudah terdaftar OJK, dengan menggunakan Finpay Anda dapat melakukan semua pembayaran digital dan semua pembayaran QRIS. Kemudahan topup saldo menggunakan Virtual Account dan kelebihan lainnya.\n\n'
-            'Saldo MILI saat ini akan diubah kedalam saldo Finpay. Pastikan data yang dimasukkan adalah data yang sesuai dengan identitas pribadi.\n\n'
-            'Dengan melanjutkan Anda memahami dan menjamin data yang dimasukkan adalah yang sesungguhnya. Lanjutkan ?',
-        cancelAction: () {
-      popScreen(context);
-    }, confirmText: 'Lanjutkan', cancelText: 'Batal', confirmAction: () {});
+    // confirmDialog(context,
+    //     title: 'Aktivasi Saldo MILI',
+    //     msg:
+    //         'Finpay adalah dompet digital yang sudah terdaftar OJK, dengan menggunakan Finpay Anda dapat melakukan semua pembayaran digital dan semua pembayaran QRIS. Kemudahan topup saldo menggunakan Virtual Account dan kelebihan lainnya.\n\n'
+    //         'Saldo MILI saat ini akan diubah kedalam saldo Finpay. Pastikan data yang dimasukkan adalah data yang sesuai dengan identitas pribadi.\n\n'
+    //         'Dengan melanjutkan Anda memahami dan menjamin data yang dimasukkan adalah yang sesungguhnya. Lanjutkan ?',
+    //     cancelAction: () {
+    //   popScreen(context);
+    // }, confirmText: 'Lanjutkan', cancelText: 'Batal', confirmAction: () {});
   }
 
   FutureOr<void> _handleError(Object e) {
@@ -170,6 +170,13 @@ class _ActivationWalletScreenState extends State<ActivationWalletScreen> {
     return Scaffold(
       appBar: SimpleAppBar2(
         title: widget.title,
+        actions: const [
+          Image(
+            image: AppImages.logoWallet,
+            width: 40,
+          ),
+          SizedBox(width: 15),
+        ],
       ),
       body: buildForm(context),
     );

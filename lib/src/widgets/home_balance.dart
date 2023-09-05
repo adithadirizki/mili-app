@@ -1,14 +1,12 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/data/user_balance.dart';
-import 'package:miliv2/src/screens/activation_wallet.dart';
 import 'package:miliv2/src/screens/history.dart';
 import 'package:miliv2/src/screens/mutation_wallet.dart';
 import 'package:miliv2/src/screens/profile_wallet.dart';
 import 'package:miliv2/src/screens/topup.dart';
 import 'package:miliv2/src/screens/topup_wallet.dart';
+import 'package:miliv2/src/screens/tos_finpay.dart';
 import 'package:miliv2/src/screens/transfer.dart';
 import 'package:miliv2/src/screens/transfer_widget_wallet.dart';
 import 'package:miliv2/src/screens/upgrade_wallet.dart';
@@ -34,7 +32,11 @@ class _HomeBalanceState extends State<HomeBalance> {
 
   void profileWalletScreen() {
     if (!userBalanceState.walletActive) {
-      pushScreen(context, (_) => const ActivationWalletScreen());
+      pushScreen(context, (_) => TosFinpayScreen(
+        title: 'Aktivasi Saldo MILI',
+        walletActive: userBalanceState.walletActive,
+        walletPremium: userBalanceState.walletPremium,
+      ));
       return;
     }
     pushScreen(context, (_) => const ProfileWalletScreen());
@@ -42,7 +44,11 @@ class _HomeBalanceState extends State<HomeBalance> {
 
   void topupWalletScreen() {
     if (!userBalanceState.walletActive) {
-      pushScreen(context, (_) => const ActivationWalletScreen());
+      pushScreen(context, (_) => TosFinpayScreen(
+        title: 'Aktivasi Saldo MILI',
+        walletActive: userBalanceState.walletActive,
+        walletPremium: userBalanceState.walletPremium,
+      ));
       return;
     }
     pushScreen(context, (_) => const TopupWalletScreen());
@@ -50,11 +56,11 @@ class _HomeBalanceState extends State<HomeBalance> {
 
   void transferWalletScreen() {
     if (!userBalanceState.walletActive) {
-      pushScreen(context, (_) => const ActivationWalletScreen());
-      return;
-    } else if (!userBalanceState.walletPremium) {
-      pushScreen(context,
-          (_) => const UpgradeWalletScreen(title: 'Upgrade Saldo MILI'));
+      pushScreen(context, (_) => TosFinpayScreen(
+        title: 'Aktivasi Saldo MILI',
+        walletActive: userBalanceState.walletActive,
+        walletPremium: userBalanceState.walletPremium,
+      ));
       return;
     }
     pushScreen(
@@ -79,7 +85,11 @@ class _HomeBalanceState extends State<HomeBalance> {
 
   void mutationWalletScreen() {
     if (!userBalanceState.walletActive) {
-      pushScreen(context, (_) => const ActivationWalletScreen());
+      pushScreen(context, (_) => TosFinpayScreen(
+        title: 'Aktivasi Saldo MILI',
+        walletActive: userBalanceState.walletActive,
+        walletPremium: userBalanceState.walletPremium,
+      ));
       return;
     }
     pushScreen(context, (_) => const MutationWalletScreen());

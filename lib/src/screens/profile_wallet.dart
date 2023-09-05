@@ -4,6 +4,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/api/api.dart';
+import 'package:miliv2/src/data/user_balance.dart';
+import 'package:miliv2/src/screens/tos_finpay.dart';
+import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -108,6 +111,26 @@ class _ProfileWalletScreenState extends State<ProfileWalletScreen> {
     return Scaffold(
         appBar: SimpleAppBar(
           title: widget.title,
+          actions: [
+            GestureDetector(
+              onTap: () {
+                pushScreen(
+                  context,
+                      (_) => TosFinpayScreen(
+                    title: userBalanceState.walletPremium
+                        ? 'Akun Premium'
+                        : 'Upgrade Premium Finpay',
+                    walletActive: userBalanceState.walletActive,
+                    walletPremium: userBalanceState.walletPremium,
+                  ),
+                );
+              },
+              child: userBalanceState.walletPremium
+                  ? const Image(image: AppImages.finpayPremium, width: 80)
+                  : const Image(image: AppImages.finpayBasic, width: 80),
+            ),
+            const SizedBox(width: 15),
+          ],
         ),
         body: buildWidget());
   }
