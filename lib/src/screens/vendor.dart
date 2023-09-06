@@ -5,6 +5,7 @@ import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/vendor.dart';
+import 'package:miliv2/src/screens/purchase_topup_bank.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/product.dart';
@@ -28,6 +29,8 @@ class _VendorScreenState extends State<VendorScreen> {
   List<Vendor> vendorList = [];
   Vendor? selectedVendor;
   bool isAct = false;
+  bool isGroupBank = false;
+  String keyGroupBank = 'TOPUPLAINNYA';
 
   @override
   void initState() {
@@ -35,6 +38,12 @@ class _VendorScreenState extends State<VendorScreen> {
 
     if (widget.groupName == menuGroupAct) {
       isAct = true;
+    }
+
+    if (widget.groupName == menuGroupEmoney) {
+      if (widget.productCode == keyGroupBank) {
+        isGroupBank = true;
+      }
     }
 
     WidgetsBinding.instance?.addPostFrameCallback((_) {
@@ -53,11 +62,63 @@ class _VendorScreenState extends State<VendorScreen> {
     //     .where((element) =>
     //         element.group.toUpperCase() == widget.groupName.toUpperCase())
     //     .toList();
+
+    // Menu E-Wallet
+    if (widget.groupName == menuGroupEmoney) {
+      bool isMenuGroupBank = widget.productCode == keyGroupBank;
+
+      vendorList = vendorList.where((vendor) {
+        bool isProductBank = vendor.productType == groupVoucher;
+
+        if (isMenuGroupBank) {
+          // Hide all product except bank in Topup lainnya
+          if (!isProductBank) {
+            return false;
+          }
+        } else if (isProductBank) {
+          // Hide all product bank
+          return false;
+        }
+
+        return true;
+      }).toList();
+
+      if (!isMenuGroupBank) {
+        // add new group bank (Topup lainnya)
+        Vendor newVendor = Vendor(
+          serverId: 0,
+          updatedAt: DateTime.now(),
+          imageUrl: 'assets/vendors/bank/logo_lainnya.png',
+          productType: groupVoucher,
+          group: menuGroupEmoney,
+          name: 'Topup Lainnya',
+          title: 'Topup Lainnya',
+          inquiryCode: keyGroupBank,
+          paymentCode: keyGroupBank,
+          weight: 0,
+        );
+        vendorList.add(newVendor);
+      }
+    }
+
     isLoading = false;
     setState(() {});
   }
 
   void onVendorSelected(Vendor? value) {
+    // create new screen TopupBank
+    if (value?.paymentCode == keyGroupBank ||
+        value?.inquiryCode == keyGroupBank) {
+      pushScreen(
+        context,
+        (_) => PurchaseTopupBank(
+          title: value!.name,
+          groupName: menuGroupEmoney,
+        ),
+      );
+      return;
+    }
+
     selectedVendor = value;
     setState(() {});
     openPurchaseScreen(context, vendor: value);
@@ -202,8 +263,11 @@ class _VendorScreenState extends State<VendorScreen> {
     if (vendorList.isEmpty) {
       return Center(
         child: Text(
-          '-- tidak ada data --',
-          style: Theme.of(context).textTheme.caption!.copyWith(),
+          'Layanan tidak tersedia',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontWeight: FontWeight.bold),
         ),
       );
     }

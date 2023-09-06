@@ -97,6 +97,9 @@ class AppImages {
   static const alfamart = AssetImage('assets/images/alfamart.png');
   static const indormaret = AssetImage('assets/images/indomaret.png');
 
+  static const finpayBasic = AssetImage('assets/images/finpay-basic.png');
+  static const finpayPremium = AssetImage('assets/images/finpay-premium.png');
+
   static AssetImage getAssetImage(String filename) {
     return AssetImage('images/' + filename);
   }

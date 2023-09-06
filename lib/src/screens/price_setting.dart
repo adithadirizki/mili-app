@@ -46,8 +46,8 @@ class _PriceSettingScreenState extends State<PriceSettingScreen> {
     menuList.add(_AppMenu(AppImages.menuTV, 'TV Berbayar', () {
       openPriceSetting('Harga TV Berbayar', menuGroupStreaming, null);
     }));
-    menuList.add(_AppMenu(AppImages.menuEmoney, 'Topup Bank', () {
-      openPriceSetting('Harga Topup Bank', menuGroupBank, null);
+    menuList.add(_AppMenu(AppImages.menuEmoney, 'Transfer Bank', () {
+      openPriceSetting('Harga Transfer Bank', menuGroupBank, null);
     }));
     menuList.add(_AppMenu(AppImages.menuPajak, 'Pajak', () {
       openPriceSetting('Harga Pajak', menuGroupPajak, null);
@@ -109,8 +109,11 @@ class _PriceSettingScreenState extends State<PriceSettingScreen> {
     if (menuList.isEmpty) {
       return Center(
         child: Text(
-          '-- tidak ada data --',
-          style: Theme.of(context).textTheme.caption!.copyWith(),
+          'Layanan tidak tersedia',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontWeight: FontWeight.bold),
         ),
       );
     }

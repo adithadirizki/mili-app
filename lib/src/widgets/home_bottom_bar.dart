@@ -8,6 +8,7 @@ import 'package:miliv2/src/screens/history.dart';
 import 'package:miliv2/src/screens/notification.dart';
 import 'package:miliv2/src/screens/profile.dart';
 import 'package:miliv2/src/screens/qris_scan.dart';
+import 'package:miliv2/src/screens/tos_finpay.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/utils/dialog.dart';
@@ -188,8 +189,11 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
                   isExtended: false,
                   onPressed: () async {
                     if (!userBalanceState.walletActive) {
-                      pushScreen(
-                          context, (_) => const ActivationWalletScreen());
+                      pushScreen(context, (_) => TosFinpayScreen(
+                        title: 'Aktivasi Saldo MILI',
+                        walletActive: userBalanceState.walletActive,
+                        walletPremium: userBalanceState.walletPremium,
+                      ));
                       return;
                     }
                     var code = await pushScreenWithCallback<String>(

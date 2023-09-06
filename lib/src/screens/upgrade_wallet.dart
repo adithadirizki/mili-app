@@ -780,6 +780,13 @@ class _UpgradeWalletScreenState extends State<UpgradeWalletScreen> {
     return Scaffold(
         appBar: SimpleAppBar2(
           title: widget.title,
+          actions: const [
+            Image(
+              image: AppImages.logoWallet,
+              width: 40,
+            ),
+            SizedBox(width: 15),
+          ],
         ),
         body: step == 1 ? buildTerm() : buildForm(context));
   }

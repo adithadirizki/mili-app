@@ -317,8 +317,14 @@ class _ProductTopupState extends State<ProductTopup>
     var filteredProduct = filterByPrefix(productTopup);
 
     if (filteredProduct.isEmpty) {
-      return const Center(
-        child: Text('-- produk kosong --'),
+      return Center(
+        child: Text(
+          'Layanan tidak tersedia',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
       );
     }
 
