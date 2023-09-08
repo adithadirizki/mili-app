@@ -99,23 +99,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         (_) => const FavoriteScreen(),
       );
     }));
-    if (userBalanceState.premium) {
-      menuList2.add(AppMenu(AppImages.downline, 'Downline', () {
-        if (userBalanceState.premium) {
-          pushScreen(
-            context,
+    // enable downline without upgrade premium
+    menuList2.add(AppMenu(AppImages.downline, 'Downline', () {
+      pushScreen(
+        context,
             (_) => const DownlineScreen(),
-          );
-        } else {
-          pushScreen(
-            context,
-                (_) => const UpgradeScreen(
-              title: 'Upgrade Akun',
-            ),
-          );
-        }
-      }));
-    }
+      );
+    }));
     menuList2.add(AppMenu(AppImages.headphones, 'Customer Service', () {
       pushScreen(
         context,
