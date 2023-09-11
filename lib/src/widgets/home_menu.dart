@@ -107,15 +107,16 @@ class _HomeMenuState extends State<HomeMenu> {
         ),
       );
     }));
-    menuList.add(AppMenu(AppImages.menuBank, 'Transfer Bank', () {
-      pushScreen(
-        context,
-        (_) => const VendorScreen(
-          title: 'Transfer Bank',
-          groupName: menuGroupBank,
-        ),
-      );
-    }));
+    // takedown Transfer Bank
+    // menuList.add(AppMenu(AppImages.menuBank, 'Transfer Bank', () {
+    //   pushScreen(
+    //     context,
+    //     (_) => const VendorScreen(
+    //       title: 'Transfer Bank',
+    //       groupName: menuGroupBank,
+    //     ),
+    //   );
+    // }));
     menuList.add(AppMenu(AppImages.menuPajak, 'Pajak', () {
       pushScreen(
         context,
