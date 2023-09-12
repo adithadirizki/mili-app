@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/consts/consts.dart';
+import 'package:miliv2/src/screens/price_paket_data.dart';
 import 'package:miliv2/src/screens/price_product.dart';
 import 'package:miliv2/src/screens/price_pulsa.dart';
 import 'package:miliv2/src/theme.dart';
@@ -19,8 +20,11 @@ class _PriceSettingScreenState extends State<PriceSettingScreen> {
   @override
   void initState() {
     super.initState();
-    menuList.add(_AppMenu(AppImages.menuPulsa, 'Pulsa & Data', () {
+    menuList.add(_AppMenu(AppImages.menuPulsa, 'Pulsa', () {
       pushScreen(context, (_) => const PricePulsaScreen());
+    }));
+    menuList.add(_AppMenu(AppImages.menuPaketData, 'Paket Data', () {
+      pushScreen(context, (_) => const PricePaketDataScreen());
     }));
     menuList.add(_AppMenu(AppImages.menuListrik, 'Listrik', () {
       openPriceSetting('Harga Listrik', null, ['PLN PASCA', 'PLN1600']);

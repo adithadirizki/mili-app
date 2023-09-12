@@ -14,14 +14,14 @@ import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/utils/product.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 
-class PricePulsaScreen extends StatefulWidget {
-  const PricePulsaScreen({Key? key}) : super(key: key);
+class PricePaketDataScreen extends StatefulWidget {
+  const PricePaketDataScreen({Key? key}) : super(key: key);
 
   @override
-  _PricePulsaScreenState createState() => _PricePulsaScreenState();
+  _PricePaketDataScreenState createState() => _PricePaketDataScreenState();
 }
 
-class _PricePulsaScreenState extends State<PricePulsaScreen>
+class _PricePaketDataScreenState extends State<PricePaketDataScreen>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   TextEditingController queryController = TextEditingController();
   late TabController tabController;
@@ -43,7 +43,7 @@ class _PricePulsaScreenState extends State<PricePulsaScreen>
     userLevel = userBalanceState.level;
     userMarkup = userBalanceState.markup;
     super.initState();
-    debugPrint('initState price_pulsa');
+    debugPrint('initState price_paket_data');
     tabController = TabController(length: 2, initialIndex: 0, vsync: this);
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       initDB();
@@ -62,7 +62,7 @@ class _PricePulsaScreenState extends State<PricePulsaScreen>
     final productDB = AppDB.productDB;
 
     QueryBuilder<Product> query = productDB.query(Product_.productGroup
-        .equals(groupPulsa)
+        .equals(groupData)
         .and(Product_.status
             .equals(statusOpen)
             .or(Product_.status.equals(statusClosed))))
@@ -295,8 +295,7 @@ class _PricePulsaScreenState extends State<PricePulsaScreen>
       );
     }
     return ListView.builder(
-      key: const PageStorageKey<String>('listPulsa'),
-      physics: const ClampingScrollPhysics(),
+      key: const PageStorageKey<String>('listPaketData'),
       itemCount: filteredProduct.length,
       itemBuilder: (context, index) {
         return Column(
@@ -313,7 +312,7 @@ class _PricePulsaScreenState extends State<PricePulsaScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const SimpleAppBar2(
-        title: 'Harga Pulsa',
+        title: 'Harga Paket Data',
       ),
       body: Column(
         children: [
