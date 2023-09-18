@@ -288,41 +288,41 @@ class _PurchasePaketDataScreenState extends State<PurchasePaketDataScreen> {
           key: formKey,
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Row(
-                    children: [
-                      Radio<productMode>(
-                        onChanged: onModeChange,
-                        groupValue: selectedMode,
-                        value: productMode.prepaid,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          onModeChange(productMode.prepaid);
-                        },
-                        child: const Text("Prabayar"),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Radio<productMode>(
-                        onChanged: onModeChange,
-                        groupValue: selectedMode,
-                        value: productMode.postpaid,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          onModeChange(productMode.postpaid);
-                        },
-                        child: const Text('Pascabayar'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //   children: [
+              //     Row(
+              //       children: [
+              //         Radio<productMode>(
+              //           onChanged: onModeChange,
+              //           groupValue: selectedMode,
+              //           value: productMode.prepaid,
+              //         ),
+              //         GestureDetector(
+              //           onTap: () {
+              //             onModeChange(productMode.prepaid);
+              //           },
+              //           child: const Text("Prabayar"),
+              //         ),
+              //       ],
+              //     ),
+              //     Row(
+              //       children: [
+              //         Radio<productMode>(
+              //           onChanged: onModeChange,
+              //           groupValue: selectedMode,
+              //           value: productMode.postpaid,
+              //         ),
+              //         GestureDetector(
+              //           onTap: () {
+              //             onModeChange(productMode.postpaid);
+              //           },
+              //           child: const Text('Pascabayar'),
+              //         ),
+              //       ],
+              //     ),
+              //   ],
+              // ),
               TextFormField(
                 controller: textController,
                 decoration: generateInputDecoration(
