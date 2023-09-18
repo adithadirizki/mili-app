@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/models/vendor.dart';
+import 'package:miliv2/src/screens/purchase_paket_data.dart';
 import 'package:miliv2/src/screens/purchase_payment.dart';
 import 'package:miliv2/src/screens/purchase_pln.dart';
 import 'package:miliv2/src/screens/purchase_pulsa.dart';
@@ -29,8 +30,11 @@ class _HomeMenuState extends State<HomeMenu> {
   @override
   void initState() {
     super.initState();
-    menuList.add(AppMenu(AppImages.menuPulsa, 'Pulsa & Data', () {
+    menuList.add(AppMenu(AppImages.menuPulsa, 'Pulsa', () {
       pushScreen(context, (_) => const PurchasePulsaScreen());
+    }));
+    menuList.add(AppMenu(AppImages.menuPaketData, 'Paket Data', () {
+      pushScreen(context, (_) => const PurchasePaketDataScreen());
     }));
     menuList.add(AppMenu(AppImages.menuListrik, 'Listrik', () {
       pushScreen(context, (_) => const PurchasePLNScreen());
@@ -107,15 +111,16 @@ class _HomeMenuState extends State<HomeMenu> {
         ),
       );
     }));
-    menuList.add(AppMenu(AppImages.menuBank, 'Transfer Bank', () {
-      pushScreen(
-        context,
-        (_) => const VendorScreen(
-          title: 'Transfer Bank',
-          groupName: menuGroupBank,
-        ),
-      );
-    }));
+    // takedown Transfer Bank
+    // menuList.add(AppMenu(AppImages.menuBank, 'Transfer Bank', () {
+    //   pushScreen(
+    //     context,
+    //     (_) => const VendorScreen(
+    //       title: 'Transfer Bank',
+    //       groupName: menuGroupBank,
+    //     ),
+    //   );
+    // }));
     menuList.add(AppMenu(AppImages.menuPajak, 'Pajak', () {
       pushScreen(
         context,

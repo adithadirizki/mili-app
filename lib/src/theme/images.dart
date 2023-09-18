@@ -31,6 +31,7 @@ class AppImages {
   static const menuListrik = AssetImage('assets/images/pln.png');
   static const menuTagihan = AssetImage('assets/images/tagihan.png');
   static const menuPulsa = AssetImage('assets/images/pulsa.png');
+  static const menuPaketData = AssetImage('assets/images/paket_data.png');
   static const menuBPJS = AssetImage('assets/images/bpjs.png');
   static const menuEmoney = AssetImage('assets/images/e_money.png');
   static const menuCicilan = AssetImage('assets/images/cicilan.png');

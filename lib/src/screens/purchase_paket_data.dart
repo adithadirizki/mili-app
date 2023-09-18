@@ -11,24 +11,25 @@ import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
+import 'package:miliv2/src/widgets/product_paket_data.dart';
 import 'package:miliv2/src/widgets/product_payment.dart';
-import 'package:miliv2/src/widgets/product_pulsa.dart';
 import 'package:miliv2/src/widgets/screen.dart';
 
 enum productMode { prepaid, postpaid }
 
-class PurchasePulsaScreen extends StatefulWidget {
+class PurchasePaketDataScreen extends StatefulWidget {
   final String? productCode;
   final String? destination;
 
-  const PurchasePulsaScreen({Key? key, this.productCode, this.destination})
+  const PurchasePaketDataScreen({Key? key, this.productCode, this.destination})
       : super(key: key);
 
   @override
-  _PurchasePulsaScreenState createState() => _PurchasePulsaScreenState();
+  _PurchasePaketDataScreenState createState() =>
+      _PurchasePaketDataScreenState();
 }
 
-class _PurchasePulsaScreenState extends State<PurchasePulsaScreen> {
+class _PurchasePaketDataScreenState extends State<PurchasePaketDataScreen> {
   final PageController pageController = PageController(initialPage: 0);
   final formKey = GlobalKey<FormState>();
   final TextEditingController textController = TextEditingController();
@@ -218,7 +219,7 @@ class _PurchasePulsaScreenState extends State<PurchasePulsaScreen> {
           inquiryResponse != null) {
         purchaseCode = postpaidPaymentCode;
         items = [
-          SummaryItems('Pembayaran pulsa postpaid', inquiryResponse!.amount),
+          SummaryItems('Pembayaran paket data postpaid', inquiryResponse!.amount),
         ];
         paymentDesc = inquiryResponse!.inquiryDetail;
       }
@@ -251,8 +252,8 @@ class _PurchasePulsaScreenState extends State<PurchasePulsaScreen> {
   }
 
   Widget buildPrepaidScreen() {
-    return ProductPulsa(
-      key: const PageStorageKey<String>('ProductPulsa'),
+    return ProductPaketData(
+      key: const PageStorageKey<String>('ProductPaketData'),
       level: userBalanceState.level,
       destination: destinationNumber,
       onProductSelected: onProductSelected,
@@ -280,7 +281,7 @@ class _PurchasePulsaScreenState extends State<PurchasePulsaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const SimpleAppBar(title: 'Pulsa'),
+      appBar: const SimpleAppBar(title: 'Paket Data'),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Form(

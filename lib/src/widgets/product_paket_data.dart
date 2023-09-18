@@ -7,23 +7,23 @@ import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/utils/product.dart';
 
-class ProductPulsa extends StatefulWidget {
+class ProductPaketData extends StatefulWidget {
   final String destination;
   final int level;
   final Function(Product?) onProductSelected;
 
-  const ProductPulsa(
+  const ProductPaketData(
       {Key? key,
-      required this.onProductSelected,
-      required this.destination,
-      required this.level})
+        required this.onProductSelected,
+        required this.destination,
+        required this.level})
       : super(key: key);
 
   @override
-  _ProductPulsaState createState() => _ProductPulsaState();
+  _ProductPaketDataState createState() => _ProductPaketDataState();
 }
 
-class _ProductPulsaState extends State<ProductPulsa>
+class _ProductPaketDataState extends State<ProductPaketData>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   bool isLoading = true;
   Product? selectedProduct;
@@ -39,7 +39,7 @@ class _ProductPulsaState extends State<ProductPulsa>
     userLevel = userBalanceState.level;
     userMarkup = userBalanceState.markup;
     super.initState();
-    debugPrint('initState product_pulsa');
+    debugPrint('initState product_paket_data');
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       initDB();
     });
@@ -54,17 +54,17 @@ class _ProductPulsaState extends State<ProductPulsa>
     await AppDB.syncProduct();
 
     final productDB = AppDB.productDB;
-    // Product Pulsa
-    QueryBuilder<Product> queryPulsa = productDB.query(Product_.productGroup
-        .equals(groupPulsa)
+    // Product Paket Data
+    QueryBuilder<Product> queryData = productDB.query(Product_.productGroup
+        .equals(groupData)
         .and(Product_.status
-            .equals(statusOpen)
-            .or(Product_.status.equals(statusClosed))))
+        .equals(statusOpen)
+        .or(Product_.status.equals(statusClosed))))
       ..order(Product_.weight, flags: 1)
       ..order(Product_.groupName)
       ..order(getPriceLevel(userLevel))
       ..order(Product_.productName);
-    products = queryPulsa.build().find();
+    products = queryData.build().find();
 
     operators = products.map((e) => e.groupName).toList();
 
@@ -82,7 +82,7 @@ class _ProductPulsaState extends State<ProductPulsa>
         return false;
       }
       List<String> allowedPrefix =
-          product.prefix.isNotEmpty ? product.prefix.split(',') : List.empty();
+      product.prefix.isNotEmpty ? product.prefix.split(',') : List.empty();
       // debugPrint('Number prefix ${element.productName} ${allowedPrefix}');
       if (allowedPrefix.isNotEmpty) {
         return allowedPrefix.contains(prefix);
@@ -97,9 +97,9 @@ class _ProductPulsaState extends State<ProductPulsa>
         Card(
           child: ListTile(
             tileColor:
-                product.promo ? Colors.greenAccent.withOpacity(.2) : null,
+            product.promo ? Colors.greenAccent.withOpacity(.2) : null,
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             leading: CircleAvatar(
               radius: 18.0,
               backgroundImage: getProductLogo(product),
@@ -111,25 +111,25 @@ class _ProductPulsaState extends State<ProductPulsa>
             ),
             subtitle: product.description.isNotEmpty || product.status == 2
                 ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      product.description.isNotEmpty
-                          ? Text(product.description,
-                              style: Theme.of(context).textTheme.bodySmall)
-                          : const SizedBox(
-                              height: 0,
-                            ),
-                      product.status == 2
-                          ? Text('Sedang gangguan',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(color: Colors.red))
-                          : const SizedBox(
-                              height: 0,
-                            ),
-                    ],
-                  )
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                product.description.isNotEmpty
+                    ? Text(product.description,
+                    style: Theme.of(context).textTheme.bodySmall)
+                    : const SizedBox(
+                  height: 0,
+                ),
+                product.status == 2
+                    ? Text('Sedang gangguan',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: Colors.red))
+                    : const SizedBox(
+                  height: 0,
+                ),
+              ],
+            )
                 : null,
             enabled: product.status == statusOpen,
             trailing: Row(
@@ -142,7 +142,7 @@ class _ProductPulsaState extends State<ProductPulsa>
                 ),
                 Radio<Product>(
                   onChanged: (value) =>
-                      product.status == 2 ? null : _onSelectProduct(value),
+                  product.status == 2 ? null : _onSelectProduct(value),
                   groupValue: selectedProduct,
                   value: product,
                 ),
@@ -154,24 +154,24 @@ class _ProductPulsaState extends State<ProductPulsa>
         ),
         product.promo
             ? Positioned(
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(5)),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                    child: Text(
-                      'PROMO',
-                      style: TextStyle(
-                          fontSize: 8,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                  ),
-                ),
-                top: 0,
-                right: 0,
-              )
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(5)),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              child: Text(
+                'PROMO',
+                style: TextStyle(
+                    fontSize: 8,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+            ),
+          ),
+          top: 0,
+          right: 0,
+        )
             : const SizedBox(),
       ],
     );
@@ -196,7 +196,7 @@ class _ProductPulsaState extends State<ProductPulsa>
       if (firstIndex == index) {
         return Container(
           padding:
-              const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+          const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
           alignment: Alignment.centerLeft,
           child: Text(product.groupName,
               style: Theme.of(context)
@@ -221,7 +221,7 @@ class _ProductPulsaState extends State<ProductPulsa>
       );
     }
     return ListView.builder(
-      key: const PageStorageKey<String>('listPulsa'),
+      key: const PageStorageKey<String>('listPaketData'),
       physics: const ClampingScrollPhysics(),
       itemCount: filteredProduct.length,
       itemBuilder: (context, index) {
@@ -241,7 +241,7 @@ class _ProductPulsaState extends State<ProductPulsa>
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('Build product_pulsa ${widget.destination}');
+    debugPrint('Build product_paket_data ${widget.destination}');
 
     if (isLoading) {
       return const Center(
