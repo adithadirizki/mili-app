@@ -9,14 +9,16 @@ import 'package:miliv2/src/utils/product.dart';
 
 class ProductPaketData extends StatefulWidget {
   final String destination;
+  final String? selectedProductCode;
   final int level;
   final Function(Product?) onProductSelected;
 
   const ProductPaketData(
       {Key? key,
-        required this.onProductSelected,
-        required this.destination,
-        required this.level})
+      required this.onProductSelected,
+      required this.destination,
+      this.selectedProductCode,
+      required this.level})
       : super(key: key);
 
   @override
@@ -58,8 +60,8 @@ class _ProductPaketDataState extends State<ProductPaketData>
     QueryBuilder<Product> queryData = productDB.query(Product_.productGroup
         .equals(groupData)
         .and(Product_.status
-        .equals(statusOpen)
-        .or(Product_.status.equals(statusClosed))))
+            .equals(statusOpen)
+            .or(Product_.status.equals(statusClosed))))
       ..order(Product_.weight, flags: 1)
       ..order(Product_.groupName)
       ..order(getPriceLevel(userLevel))
@@ -67,6 +69,12 @@ class _ProductPaketDataState extends State<ProductPaketData>
     products = queryData.build().find();
 
     operators = products.map((e) => e.groupName).toList();
+
+    if (widget.selectedProductCode != null) {
+      selectedProduct =
+          products.firstWhere((e) => e.code == widget.selectedProductCode);
+      widget.onProductSelected(selectedProduct);
+    }
 
     isLoading = false;
     setState(() {});
@@ -82,7 +90,7 @@ class _ProductPaketDataState extends State<ProductPaketData>
         return false;
       }
       List<String> allowedPrefix =
-      product.prefix.isNotEmpty ? product.prefix.split(',') : List.empty();
+          product.prefix.isNotEmpty ? product.prefix.split(',') : List.empty();
       // debugPrint('Number prefix ${element.productName} ${allowedPrefix}');
       if (allowedPrefix.isNotEmpty) {
         return allowedPrefix.contains(prefix);
@@ -97,9 +105,9 @@ class _ProductPaketDataState extends State<ProductPaketData>
         Card(
           child: ListTile(
             tileColor:
-            product.promo ? Colors.greenAccent.withOpacity(.2) : null,
+                product.promo ? Colors.greenAccent.withOpacity(.2) : null,
             contentPadding:
-            const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             leading: CircleAvatar(
               radius: 18.0,
               backgroundImage: getProductLogo(product),
@@ -111,25 +119,25 @@ class _ProductPaketDataState extends State<ProductPaketData>
             ),
             subtitle: product.description.isNotEmpty || product.status == 2
                 ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                product.description.isNotEmpty
-                    ? Text(product.description,
-                    style: Theme.of(context).textTheme.bodySmall)
-                    : const SizedBox(
-                  height: 0,
-                ),
-                product.status == 2
-                    ? Text('Sedang gangguan',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: Colors.red))
-                    : const SizedBox(
-                  height: 0,
-                ),
-              ],
-            )
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      product.description.isNotEmpty
+                          ? Text(product.description,
+                              style: Theme.of(context).textTheme.bodySmall)
+                          : const SizedBox(
+                              height: 0,
+                            ),
+                      product.status == 2
+                          ? Text('Sedang gangguan',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(color: Colors.red))
+                          : const SizedBox(
+                              height: 0,
+                            ),
+                    ],
+                  )
                 : null,
             enabled: product.status == statusOpen,
             trailing: Row(
@@ -142,7 +150,7 @@ class _ProductPaketDataState extends State<ProductPaketData>
                 ),
                 Radio<Product>(
                   onChanged: (value) =>
-                  product.status == 2 ? null : _onSelectProduct(value),
+                      product.status == 2 ? null : _onSelectProduct(value),
                   groupValue: selectedProduct,
                   value: product,
                 ),
@@ -154,24 +162,24 @@ class _ProductPaketDataState extends State<ProductPaketData>
         ),
         product.promo
             ? Positioned(
-          child: Container(
-            decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(5)),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-              child: Text(
-                'PROMO',
-                style: TextStyle(
-                    fontSize: 8,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-            ),
-          ),
-          top: 0,
-          right: 0,
-        )
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(5)),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    child: Text(
+                      'PROMO',
+                      style: TextStyle(
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+                top: 0,
+                right: 0,
+              )
             : const SizedBox(),
       ],
     );
@@ -196,7 +204,7 @@ class _ProductPaketDataState extends State<ProductPaketData>
       if (firstIndex == index) {
         return Container(
           padding:
-          const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+              const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
           alignment: Alignment.centerLeft,
           child: Text(product.groupName,
               style: Theme.of(context)

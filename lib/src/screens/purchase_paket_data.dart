@@ -219,7 +219,8 @@ class _PurchasePaketDataScreenState extends State<PurchasePaketDataScreen> {
           inquiryResponse != null) {
         purchaseCode = postpaidPaymentCode;
         items = [
-          SummaryItems('Pembayaran paket data postpaid', inquiryResponse!.amount),
+          SummaryItems(
+              'Pembayaran paket data postpaid', inquiryResponse!.amount),
         ];
         paymentDesc = inquiryResponse!.inquiryDetail;
       }
@@ -256,6 +257,7 @@ class _PurchasePaketDataScreenState extends State<PurchasePaketDataScreen> {
       key: const PageStorageKey<String>('ProductPaketData'),
       level: userBalanceState.level,
       destination: destinationNumber,
+      selectedProductCode: widget.productCode,
       onProductSelected: onProductSelected,
     );
   }

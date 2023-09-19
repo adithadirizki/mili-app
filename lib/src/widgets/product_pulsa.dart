@@ -9,6 +9,7 @@ import 'package:miliv2/src/utils/product.dart';
 
 class ProductPulsa extends StatefulWidget {
   final String destination;
+  final String? selectedProductCode;
   final int level;
   final Function(Product?) onProductSelected;
 
@@ -16,6 +17,7 @@ class ProductPulsa extends StatefulWidget {
       {Key? key,
       required this.onProductSelected,
       required this.destination,
+      this.selectedProductCode,
       required this.level})
       : super(key: key);
 
@@ -67,6 +69,12 @@ class _ProductPulsaState extends State<ProductPulsa>
     products = queryPulsa.build().find();
 
     operators = products.map((e) => e.groupName).toList();
+
+    if (widget.selectedProductCode != null) {
+      selectedProduct =
+          products.firstWhere((e) => e.code == widget.selectedProductCode);
+      widget.onProductSelected(selectedProduct);
+    }
 
     isLoading = false;
     setState(() {});

@@ -255,6 +255,7 @@ class _PurchasePulsaScreenState extends State<PurchasePulsaScreen> {
       key: const PageStorageKey<String>('ProductPulsa'),
       level: userBalanceState.level,
       destination: destinationNumber,
+      selectedProductCode: widget.productCode,
       onProductSelected: onProductSelected,
     );
   }

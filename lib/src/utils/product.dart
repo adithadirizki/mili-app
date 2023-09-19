@@ -7,6 +7,7 @@ import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/vendor.dart';
 import 'package:miliv2/src/screens/purchase_aktivasi.dart';
 import 'package:miliv2/src/screens/purchase_denom.dart';
+import 'package:miliv2/src/screens/purchase_paket_data.dart';
 import 'package:miliv2/src/screens/purchase_payment.dart';
 import 'package:miliv2/src/screens/purchase_payment_product.dart';
 import 'package:miliv2/src/screens/purchase_pln.dart';
@@ -120,6 +121,14 @@ void openPurchaseScreen(
     vendor = queryBuilder.build().findFirst();
   }
 
+  Product? product;
+  if (productCode != null && productCode.isNotEmpty) {
+    product = AppDB.productDB
+        .query(Product_.code.equals(productCode))
+        .build()
+        .findFirst();
+  }
+
   // TODO Vendor PDAM belum ketemu
 
   debugPrint(
@@ -142,7 +151,10 @@ void openPurchaseScreen(
       if (vendor.group == menuGroupAct) {
         pushScreen(
           context,
-              (_) => PurchaseAktivasiScreen(vendor: vendor!, productCode: productCode, destination: destination),
+          (_) => PurchaseAktivasiScreen(
+              vendor: vendor!,
+              productCode: productCode,
+              destination: destination),
         );
         return;
       }
@@ -176,6 +188,11 @@ void openPurchaseScreen(
     } else {
       debugPrint('Unknown vendor type ${vendor.name} ${vendor.productType}');
     }
+  } else if (product!.productGroup == groupData) {
+    pushScreen(
+        context,
+        (_) => PurchasePaketDataScreen(
+            productCode: productCode, destination: destination));
   } else {
     pushScreen(
         context,
