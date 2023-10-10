@@ -5,7 +5,7 @@ import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/vendor.dart';
-import 'package:miliv2/src/screens/purchase_topup_bank.dart';
+import 'package:miliv2/src/reference/flip/widgets/dialog.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 import 'package:miliv2/src/utils/product.dart';
@@ -88,7 +88,7 @@ class _VendorScreenState extends State<VendorScreen> {
         Vendor newVendor = Vendor(
           serverId: 0,
           updatedAt: DateTime.now(),
-          imageUrl: 'assets/vendors/bank/logo_lainnya.png',
+          imageUrl: 'assets/vendors/bank/logo_transfer_flip.png',
           productType: groupVoucher,
           group: menuGroupEmoney,
           name: 'Topup Lainnya',
@@ -109,13 +109,7 @@ class _VendorScreenState extends State<VendorScreen> {
     // create new screen TopupBank
     if (value?.paymentCode == keyGroupBank ||
         value?.inquiryCode == keyGroupBank) {
-      pushScreen(
-        context,
-        (_) => PurchaseTopupBank(
-          title: value!.name,
-          groupName: menuGroupEmoney,
-        ),
-      );
+      showTransferOptionFlip(context: context);
       return;
     }
 

@@ -11,6 +11,7 @@ import 'package:miliv2/src/data/promo.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/vendor.dart';
+import 'package:miliv2/src/reference/flip/screens/bank.dart';
 import 'package:miliv2/src/screens/activation_wallet.dart';
 import 'package:miliv2/src/screens/change_password.dart';
 import 'package:miliv2/src/screens/coin_mili.dart';
@@ -45,7 +46,6 @@ import 'package:miliv2/src/screens/train_home.dart';
 import 'package:miliv2/src/screens/transfer.dart';
 import 'package:miliv2/src/screens/transfer_widget_wallet.dart';
 import 'package:miliv2/src/screens/upgrade.dart';
-import 'package:miliv2/src/screens/upgrade_wallet.dart';
 import 'package:miliv2/src/screens/vendor.dart';
 import 'package:miliv2/src/services/analytics.dart';
 import 'package:miliv2/src/services/auth.dart';
@@ -297,6 +297,26 @@ class _HomepageState extends State<Homepage>
                   caseSensitive: false)));
           Vendor? vendor = queryVendor.build().findFirst();
           if (vendor != null) openPurchaseScreen(context, vendor: vendor);
+        }
+      } else if (data['key_page'] == pageTopupLainnya) {
+        if (data['key_subpage'] == null) {
+          pushScreen(
+            context,
+            (_) => const ProductBankFlipScreen(),
+          );
+        } else {
+          QueryBuilder<Vendor> queryVendor = AppDB.vendorDB.query(Vendor_
+              .productCode
+              .equals(data['key_subpage'].toString(), caseSensitive: false)
+              .or(Vendor_.inquiryCode.equals(data['key_subpage'].toString(),
+                  caseSensitive: false)));
+          Vendor? vendor = queryVendor.build().findFirst();
+          if (vendor != null) {
+            pushScreen(
+              context,
+              (_) => ProductBankFlipScreen(selectedVendor: vendor),
+            );
+          }
         }
       } else if (data['key_page'] == pagePajak) {
         if (data['key_subpage'] == null) {

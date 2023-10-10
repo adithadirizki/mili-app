@@ -4,12 +4,13 @@ enum OTPType {
   email,
 }
 
-enum PaymentMethod { mainBalance, creditBalance, wallet }
+enum PaymentMethod { mainBalance, creditBalance, wallet, none }
 
 const Map<PaymentMethod, String> paymentMethodLabel = {
   PaymentMethod.mainBalance: 'Koin MILI',
   PaymentMethod.creditBalance: 'Saldo Kredit',
   PaymentMethod.wallet: 'Saldo MILI',
+  PaymentMethod.none: 'none',
 };
 
 // const List<String> outletTypes = [
@@ -80,6 +81,7 @@ const pageEwallet = 'ewallet';
 const pageGame = 'game';
 const pageTvBerbayar = 'tv_berbayar';
 const pageTransferBank = 'transfer_bank';
+const pageTopupLainnya = 'topup_lainnya';
 const pagePajak = 'pajak';
 const pageAktivasi = 'aktivasi';
 const pageKeretaApi = 'kereta_api';
