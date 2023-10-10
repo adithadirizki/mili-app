@@ -74,6 +74,8 @@ const pageUpdateProfile = 'update_profile';
 const pageProgram = 'program';
 
 const pagePulsaData = 'pulsa_data';
+const pagePulsa = 'pulsa';
+const pagePaketData = 'paket_data';
 const pageListrik = 'listrik';
 const pageTagihan = 'tagihan';
 const pageBpjs = 'bpjs';

@@ -33,6 +33,7 @@ import 'package:miliv2/src/screens/profile_update.dart';
 import 'package:miliv2/src/screens/profile_wallet.dart';
 import 'package:miliv2/src/screens/program.dart';
 import 'package:miliv2/src/screens/promo.dart';
+import 'package:miliv2/src/screens/purchase_paket_data.dart';
 import 'package:miliv2/src/screens/purchase_payment.dart';
 import 'package:miliv2/src/screens/purchase_pln.dart';
 import 'package:miliv2/src/screens/purchase_pulsa.dart';
@@ -189,6 +190,10 @@ class _HomepageState extends State<Homepage>
       // for all user
       if (data['key_page'] == pagePulsaData) {
         pushScreen(context, (_) => const PurchasePulsaScreen());
+      } else if (data['key_page'] == pagePulsa) {
+        pushScreen(context, (_) => const PurchasePulsaScreen());
+      } else if (data['key_page'] == pagePaketData) {
+        pushScreen(context, (_) => const PurchasePaketDataScreen());
       } else if (data['key_page'] == pageListrik) {
         pushScreen(context, (_) => const PurchasePLNScreen());
       } else if (data['key_page'] == pageTagihan) {
