@@ -54,7 +54,7 @@ class _ProductBankFlipScreenState extends State<ProductBankFlipScreen> {
     vendorList = queryVendor.build().find();
 
     vendorList = vendorList.where((vendor) {
-      bool isProductBank = vendor.productType == groupVoucher;
+      bool isProductBank = vendor.productType == vendorTypeTransferBank;
 
       // Hide all product except bank
       if (!isProductBank) {

@@ -41,8 +41,9 @@ const int statusClosed = 2;
 const vendorTypeTopup = 1;
 const vendorTypePayment = 2;
 const vendorTypePaymentWithProduct = 3;
-const vendorTypePaymentDenom = 4;
+const vendorTypeTransferBank = 4;
 const vendorTypeVoucher = 5;
+const vendorTypePaymentDenom = 6;
 
 const menuGroupTagihan = 'TAGIHAN';
 const menuGroupEmoney = 'E-MONEY';
