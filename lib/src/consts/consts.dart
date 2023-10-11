@@ -4,12 +4,13 @@ enum OTPType {
   email,
 }
 
-enum PaymentMethod { mainBalance, creditBalance, wallet }
+enum PaymentMethod { mainBalance, creditBalance, wallet, none }
 
 const Map<PaymentMethod, String> paymentMethodLabel = {
   PaymentMethod.mainBalance: 'Koin MILI',
   PaymentMethod.creditBalance: 'Saldo Kredit',
   PaymentMethod.wallet: 'Saldo MILI',
+  PaymentMethod.none: 'none',
 };
 
 // const List<String> outletTypes = [
@@ -40,8 +41,9 @@ const int statusClosed = 2;
 const vendorTypeTopup = 1;
 const vendorTypePayment = 2;
 const vendorTypePaymentWithProduct = 3;
-const vendorTypePaymentDenom = 4;
+const vendorTypeTransferBank = 4;
 const vendorTypeVoucher = 5;
+const vendorTypePaymentDenom = 6;
 
 const menuGroupTagihan = 'TAGIHAN';
 const menuGroupEmoney = 'E-MONEY';
@@ -73,6 +75,8 @@ const pageUpdateProfile = 'update_profile';
 const pageProgram = 'program';
 
 const pagePulsaData = 'pulsa_data';
+const pagePulsa = 'pulsa';
+const pagePaketData = 'paket_data';
 const pageListrik = 'listrik';
 const pageTagihan = 'tagihan';
 const pageBpjs = 'bpjs';
@@ -80,6 +84,7 @@ const pageEwallet = 'ewallet';
 const pageGame = 'game';
 const pageTvBerbayar = 'tv_berbayar';
 const pageTransferBank = 'transfer_bank';
+const pageTopupLainnya = 'topup_lainnya';
 const pagePajak = 'pajak';
 const pageAktivasi = 'aktivasi';
 const pageKeretaApi = 'kereta_api';

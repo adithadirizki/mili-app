@@ -5,6 +5,7 @@ import 'package:miliv2/src/consts/consts.dart';
 import 'package:miliv2/src/database/database.dart';
 import 'package:miliv2/src/models/product.dart';
 import 'package:miliv2/src/models/vendor.dart';
+import 'package:miliv2/src/reference/flip/screens/bank.dart';
 import 'package:miliv2/src/screens/purchase_aktivasi.dart';
 import 'package:miliv2/src/screens/purchase_denom.dart';
 import 'package:miliv2/src/screens/purchase_paket_data.dart';
@@ -175,15 +176,23 @@ void openPurchaseScreen(
             productCode: productCode,
             destination: destination),
       );
-    } else if (vendor.productType == vendorTypePaymentDenom) {
+    } else if (vendor.productType == vendorTypeTransferBank) {
       pushScreen(
         context,
-        (_) => PurchaseDenomScreen(vendor: vendor!, destination: destination),
+        (_) => ProductBankFlipScreen(
+          selectedVendor: vendor!,
+          destination: destination,
+        ),
       );
     } else if (vendor.productType == vendorTypeVoucher) {
       pushScreen(
         context,
         (_) => PurchaseVoucherScreen(vendor: vendor!),
+      );
+    } else if (vendor.productType == vendorTypePaymentDenom) {
+      pushScreen(
+        context,
+            (_) => PurchaseDenomScreen(vendor: vendor!, destination: destination),
       );
     } else {
       debugPrint('Unknown vendor type ${vendor.name} ${vendor.productType}');
