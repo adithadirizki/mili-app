@@ -109,7 +109,7 @@ class _VendorScreenState extends State<VendorScreen> {
     // create new screen TopupBank
     if (value?.paymentCode == keyGroupBank ||
         value?.inquiryCode == keyGroupBank) {
-      showTransferOptionFlip(context: context);
+      showTransferButtonFlip(context: context);
       return;
     }
 

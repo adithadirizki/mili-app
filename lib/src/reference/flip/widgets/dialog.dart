@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/models/vendor.dart';
 import 'package:miliv2/src/reference/flip/screens/bank.dart';
 import 'package:miliv2/src/reference/flip/screens/page_bank_inquiry.dart';
+import 'package:miliv2/src/screens/customer_service.dart';
+import 'package:miliv2/src/screens/history.dart';
+import 'package:miliv2/src/screens/profile.dart';
 import 'package:miliv2/src/theme.dart';
 import 'package:miliv2/src/utils/dialog.dart';
 
@@ -147,6 +151,143 @@ void confirmDialogFlip({
   );
 }
 
+void showTransferButtonFlip({
+  required BuildContext context,
+}) {
+  showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => Stack(
+      alignment: Alignment.center,
+      children: [
+        // Center horizontally.
+        Positioned(
+          bottom: 0,
+          child: Container(
+            height: 75,
+            width: MediaQuery.of(context).size.width,
+            decoration: const BoxDecoration(color: Colors.white),
+          ),
+        ),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.only(bottom: 20),
+              decoration: const BoxDecoration(color: Colors.transparent),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.popUntil(context, (route) => route.isFirst);
+                    },
+                    child: Column(
+                      children: const [
+                        Image(image: AppImages.flipHome, height: 22),
+                        SizedBox(height: 5),
+                        Text(
+                          'Beranda',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.popUntil(context, (route) => route.isFirst);
+                      pushScreen(context, (_) => const HistoryScreen());
+                    },
+                    child: Column(
+                      children: const [
+                        Image(image: AppImages.flipHistory, height: 22),
+                        SizedBox(height: 5),
+                        Text(
+                          'Transaksi',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      showTransferOptionFlip(context: context);
+                    },
+                    child: Column(
+                      children: const [
+                        Image(image: AppImages.flipTransfer, height: 60),
+                        Text(
+                          'Transfer',
+                          style: TextStyle(
+                            color: Color(0xFFFF5731),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.popUntil(context, (route) => route.isFirst);
+                      pushScreen(context, (_) => const CustomerServiceScreen());
+                    },
+                    child: Column(
+                      children: const [
+                        Image(image: AppImages.flipHelp, height: 22),
+                        SizedBox(height: 5),
+                        Text(
+                          'Bantuan',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.popUntil(context, (route) => route.isFirst);
+                      pushScreen(
+                        context,
+                        (_) => UserBalanceScope(
+                          notifier: userBalanceState,
+                          child: const ProfileScreen(),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      children: const [
+                        Image(image: AppImages.flipProfile, height: 22),
+                        SizedBox(height: 5),
+                        Text(
+                          'Akun',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
 void showTransferOptionFlip({
   required BuildContext context,
 }) {
@@ -210,7 +351,7 @@ void showTransferOptionFlip({
                   ),
                 ),
                 subtitle: Text(
-                  'Transfer ke +100 bank Indonesia',
+                  'Transfer ke 1 bank di satu waktu',
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
