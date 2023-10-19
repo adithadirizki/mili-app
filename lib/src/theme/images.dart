@@ -101,9 +101,16 @@ class AppImages {
   static const finpayBasic = AssetImage('assets/images/finpay-basic.png');
   static const finpayPremium = AssetImage('assets/images/finpay-premium.png');
 
-  static const flipTransfer = AssetImage('assets/images/flip/flip-transfer.png');
-  static const flipIllustration1 = AssetImage('assets/images/flip/flip-illustration-1.png');
-  static const flipIllustration2 = AssetImage('assets/images/flip/flip-illustration-2.png');
+  static const flipTransfer =
+      AssetImage('assets/images/flip/flip-transfer.png');
+  static const flipIllustration1 =
+      AssetImage('assets/images/flip/flip-illustration-1.png');
+  static const flipIllustration2 =
+      AssetImage('assets/images/flip/flip-illustration-2.png');
+  static const flipHome = AssetImage('assets/images/flip/flip-home.png');
+  static const flipHistory = AssetImage('assets/images/flip/flip-history.png');
+  static const flipHelp = AssetImage('assets/images/flip/flip-help.png');
+  static const flipProfile = AssetImage('assets/images/flip/flip-profile.png');
 
   static AssetImage getAssetImage(String filename) {
     return AssetImage('images/' + filename);
