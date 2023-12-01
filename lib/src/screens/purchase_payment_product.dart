@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:miliv2/objectbox.g.dart';
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/api/product.dart';
@@ -15,6 +17,7 @@ import 'package:miliv2/src/screens/payment.dart';
 import 'package:miliv2/src/theme/colors.dart';
 import 'package:miliv2/src/theme/style.dart';
 import 'package:miliv2/src/utils/dialog.dart';
+import 'package:miliv2/src/utils/formatter.dart';
 import 'package:miliv2/src/utils/product.dart';
 import 'package:miliv2/src/widgets/app_bar_1.dart';
 import 'package:miliv2/src/widgets/product_payment.dart';
@@ -50,12 +53,16 @@ class _PurchasePaymentProductScreenState
 
   VendorConfigResponse? vendorConfig;
 
+  Cutoff? cutoff;
+
   late final int userLevel;
+  late final double userMarkup;
 
   @override
   void initState() {
     super.initState();
     userLevel = userBalanceState.level;
+    userMarkup = userBalanceState.markup;
     destinationNumber = widget.destination ?? '';
     textController.text = widget.destination ?? '';
     vendorConfig = widget.vendor.configMap;
@@ -113,11 +120,22 @@ class _PurchasePaymentProductScreenState
     QueryBuilder<Product> queryPulsa = productDB.query(dbCriteria)
       ..order(Product_.weight, flags: 1)
       ..order(Product_.groupName)
+      ..order(getPriceLevel(userLevel))
       ..order(Product_.productName);
     productPulsa = queryPulsa.build().find();
 
     debugPrint(
         'PurchasePaymentProductScreen product size ${productPulsa.length}');
+
+    // product code or group from voucher config
+    final cutoffDB = AppDB.cutoffDB;
+    cutoff = cutoffDB
+        .query(Cutoff_.productCode
+            .equals(widget.vendor.productCode, caseSensitive: false)
+            .or(Cutoff_.productCode
+                .equals(widget.vendor.group, caseSensitive: false)))
+        .build()
+        .findFirst();
 
     isLoading = false;
     setState(() {});
@@ -249,11 +267,140 @@ class _PurchasePaymentProductScreenState
     return null;
   }
 
-  String? productValidator(Product? value) {
-    if (value == null) {
-      return 'Pilih Produk';
+  bool isClosed(Cutoff? cutoff) {
+    if (cutoff != null) {
+      DateTime now = DateTime.now();
+      DateTime utc = now.toUtc();
+      DateTime wib = utc.add(const Duration(hours: 7));
+      String _wib = DateFormat('HHmm').format(wib);
+      int timeWib = parseInt(_wib);
+
+      int startTime = parseInt(cutoff.start);
+      int endTime = parseInt(cutoff.end);
+
+      debugPrint('Cutoff $startTime $endTime == $timeWib');
+
+      if (startTime > endTime) {
+        return timeWib >= parseInt(cutoff.start) ||
+            timeWib < parseInt(cutoff.end);
+      } else {
+        return timeWib >= parseInt(cutoff.start) &&
+            timeWib < parseInt(cutoff.end);
+      }
     }
-    return null;
+
+    return false;
+  }
+
+  Widget builPopupItem(Product value) {
+    return ListTile(
+      tileColor: value.promo ? Colors.greenAccent.withOpacity(.2) : null,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 5,
+      ),
+      leading: widget.vendor.getImageUrl().isNotEmpty
+          ? CircleAvatar(
+              radius: 18.0,
+              // backgroundImage: getProductLogo(product),
+              child: Container(
+                width: 96,
+                height: 96,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Color(0xffCECECE), width: 0.5),
+                  color: const Color(0xffFBFBFB),
+                  borderRadius:
+                      const BorderRadius.all(Radius.elliptical(96, 96)),
+                ),
+                padding: const EdgeInsets.all(0.5),
+                child: ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: widget.vendor.getImageUrl(),
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ),
+                    width: 100,
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              backgroundColor: Colors.transparent,
+            )
+          : null,
+      title: Text(
+        value.productName,
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
+      subtitle:
+          value.description.isNotEmpty || value.status == 2 || isClosed(cutoff)
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    value.description.isNotEmpty
+                        ? Text(
+                            value.description,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          )
+                        : const SizedBox(),
+                    value.status == 2
+                        ? Text(
+                            'Sedang gangguan',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: Colors.red),
+                          )
+                        : isClosed(cutoff)
+                            ? Text(
+                                'Sedang cut off',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(color: Colors.red),
+                              )
+                            : const SizedBox(),
+                  ],
+                )
+              : null,
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          value.promo
+              ? Container(
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(5)),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    child: Text(
+                      'PROMO',
+                      style: TextStyle(
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                  ),
+                )
+              : const SizedBox(),
+          (vendorConfig?.showPrice == true)
+              ? Text(
+                  formatNumber(
+                      value.getUserPrice(userLevel, markup: userMarkup)),
+                  style: Theme.of(context).textTheme.bodySmall,
+                )
+              : const SizedBox(),
+        ],
+      ),
+    );
   }
 
   @override
@@ -304,24 +451,70 @@ class _PurchasePaymentProductScreenState
                 onChanged: onDestinationChange,
               ),
               const SizedBox(height: 10),
-              DropdownSearch<Product>(
-                //mode of dropdown
-                mode: Mode.MENU,
-
-                //to show search box
-                showSearchBox: true,
-                itemAsString: (item) {
-                  return item == null ? '' : item.productName;
-                },
-                // showSelectedItems: true,
-                //list of dropdown items
-                items: productPulsa,
-                // label: "Pilih Produk",
-                onChanged: onProductChange,
-                //show selected item
-                selectedItem: selectedProduct,
-                validator: productValidator,
-              ),
+              isLoading
+                  ? Center(
+                      child: Column(
+                      children: [
+                        Transform.scale(
+                          scale: 0.5,
+                          child: const CircularProgressIndicator(),
+                        ),
+                        const Text(
+                          'Memuat produk...',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ],
+                    ))
+                  : DropdownSearch<Product>(
+                      mode: Mode.BOTTOM_SHEET,
+                      dropdownSearchDecoration:
+                          generateInputDecoration(hint: 'Pilih Produk'),
+                      popupItemDisabled: (value) {
+                        return value.status != statusOpen || isClosed(cutoff);
+                      },
+                      popupItemBuilder: (context, value, _) =>
+                          builPopupItem(value),
+                      maxHeight: 5500,
+                      showSearchBox: true,
+                      itemAsString: (item) {
+                        return item == null ? '' : item.productName;
+                      },
+                      items: productPulsa,
+                      onChanged: onProductChange,
+                      selectedItem: selectedProduct,
+                      popupSafeArea: const PopupSafeAreaProps(top: true),
+                      popupShape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                      ),
+                      searchFieldProps: TextFieldProps(
+                        padding: const EdgeInsets.only(
+                          top: 40,
+                          left: 10,
+                          right: 10,
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.zero,
+                          prefixIcon: const Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50),
+                            borderSide: BorderSide(color: Colors.black54),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50),
+                            borderSide: BorderSide(color: Colors.black54),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50),
+                            borderSide: BorderSide(color: Colors.black54),
+                          ),
+                          hintText: 'Cari produk...',
+                          hintStyle: TextStyle(color: Colors.black54),
+                        ),
+                      ),
+                    ),
               FlexBoxGray(
                 margin: const EdgeInsets.only(top: 10),
                 child: buildProduct(context),

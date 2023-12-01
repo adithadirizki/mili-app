@@ -155,7 +155,7 @@ class ProductPaymentState extends State<ProductPayment> {
         alignment: Alignment.topLeft,
         child: Text(
           inquiryResult!.inquiryDetail,
-          style: Theme.of(context).textTheme.bodySmall,
+          style: const TextStyle(fontSize: 14, height: 1.7),
         ),
       );
     }
