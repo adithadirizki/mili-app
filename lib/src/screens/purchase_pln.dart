@@ -57,7 +57,7 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
   late final double userMarkup;
 
   InquiryResponse? inquiryAccountResult;
-  bool isLoading = false;
+  bool isLoading = true;
   String trxId = ''; // TODO generate local trxid
   Vendor prepaidVendor = Vendor(
     serverId: 0,
@@ -137,8 +137,9 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
 
     // Product Topup
     QueryBuilder<Product> queryProduct = productDB.query(dbCriteria)
-      ..order(Product_.groupName)
       ..order(Product_.nominal)
+      ..order(Product_.groupName)
+      ..order(getPriceLevel(userLevel))
       ..order(Product_.productName);
     productTopup = queryProduct.build().find();
     productTopup = filterProduct(productTopup).toList();
@@ -272,9 +273,7 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
     // track trx pln
     Map<String, dynamic> tags = await AppOnesignal.getTags();
     var _tags = {
-      'last_transaction': DateTime
-          .now()
-          .millisecondsSinceEpoch,
+      'last_transaction': DateTime.now().millisecondsSinceEpoch,
       'pln': parseInt(tags['pln']?.toString() ?? '0') + 1,
     };
     AppOnesignal.setTags(_tags);
@@ -385,6 +384,69 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
     return null;
   }
 
+  Widget builPopupItem(Product value) {
+    return ListTile(
+      tileColor: value.promo ? Colors.greenAccent.withOpacity(.2) : null,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 5,
+      ),
+      leading: const Icon(Icons.flash_on),
+      title: Text(
+        value.productName,
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
+      subtitle: value.description.isNotEmpty || value.status == 2
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                value.description.isNotEmpty
+                    ? Text(
+                        value.description,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      )
+                    : const SizedBox(),
+                value.status == 2
+                    ? Text(
+                        'Sedang gangguan',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(color: Colors.red),
+                      )
+                    : const SizedBox(),
+              ],
+            )
+          : null,
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          value.promo
+              ? Container(
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(5)),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    child: Text(
+                      'PROMO',
+                      style: TextStyle(
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                  ),
+                )
+              : const SizedBox(),
+          Text(
+            formatNumber(value.getUserPrice(userLevel, markup: userMarkup)),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -469,25 +531,89 @@ class _PurchasePLNScreenState extends State<PurchasePLNScreen> {
               ),
               const SizedBox(height: 10),
               selectedMode == productMode.prepaid
-                  ? DropdownSearch<Product>(
-                      //mode of dropdown
-                      mode: Mode.MENU,
-                      //to show search box
-                      showSearchBox: false,
-                      itemAsString: (item) {
-                        return item == null
-                            ? ''
-                            : '${item.productName} (${formatNumber(item.getUserPrice(userLevel, markup: userMarkup))})';
-                      },
-                      // showSelectedItems: true,
-                      //list of dropdown items
-                      items: productTopup,
-                      // label: "Pilih Produk",
-                      onChanged: onProductChange,
-                      //show selected item
-                      selectedItem: selectedProduct,
-                      validator: productValidator,
-                    )
+                  ? isLoading
+                      ? Center(
+                          child: Column(
+                          children: [
+                            Transform.scale(
+                              scale: 0.5,
+                              child: const CircularProgressIndicator(),
+                            ),
+                            const Text(
+                              'Memuat produk...',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ))
+                      : DropdownSearch<Product>(
+                          mode: Mode.BOTTOM_SHEET,
+                          dropdownSearchDecoration:
+                              generateInputDecoration(hint: 'Pilih Produk'),
+                          popupItemDisabled: (value) {
+                            return value.status != statusOpen;
+                          },
+                          popupItemBuilder: (context, value, _) =>
+                              builPopupItem(value),
+                          maxHeight: 5500,
+                          showSearchBox: true,
+                          itemAsString: (item) {
+                            return item == null ? '' : item.productName;
+                          },
+                          items: productTopup,
+                          onChanged: onProductChange,
+                          selectedItem: selectedProduct,
+                          popupSafeArea: const PopupSafeAreaProps(top: true),
+                          popupShape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),
+                          ),
+                          searchFieldProps: TextFieldProps(
+                            padding: const EdgeInsets.only(
+                              top: 40,
+                              left: 10,
+                              right: 10,
+                            ),
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.zero,
+                              prefixIcon: const Icon(Icons.search),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(50),
+                                borderSide: BorderSide(color: Colors.black54),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(50),
+                                borderSide: BorderSide(color: Colors.black54),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(50),
+                                borderSide: BorderSide(color: Colors.black54),
+                              ),
+                              hintText: 'Cari produk...',
+                              hintStyle: TextStyle(color: Colors.black54),
+                            ),
+                          ),
+                        )
+                  // DropdownSearch<Product>(
+                  //         //mode of dropdown
+                  //         mode: Mode.MENU,
+                  //         //to show search box
+                  //         showSearchBox: false,
+                  //         itemAsString: (item) {
+                  //           return item == null
+                  //               ? ''
+                  //               : '${item.productName} (${formatNumber(item.getUserPrice(userLevel, markup: userMarkup))})';
+                  //         },
+                  //         // showSelectedItems: true,
+                  //         //list of dropdown items
+                  //         items: productTopup,
+                  //         // label: "Pilih Produk",
+                  //         onChanged: onProductChange,
+                  //         //show selected item
+                  //         selectedItem: selectedProduct,
+                  //         validator: productValidator,
+                  //       )
                   : const SizedBox(),
               FlexBoxGray(
                 margin: const EdgeInsets.only(top: 10),
