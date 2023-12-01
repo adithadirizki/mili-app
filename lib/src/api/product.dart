@@ -117,6 +117,9 @@ class VendorConfigResponse {
   @JsonKey(name: 'max_denom')
   late double? maxDemon;
 
+  @JsonKey(name: 'show_price')
+  late bool? showPrice;
+
   VendorConfigResponse();
 
   factory VendorConfigResponse.fromString(String body) =>

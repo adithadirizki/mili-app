@@ -159,6 +159,19 @@ void openPurchaseScreen(
         );
         return;
       }
+
+      if (vendor.inquiryCode != '') {
+        pushScreen(
+          context,
+          (_) => PurchasePaymentProductScreen(
+            vendor: vendor!,
+            destination: destination,
+            productCode: productCode,
+          ),
+        );
+        return;
+      }
+
       pushScreen(
         context,
         (_) => PurchaseTopupScreen(vendor: vendor!, destination: destination),
@@ -192,7 +205,7 @@ void openPurchaseScreen(
     } else if (vendor.productType == vendorTypePaymentDenom) {
       pushScreen(
         context,
-            (_) => PurchaseDenomScreen(vendor: vendor!, destination: destination),
+        (_) => PurchaseDenomScreen(vendor: vendor!, destination: destination),
       );
     } else {
       debugPrint('Unknown vendor type ${vendor.name} ${vendor.productType}');
