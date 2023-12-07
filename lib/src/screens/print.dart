@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:miliv2/src/api/purchase.dart';
@@ -42,6 +43,7 @@ class _PrintScreenState extends State<PrintScreen> {
         return;
       }
       initialize();
+      AppPrinter.scanDevices();
     });
   }
 
@@ -80,22 +82,100 @@ class _PrintScreenState extends State<PrintScreen> {
     return _struct;
   }
 
-  void printStruct() {
+  void showPrinterList() {
+    showModalBottomSheet<Widget>(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      context: context,
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.only(top: 30, bottom: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Pilih printer',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      tooltip: 'Refresh',
+                      splashRadius: 20,
+                      onPressed: () {
+                        AppPrinter.scanDevices();
+                      },
+                      icon: const Icon(Icons.refresh),
+                    ),
+                  ],
+                ),
+              ),
+              StreamBuilder<List<BluetoothDevice>>(
+                stream: AppPrinter.streamer,
+                builder: (builder, snapshot) {
+                  if (snapshot.data == null || snapshot.data!.isEmpty) {
+                    return const Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Center(
+                        child: Text('Printer tidak ditemukan'),
+                      ),
+                    );
+                  }
+
+                  return Column(
+                    children: snapshot.data!
+                        .map((d) => ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 30,
+                              ),
+                              title: Text(d.name ?? ''),
+                              subtitle: Text(d.address ?? ''),
+                              onTap: () async => selectDevice(d),
+                            ))
+                        .toList(),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> selectDevice(BluetoothDevice device) async {
+    // close modal bottom
+    Navigator.pop(context);
+
+    AppPrinter.connect(device, context);
+
+    // delay untuk connect ke printer
+    Future.delayed(const Duration(seconds: 4), () {
+      printInvoice();
+    });
+  }
+
+  Future<void> printInvoice() async {
     if (formKey.currentState!.validate()) {
       // remove multiple space
       String _struct = struct.replaceAll(RegExp(r' {2,}'), ' ');
 
-      confirmDialog(
-        context,
-        title: 'Detail Transaksi',
-        msg: _struct + '\nCetak Struk ?',
-        confirmAction: () {
-          AppPrinter.maxWidthColumn = widget.history.maxWidthColumn;
-          AppPrinter.mappingColumn = widget.history.mappingColumn;
-          AppPrinter.printStruct(
-              struct: struct, config: config, context: context);
-        },
-      );
+      AppPrinter.maxWidthColumn = widget.history.maxWidthColumn;
+      AppPrinter.mappingColumn = widget.history.mappingColumn;
+      AppPrinter.printStruct(struct: struct, config: config, context: context);
     }
   }
 
@@ -282,6 +362,12 @@ class _PrintScreenState extends State<PrintScreen> {
         ),
       );
     });
+  }
+
+  @override
+  void dispose() {
+    AppPrinter.stopScan();
+    super.dispose();
   }
 
   @override
@@ -479,7 +565,7 @@ class _PrintScreenState extends State<PrintScreen> {
                     const SizedBox(width: 20),
                     SizedBox(
                       child: TextButton(
-                        onPressed: printStruct,
+                        onPressed: showPrinterList,
                         child: Row(
                           children: [
                             const Icon(
