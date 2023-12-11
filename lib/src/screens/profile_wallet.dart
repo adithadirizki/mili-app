@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:miliv2/src/api/api.dart';
 import 'package:miliv2/src/data/user_balance.dart';
 import 'package:miliv2/src/screens/tos_finpay.dart';
@@ -32,6 +33,7 @@ class _ProfileWalletScreenState extends State<ProfileWalletScreen> {
       Completer<WebViewController>();
 
   String? widgetUrl;
+  List? topupInfo;
 
   @override
   void initState() {
@@ -41,11 +43,23 @@ class _ProfileWalletScreenState extends State<ProfileWalletScreen> {
     }
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       getWidgetUrl();
+      getWalletProfile();
     });
   }
 
   FutureOr<void> _handleError(dynamic e) {
     snackBarDialog(context, e.toString());
+  }
+
+  void getWalletProfile() {
+    void handleResponseInfo(http.Response response) {
+      Map<String, dynamic> bodyMap =
+          json.decode(response.body) as Map<String, dynamic>;
+      topupInfo = bodyMap['message'] as List;
+      setState(() {});
+    }
+
+    Api.walletTopupInfo().then(handleResponseInfo).catchError(_handleError);
   }
 
   void getWidgetUrl() {
@@ -101,6 +115,33 @@ class _ProfileWalletScreenState extends State<ProfileWalletScreen> {
               },
             ),
           ),
+          topupInfo != null
+              ? Container(
+                  alignment: Alignment.topLeft,
+                  padding: const EdgeInsets.all(15),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0),
+                    ),
+                  ),
+                  child: Column(
+                    children: topupInfo
+                        ?.map((dynamic e) => Text(
+                              e['text'].toString(),
+                              style: TextStyle(
+                                fontWeight: e['important'] == true
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                fontSize: 12,
+                                height: 1.7,
+                              ),
+                            ))
+                        .toList() as List<Widget>,
+                  ),
+                )
+              : const SizedBox(),
         ],
       ),
     );
@@ -116,7 +157,7 @@ class _ProfileWalletScreenState extends State<ProfileWalletScreen> {
               onTap: () {
                 pushScreen(
                   context,
-                      (_) => TosFinpayScreen(
+                  (_) => TosFinpayScreen(
                     title: userBalanceState.walletPremium
                         ? 'Akun Premium'
                         : 'Upgrade Premium Finpay',

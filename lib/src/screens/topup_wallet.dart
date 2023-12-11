@@ -33,7 +33,7 @@ class _TopupWalletScreenState extends State<TopupWalletScreen> {
       Completer<WebViewController>();
 
   String? widgetUrl;
-  String? topupInfo;
+  List? topupInfo;
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _TopupWalletScreenState extends State<TopupWalletScreen> {
     void handleResponseInfo(http.Response response) {
       Map<String, dynamic> bodyMap =
           json.decode(response.body) as Map<String, dynamic>;
-      topupInfo = bodyMap['data']?.toString();
+      topupInfo = bodyMap['message'] as List;
       setState(() {});
     }
 
@@ -116,9 +116,19 @@ class _TopupWalletScreenState extends State<TopupWalletScreen> {
               ? Container(
                   alignment: Alignment.topLeft,
                   padding: const EdgeInsets.all(15),
-                  child: Text(
-                    topupInfo!,
-                    style: Theme.of(context).textTheme.bodySmall,
+                  child: Column(
+                    children: topupInfo
+                        ?.map((dynamic e) => Text(
+                              e['text'].toString(),
+                              style: TextStyle(
+                                fontWeight: e['important'] == true
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                fontSize: 12,
+                                height: 1.7,
+                              ),
+                            ))
+                        .toList() as List<Widget>,
                   ),
                 )
               : const SizedBox(),
@@ -137,7 +147,7 @@ class _TopupWalletScreenState extends State<TopupWalletScreen> {
               onTap: () {
                 pushScreen(
                   context,
-                      (_) => TosFinpayScreen(
+                  (_) => TosFinpayScreen(
                     title: userBalanceState.walletPremium
                         ? 'Akun Premium'
                         : 'Upgrade Premium Finpay',
